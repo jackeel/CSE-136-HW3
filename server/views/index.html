@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>	
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Bookmarx</title>
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="simplegrid.css" />
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>
+
+	<script type="text/javascript" src="index.js"></script>
+</head>
+<body>
+	<nav class="navbar">
+		<ul>
+			<li class="navbar-left menu-button">
+				<a class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
+			</li>
+	  		<li class="navbar-left search">
+	  			<input type="text" placeholder="Search Bookmarks" />
+	  			<button><i class="fa fa-search fa-lg"></i></button>
+	  		</li>
+				<li class="navbar-right">
+					<a href="edit.html" class="button"><i class="fa fa-edit fa-lg"></i></a>
+				</li>
+		  		<li class="navbar-right">
+		  			<a class="button" href="#"><i class="fa fa-sort-alpha-asc fa-lg"></i></a>
+		  		</li>
+	  			<li class="navbar-right">
+	  				<a href="#addModal" class="button"><i class="fa fa-plus fa-lg"></i></a>
+	  				<div id="addModal" class="modalDialog">
+
+				    <div class="grid grid-pad">
+				    	<a href="#close" title="Close" class="close x-button">x</a>
+				    	<div class="tabs is-centered">
+						  <ul>
+						    <li id="add-bookmark" class="is-active"><a>Add Bookmark</a></li>
+						    <li id="import-bookmark"><a>Import Bookmarks</a></li>
+						  </ul>
+						</div>
+
+				        <div class="form" id="add-bookmark-form">
+						    <input type="text" name="title" placeholder="Title">
+						    <div class="textFieldWrapper">
+						      <input type="url" name="url" placeholder="URL">
+						    </div>
+
+						    <div class="textFieldWrapper">
+						      <input type="text" name="description" placeholder="Description">
+						    </div>
+
+						    <div class="textFieldWrapper">
+						      <input type="text" name="keywords" placeholder="Keywords">
+						    </div>
+							    <div class="buttonWrapper">
+							      	<div><i class="fa fa-check-circle fa-lg"></i> Save</div>
+							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
+								 </div>
+						    
+						</div>	
+						<div class="form" id="import-bookmark-form">
+							<div class="textFieldWrapper">
+						      <input type="url" name="url" placeholder="File Path">
+						    </div>
+						    <div class="buttonWrapper">
+							      	<div><i class="fa fa-folder-open fa-lg"></i> Browse</div>
+							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
+							</div>
+						</div>		    
+					</div>
+				</div>
+	  		</li>
+		</ul>
+	</nav>
+	<div id="sidebar">
+      <ul>
+            <li class="pinned"><a style="color:#FF9EAE;" href="#"><i class="fa fa-bar-chart fa-lg"></i> Most Visited</a></li>
+            <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
+            <li class="pinned"><a href="all.html"><i class="fa fa-th fa-lg"></i> All</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="recipes.html">Recipes</a></li>
+            <li><a href="beauty.html">Beauty</a></li>
+            <li><a href="#">Tech</a></li>
+            <li><a href="#">Art</a></li>
+            <li><a href="#">Design</a></li>
+            <li><a href="#">Fonts</a></li>
+      </ul>
+      <div class="buttonWrapper">
+      	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
+      	<div><i class="fa fa-download fa-lg"></i> Export</div>
+	  </div>
+    </div>
+    <div id="right">
+      <div class="main grid grid-pad">
+      		<div id="title" class="col-1-1">
+      			<div class="content">
+      				<h1>Most Visited</h1>
+      			</div>
+      		</div>
+	      	<div class="col-1-3 mobile-col-1-3">
+				<div class="content"> 
+					<div class="card card--small">
+						<div style="background-color:#DE2924" class="card__image"></div>
+						<h2 class="card__title">YouTube</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star fa-lg"></i></a>
+							<a href="viewDescription.html" class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #48649E;" class="card__image"></div>
+						<h2 class="card__title">Facebook</h2>
+							<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #443642" class="card__image"></div>
+						<h2 class="card__title">Slack</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #555555" class="card__image"></div>
+						<h2 class="card__title">TritonEd</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- CHANGE BOOKMARK CONTENT HERE!!!!!! -->
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #2291BB" class="card__image"></div>
+						<h2 class="card__title">Tritonlink</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #79BA00" class="card__image"></div>
+						<h2 class="card__title">Spotify</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #529BC0" class="card__image"></div>
+						<h2 class="card__title">PINT</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #2CA94F" class="card__image"></div>
+						<h2 class="card__title">Google</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1-3 mobile-col-1-3">
+				<div class="content">
+					<div class="card card--small">
+						<div style="background-color: #3B79AD" class="card__image"></div>
+						<h2 class="card__title">Piazza</h2>
+						<div class="card__action-bar">
+							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+      </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+.fa-edit:before {
+	color: #FF9EAE;
+}
+
+a:hover .fa-edit:before {
+	color: #FFF;
+}
+
+.card--small {
+	border-radius: 0px 0px 0px 0px;
+	box-shadow: none;
+}
+
+.card--small .card__image {
+	border-radius: 0px 0px 0px 0px;
+}
+
+.card--small .card__action-bar {
+	display: inline;
+	left: 0;
+}
+
+.card--small .card__title {
+	top: 8px;
+}
+
+.card--small button .fa {
+	display: inline;
+}
+
+a.card__button .fa {
+	color: #474448;
+}
+
+a.card__button:hover {
+	background-color: #FFF;
+}
+
+a.card__button .fa:hover {
+	color: #FF9EAE;
+}
+
+a.card__button {
+	text-decoration: none;
+    width: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    left: -8px;
+}
+
