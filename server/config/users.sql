@@ -6,7 +6,7 @@
 # http://code.google.com/p/sequel-pro/
 #
 # Host: 127.0.0.1 (MySQL 5.1.63)
-# Database: bookmarks
+# Database: users
 # Generation Time: 2016-04-25 21:12:36 +0000
 # ************************************************************
 
@@ -20,38 +20,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Dump of table bookmarks
+# Dump of table users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `bookmarks`;
+DROP TABLE IF EXISTS `users`;
 
-CREATE TABLE `bookmarks` (
+CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(25) DEFAULT '',
-  `url` varchar(2083) DEFAULT '',
-  `description` text,
-  `star` boolean DEFAULT 0,
-  `create_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `last_visit_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `folder_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX(`folder_id`),
-  FOREIGN KEY(`folder_id`)
-    REFERENCES `folders`(`id`)
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
+  `username` varchar(25) DEFAULT NULL,
+  `password` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `bookmarks` WRITE;
-/*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`)
+INSERT INTO `users` (`id`, `username`, `password`)
 VALUES
-	(1, 'bookmark1', 'bookmark1', 1),
-	(2, 'bookmark2', 'bookmark2', 2),
-	(3, 'bookmark3', 'bookmark3', 3);
+	(1, 'user1', 'user1'),
+	(2, 'user2', 'user2'),
+	(3, 'user3', 'user3');
 
-/*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 

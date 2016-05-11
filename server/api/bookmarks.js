@@ -11,8 +11,8 @@ var db = require('../config/db');
 var list = module.exports.list = function(req, res) {
   db.query('SELECT * from books ORDER BY id', function(err, books) {
     if (err) throw err;
-
-    res.render('books/list', {books: books});
+    res.json({books:books});
+    //res.render('server/views/books/list', {books: books});
   });
 };
 
