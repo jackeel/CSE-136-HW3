@@ -9,11 +9,11 @@ var db = require('../config/db');
  * Selects all books and then renders the page with the list.ejs template
  */
 var list = module.exports.list = function(req, res) {
-  db.query('SELECT * from books ORDER BY id', function(err, books) {
+  db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
     if (err) throw err;
-    res.json({books:books});
-  //  res.render('server/views/books/list', {books: books});
-    red.render('../server/views/index', {books: books})
+  //  res.json({bookmarks:bookmarks});
+   // console.log(bookmarks);
+    res.render('index', {bookmarks: bookmarks})
   });
 };
 

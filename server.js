@@ -1,6 +1,6 @@
 var config = require('./server/config/config');
 var db = require('./server/config/db');
-var books = require('./server/api/bookmarks.js');
+var bookmarks = require('./server/api/bookmarks.js');
 //var users = require('./users');
 
 db.init();
@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
 
-app.get('/books', books.list);
+app.get('/list', bookmarks.list);
 //app.get('/books/add', books.add);
 //app.get('/books/edit/:book_id(\\d+)', books.edit);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
