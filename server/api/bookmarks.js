@@ -12,7 +12,8 @@ var list = module.exports.list = function(req, res) {
   db.query('SELECT * from books ORDER BY id', function(err, books) {
     if (err) throw err;
     res.json({books:books});
-    //res.render('server/views/books/list', {books: books});
+  //  res.render('server/views/books/list', {books: books});
+    red.render('../server/views/index', {books: books})
   });
 };
 
