@@ -35,7 +35,7 @@ module.exports.confirmdelete = function(req, res){
  * Renders the add page with the add.ejs template
  */
 module.exports.add = function(req, res) {
-  res.render('books/add');
+  res.render('add');
 };
 
 /**
@@ -70,13 +70,13 @@ module.exports.delete = function(req, res) {
  */
 module.exports.insert = function(req, res){
   var title = db.escape(req.body.title);
-  var author = db.escape(req.body.author);
-  var price = db.escape(req.body.price);
+  var url = db.escape(req.body.url);
+  var folder_id = db.escape(req.body.folder_id);
 
-  var queryString = 'INSERT INTO books (title, author, price) VALUES (' + title + ', ' + author + ', ' + price + ')';
+  var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
   db.query(queryString, function(err){
 	if (err) throw err;
-    res.redirect('/books');
+    res.redirect('/list');
   });
 };
 

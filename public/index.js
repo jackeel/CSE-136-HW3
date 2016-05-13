@@ -8,12 +8,12 @@ menuButton.onclick = function() {
 	var right = document.getElementById("right");
 	if(sidebar.style.display !== 'none'){
 		sidebar.style.display = 'none';
-		right.style.width = '100%'; 
+		right.style.width = '100%';
 		menuButton.style.color = "#FFF";
 	}
 	else {
 		sidebar.style.display = 'block';
-		right.style.width = '82%'; 
+		right.style.width = '82%';
 		menuButton.style.color = "#FF9EAE";
 	}
 };
@@ -25,6 +25,7 @@ var importBookmarkForm = document.getElementById("import-bookmark-form");
 
 
 addBookmark.onclick = function() {
+	console.log(addBookmark);
 	importBookmarkForm.style.display = 'none';
 	addBookmarkForm.style.display = 'block';
 
