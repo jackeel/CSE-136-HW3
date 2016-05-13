@@ -91,13 +91,10 @@
       <ul>
             <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
             <li class="pinned"><a href="all.html"><i class="fa fa-th fa-lg"></i> All</a></li>
-            <li><a href="courses.html">Courses</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
-            <li><a href="beauty.html">Beauty</a></li>
-            <li><a href="#">Tech</a></li>
-            <li><a href="#">Art</a></li>
-            <li><a href="#">Design</a></li>
-            <li><a href="#">Fonts</a></li>
+            <!--li><a href="courses.html">Courses</a></li-->
+            <% folders.forEach(function(folders) { %>
+            	<li><a href="#"><%= folders.name%></a></li>
+            <% }); %>
       </ul>
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>

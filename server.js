@@ -31,8 +31,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
 
-app.get('/list', bookmarks.list);
-app.get('/add', bookmarks.add);
+app.get('/list', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
+//app.get('/add', bookmarks.add);
 //app.get('/books/edit/:book_id(\\d+)', books.edit);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
 //app.get('/books/delete/:book_id(\\d+)', books.delete);

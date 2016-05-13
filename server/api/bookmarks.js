@@ -5,17 +5,38 @@
 var db = require('../config/db');
 
 /**
- *
- * Selects all books and then renders the page with the list.ejs template
+ * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
-var list = module.exports.list = function(req, res) {
+
+module.exports.list = function(req, res) {
+    res.render('index', {
+        bookmarks: req.bookmarks,
+        folders: req.folders
+    });
+}
+
+/**
+ * Query all bookmarks and put in req, use next().
+ */
+module.exports.listBookmarks = function(req, res, next) {
   db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
     if (err) throw err;
-  //  res.json({bookmarks:bookmarks});
-   // console.log(bookmarks);
-    res.render('index', {bookmarks: bookmarks})
+    req.bookmarks = bookmarks;
+    return next();
   });
 };
+
+/**
+ * Query all folders and put in req, use next().
+ */
+module.exports.listFolders = function(req, res, next) {
+  db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    if (err) throw err;
+    req.folders = folders;
+    return next();
+  });
+};
+
 
 /**
  *
