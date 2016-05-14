@@ -19,11 +19,21 @@ module.exports.list = function(req, res) {
  * Query all bookmarks and put in req, use next().
  */
 module.exports.listBookmarks = function(req, res, next) {
-  db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
+  var folder_id = req.params.folder_id;
+  if (!folder_id) {
+    db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
     if (err) throw err;
     req.bookmarks = bookmarks;
     return next();
-  });
+    });
+  }
+  else {
+    db.query('SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY id', function(err, bookmarks) {
+      if (err) throw err;
+      req.bookmarks = bookmarks;
+      return next();
+    });
+  }
 };
 
 /**

@@ -61,8 +61,8 @@
 
 											<div class="ListFieldWrapper">
 											<select name="folder_id">
-												<% folders.forEach(function(folders) { %>
-													<option value="<%= folders.id%>"><%= folders.name %></option>
+												<% folders.forEach(function(folder) { %>
+													<option value="<%= folder.id%>"><%= folder.name %></option>
 												<% }); %>
 											</select>
 											</div>
@@ -90,10 +90,10 @@
 	<div id="sidebar">
       <ul>
             <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
-            <li class="pinned"><a href="all.html"><i class="fa fa-th fa-lg"></i> All</a></li>
+            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
             <!--li><a href="courses.html">Courses</a></li-->
-            <% folders.forEach(function(folders) { %>
-            	<li><a href="#"><%= folders.name%></a></li>
+            <% folders.forEach(function(folder) { %>
+            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
       </ul>
       <div class="buttonWrapper">
