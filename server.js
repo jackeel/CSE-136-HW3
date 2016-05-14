@@ -12,11 +12,16 @@ var mySession = session({
   secret: 'N0deJS1sAw3some',
   resave: true,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { 
+    secure: false,
+    httpOnly: true,
+    maxAge: 3600000 * 24 * 7 //one week 
+  }
 });
 
-var app = express();
+app.set('x-powered-by', false); 
 app.use(mySession);
+
 
 /*  Not overwriting default views directory of 'views' */
 app.set('view engine', 'ejs');
