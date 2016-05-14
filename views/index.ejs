@@ -61,8 +61,8 @@
 
 											<div class="ListFieldWrapper">
 											<select name="folder_id">
-												<% bookmarks.forEach(function(bookmarks) { %>
-													<option value="folder_id"><%= bookmarks.folder_id %></option>
+												<% folders.forEach(function(folders) { %>
+													<option value="<%= folders.id%>"><%= folders.name %></option>
 												<% }); %>
 											</select>
 											</div>
