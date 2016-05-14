@@ -1,7 +1,7 @@
 var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
-//var users = require('./users');
+var users = require('./server/api/users.js');
 
 db.init();
 
@@ -24,9 +24,12 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /* Routes - consider putting in routes.js */
-//app.get('/login', users.loginForm);
-//app.post('/login', users.login);
+app.get('/login', users.loginForm);
+app.post('/login', users.login);
 //app.get('/logout', users.logout);
+app.get('/signup', users.signupForm);
+app.post('/signup', users.signup);
+app.get('/passwordReset', users.passwordresetForm);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
