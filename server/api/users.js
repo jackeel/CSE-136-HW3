@@ -5,6 +5,9 @@
 var config = require('../config/config');
 var db = require('../config/db');
 
+var is = require('validator').Assert;
+var validator = require('validator');
+
 /**
  * Render forms
  */
@@ -27,6 +30,9 @@ module.exports.login = function(req, res) {
   var username = db.escape(req.body.username);
   var password = db.escape(req.body.password);  // TODO: hash + salt
 
+  console.log(validator.isLength(username, {min: 0, max: 25}));
+  console.log(validator.isLength(password, {min: 0, max: 64}));
+
   var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = ' + password;
 
   db.query(queryString, function(err, rows) {
@@ -46,7 +52,14 @@ module.exports.login = function(req, res) {
  */
 module.exports.signup = function(req, res) {
   var username = db.escape(req.body.username);
+  var email = db.escape(req.body.email);
   var password = db.escape(req.body.password);  // TODO: hash + salt
+  var confirm_password = db.escape(req.body.confirm-password);
+
+  console.log(validator.isLength(username, {min: 0, max: 25}));
+  console.log(validator.isEmail(email));
+  console.log(validator.isLength(password, {min: 0, max: 64}));
+  console.log(validator.equals(password, confirm_password));
 
   var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', ' + password + ')';
   db.query(queryString, function(err) {
