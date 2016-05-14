@@ -28,6 +28,30 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//global middleware to refresh session 
+/*
+app.use(function(req, res, next) {
+  if (req.session && req.session.user) {
+
+    var queryString = 'SELECT username FROM users WHERE username = ' + req.session.user;
+
+    db.query(queryString, function(err, user) {
+      if (err) throw err;
+
+      if (user.length == 1) {
+        req.user = user[0]; 
+        delete req.user.password; 
+        req.session.user = user[0].username;  //refresh the session value
+      }
+      // finishing processing the middleware and run the route
+      next();
+    });
+  } else {
+    next();
+  }
+});
+*/
+
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);
 app.post('/login', users.login);
@@ -47,7 +71,14 @@ app.get('/list', bookmarks.list);
 //app.post('/books/update/:book_id(\\d+)', books.update);
 //app.post('/books/insert', books.insert);
 
-
+//used to confirm user is logged in in combination to the middleware
+function requireLogin (req, res, next) {
+  if (!req.user) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+};
 
 app.listen(config.PORT, function () {
   console.log('Example app listening on port ' + config.PORT + '!');
