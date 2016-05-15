@@ -5,17 +5,48 @@
 var db = require('../config/db');
 
 /**
- *
- * Selects all books and then renders the page with the list.ejs template
+ * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
-var list = module.exports.list = function(req, res) {
-  db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
+
+module.exports.list = function(req, res) {
+    res.render('index', {
+        bookmarks: req.bookmarks,
+        folders: req.folders
+    });
+}
+
+/**
+ * Query all bookmarks and put in req, use next().
+ */
+module.exports.listBookmarks = function(req, res, next) {
+  var folder_id = req.params.folder_id;
+  if (!folder_id) {
+    db.query('SELECT * from bookmarks ORDER BY id', function(err, bookmarks) {
     if (err) throw err;
-  //  res.json({bookmarks:bookmarks});
-   // console.log(bookmarks);
-    res.render('index', {bookmarks: bookmarks})
+    req.bookmarks = bookmarks;
+    return next();
+    });
+  }
+  else {
+    db.query('SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY id', function(err, bookmarks) {
+      if (err) throw err;
+      req.bookmarks = bookmarks;
+      return next();
+    });
+  }
+};
+
+/**
+ * Query all folders and put in req, use next().
+ */
+module.exports.listFolders = function(req, res, next) {
+  db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    if (err) throw err;
+    req.folders = folders;
+    return next();
   });
 };
+
 
 /**
  *
@@ -32,23 +63,17 @@ module.exports.confirmdelete = function(req, res){
 
 /**
  *
- * Renders the add page with the add.ejs template
- */
-module.exports.add = function(req, res) {
-  res.render('books/add');
-};
-
-/**
- *
  * Selects information about the passed in bood and then
  * renders the edit confirmation page with the edit.ejs template
  */
 module.exports.edit = function(req, res) {
-  var id = req.params.book_id;
-  db.query('SELECT * from books WHERE id =  ' + id, function(err, book) {
+  var id = req.params.bookmark_id;
+  db.query('SELECT * from bookmarks WHERE id =  ' + id, function(err, bookmark) {
     if (err) throw err;
-
-    res.render('books/edit', {book: book[0]});
+    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+      if (err) throw err;
+      res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders});
+    });
   });
 };
 
@@ -57,10 +82,10 @@ module.exports.edit = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.delete = function(req, res) {
-  var id = req.params.book_id;
-  db.query('DELETE from books where id = ' + id, function(err){
+  var id = req.params.bookmark_id;
+  db.query('DELETE from bookmarks where id = ' + id, function(err){
     if (err) throw err;
-    res.redirect('/books');
+    res.redirect('/list');
   });
 };
 
@@ -70,13 +95,13 @@ module.exports.delete = function(req, res) {
  */
 module.exports.insert = function(req, res){
   var title = db.escape(req.body.title);
-  var author = db.escape(req.body.author);
-  var price = db.escape(req.body.price);
+  var url = db.escape(req.body.url);
+  var folder_id = db.escape(req.body.folder_id);
 
-  var queryString = 'INSERT INTO books (title, author, price) VALUES (' + title + ', ' + author + ', ' + price + ')';
+  var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
   db.query(queryString, function(err){
 	if (err) throw err;
-    res.redirect('/books');
+    res.redirect('/list');
   });
 };
 
@@ -85,14 +110,14 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
-  var id = req.params.book_id;
+  var id = req.params.bookmark_id;
   var title = db.escape(req.body.title);
-  var author = db.escape(req.body.author);
-  var price = db.escape(req.body.price);
+  var url = db.escape(req.body.url);
+  var folder_id = db.escape(req.body.folder_id);
 
-  var queryString = 'UPDATE books SET title = ' + title + ', author = ' + author + ', price = ' + price + ' WHERE id = ' + id;
+  var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id + ' WHERE id = ' + id;
   db.query(queryString, function(err){
     if (err) throw err;
-    res.redirect('/books');
+    res.redirect('/list');
   });
 };

@@ -51,27 +51,28 @@
 						    <li id="import-bookmark"><a>Import Bookmarks</a></li>
 						  </ul>
 						</div>
+							  <form method='post' action='/insert'>
+							        <div class="form" id="add-bookmark-form">
+									    <input type="text" name="title" placeholder="Title">
 
-				        <div class="form" id="add-bookmark-form">
-						    <input type="text" name="title" placeholder="Title">
+									    <div class="textFieldWrapper">
+									      <input type="url" name="url" placeholder="URL">
+									    </div>
 
-						    <div class="textFieldWrapper">
-						      <input type="url" name="url" placeholder="URL">
-						    </div>
+											<div class="ListFieldWrapper">
+											<select name="folder_id">
+												<% folders.forEach(function(folder) { %>
+													<option value="<%= folder.id%>"><%= folder.name %></option>
+												<% }); %>
+											</select>
+											</div>
 
-						    <div class="textFieldWrapper">
-						      <input type="text" name="description" placeholder="Description">
-						    </div>
-
-						    <div class="textFieldWrapper">
-						      <input type="text" name="keywords" placeholder="Keywords">
-						    </div>
-							    <div class="buttonWrapper">
-							      	<div><i class="fa fa-check-circle fa-lg"></i> Save</div>
-							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
-								 </div>
-
-						</div>
+										    <div class="buttonWrapper">
+										      	<div><input type='submit' value="Save"></div>
+										      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
+											 </div>
+								  </form>
+							 </div>
 						<div class="form" id="import-bookmark-form">
 							<div class="textFieldWrapper">
 						      <input type="url" name="url" placeholder="File Path">
@@ -89,14 +90,10 @@
 	<div id="sidebar">
       <ul>
             <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
-            <li class="pinned"><a href="all.html"><i class="fa fa-th fa-lg"></i> All</a></li>
-            <li><a href="courses.html">Courses</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
-            <li><a href="beauty.html">Beauty</a></li>
-            <li><a href="#">Tech</a></li>
-            <li><a href="#">Art</a></li>
-            <li><a href="#">Design</a></li>
-            <li><a href="#">Fonts</a></li>
+            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
+            <% folders.forEach(function(folder) { %>
+            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
+            <% }); %>
       </ul>
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
@@ -110,36 +107,21 @@
       				<h1>BookMarks</h1>
       			</div>
       		</div>
-
-					<!--Start of one book mark code -->
+			<% bookmarks.forEach(function(bookmark) { %>
 	      	<div class="col-1-3 mobile-col-1-3">
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<h2 class="card__title">YouTube</h2>
+						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<a class="card__button"><i class="fa fa-star fa-lg"></i></a>
-							<a class="card__button" href="edit-youtube.html"><i class="fa fa-info-circle fa-lg"></i></a>
-							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!--End of one book mark code -->
-			<div class="col-1-3 mobile-col-1-3">
-				<div class="content">
-					<div class="card card--small">
-						<div style="background-color: #48649E;" class="card__image"></div>
-						<h2 class="card__title">Facebook</h2>
-							<div class="card__action-bar">
-							<a class="card__button"><i class="fa fa-star-o fa-lg"></i></a>
-							<a class="card__button"><i class="fa fa-info-circle fa-lg"></i></a>
-							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			<% }); %>
       </div>
     </div>
 		<br>
