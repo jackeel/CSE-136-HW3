@@ -10,14 +10,23 @@
 </head>
 <body>
     <h1>Sign Up</h1>
+    <% if(typeof errors != 'undefined') { %>
+           <div class="signup-errors">
+               <ul>
+               <% for(var i=0; i < errors.length; i++) { %>
+                   <li><%= errors[i].msg %></li>
+               <% } %>
+               </ul>
+           </div>
+    <% } %>
     <div class="signup-body">
     <form action="/signup" method="POST">
         <fieldset class="inputs">
             <div class="signup-field">
-                <input type="text" name="username" id="username" value="" placeholder="Username">
+                <input type="email" name="email" id="email" value="" placeholder="Email">
             </div>
             <div class="signup-field">
-                <input type="email" name="email" id="email" value="" placeholder="Email">
+                <input type="text" name="username" id="username" value="" placeholder="Username">
             </div>
             <div class="signup-field">
                 <input type="password" name="password" id="password" value="" placeholder="Password">

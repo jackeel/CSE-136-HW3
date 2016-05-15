@@ -7,6 +7,7 @@ db.init();
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var validator = require('express-validator');
 var session = require('express-session');
 var mySession = session({
   secret: 'N0deJS1sAw3some',
@@ -22,6 +23,7 @@ app.use(mySession);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(validator());
 
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);
@@ -30,6 +32,7 @@ app.post('/login', users.login);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
 app.get('/passwordReset', users.passwordresetForm);
+app.post('/passwordReset', users.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
