@@ -35,11 +35,10 @@ app.get('/passwordReset', users.passwordresetForm);
 //app.use(users.auth);
 
 app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
-//app.get('/add', bookmarks.add);
-//app.get('/books/edit/:book_id(\\d+)', books.edit);
+app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
 //app.get('/books/delete/:book_id(\\d+)', books.delete);
-//app.post('/books/update/:book_id(\\d+)', books.update);
+app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
 app.post('/insert', bookmarks.insert);
 
 
