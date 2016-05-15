@@ -29,14 +29,24 @@ module.exports.listBookmarks = function(req, res, next) {
   }
   req.order_by = order_by;
   if (!folder_id) {
-    db.query('SELECT * from bookmarks ORDER BY ' + order_by, function(err, bookmarks) {
+    queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                  req.session.userId +
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id; ' + '
+                  ORDER BY ' + order_by;
+    db.query(queryString, function(err, bookmarks) {
     if (err) throw err;
     req.bookmarks = bookmarks;
     return next();
     });
   }
   else {
-    db.query('SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY ' + order_by, function(err, bookmarks) {
+    queryString = 'SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY ' + order_by;
+    queryString = 'SELECT * FROM folders WHERE user_id = ' +
+                   req.session.userId + 
+                   ' and id = ' + folder_id +
+                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                   'Order By ' + order_by;
+    db.query(queryString, function(err, bookmarks) {
       if (err) throw err;
       req.bookmarks = bookmarks;
       return next();
@@ -48,7 +58,7 @@ module.exports.listBookmarks = function(req, res, next) {
  * Query all folders and put in req, use next().
  */
 module.exports.listFolders = function(req, res, next) {
-  db.query('SELECT * from folders WHERE user_id = ' + req.session.userID + ' ORDER BY id', function(err, folders) {
+  db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
     if (err) throw err;
     req.folders = folders;
     return next();
