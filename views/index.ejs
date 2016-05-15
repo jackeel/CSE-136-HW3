@@ -28,15 +28,18 @@
 		  		<li class="navbar-right">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
-						<select class="select-btn pull-right standardize-header-components" name="SortBy">
+				<form method="get">
+					<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>
 			        	<option selected disabled>Sort</option>
 			        	<option value="title">Title</option>
 			        	<option value="url">URL</option>
-			        	<option value="favorites">Favorites</option>
-			        	<option value="createDate">Create Date</option>
-			        	<option value="lastVisit">Last Visits</option>
-			        	<option value="stared">Stared</option>
+			        	<option value="star">Favorites</option>
+			        	<option value="create_date">Create Date</option>
+			        	<option value="last_visit_date">Last Visits</option>
+			        	<option value="star">Stared</option>
 			        </select>
+			        <noscript><input type="submit" value="Submit"></noscript>
+			    </form>
 				<!--		</div> </div>  -->
 		  		</li>
 	  			<li class="navbar-right">
@@ -106,6 +109,8 @@
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
       </ul>
+      <input type="text" value="<%= current_folder_id%>">
+      <input type="text" value="<%= order_by%>">
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
