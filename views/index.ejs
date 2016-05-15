@@ -89,7 +89,7 @@
 	</nav>
 	<div id="sidebar">
       <ul>
-            <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
+            <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
             <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
             <% folders.forEach(function(folder) { %>
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
@@ -114,7 +114,12 @@
 						<div style="background-color:#DE2924" class="card__image"></div>
 						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
-							<a class="card__button"><i class="fa fa-star fa-lg"></i></a>
+							<% if (bookmark.star == 0) { %>
+  								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star"><i class="fa fa-star fa-lg"></i></a>
+							<% } else { %>
+								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar"><i class="fa fa-star fa-lg"></i></a>
+							<% } %>
+							
 							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
