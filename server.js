@@ -35,32 +35,35 @@ app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
 
-/*
+
 //TODO: middleware to check if js is turned off and check user-agent. 
 //if missing, log for suspicion. Store ip and differentiate from ajax requests
 
 //global middleware to refresh session 
-app.use(function(req, res, next) {
-  if (req.session && req.session.user) {
 
-    var queryString = 'SELECT username FROM users WHERE username = ' + req.session.user;
+app.use(function(req, res, next) {
+
+  if(req.session && req.session.user) {
+
+    var queryString = 'SELECT username FROM users WHERE username = "' + req.session.user + '"';
 
     db.query(queryString, function(err, user) {
-      if (err) throw err;
-
+      if(err)
+        {
+          next(err);
+        }
       if (user.length == 1) {
-        req.user = user[0]; 
-        delete req.user.password; 
+        req.user = user[0].username; 
         req.session.user = user[0].username;  //refresh the session value
       }
-      // finishing processing the middleware and run the route
       next();
     });
-  } else {
+  } 
+  else {
     next();
   }
 });
-*/
+
 
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);

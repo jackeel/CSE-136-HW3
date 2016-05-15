@@ -56,7 +56,11 @@ module.exports.login = function(req, res) {
         var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
         db.query(queryString, function(err, rows) {
-            if (err) throw err;
+
+            if (err)
+            {
+              throw err;
+            }
 
             if (rows.length == 1) {
                 req.session.user = req.body.username;
@@ -118,7 +122,9 @@ module.exports.signup = function(req, res) {
               .digest('base64'); 
 
         var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
-        db.query(queryString, function(err) {
+
+        db.query(queryString, function(err, rows) {
+
             if (err) throw err;
           
             res.redirect('/login');
