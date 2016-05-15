@@ -27,12 +27,13 @@ module.exports.listBookmarks = function(req, res, next) {
   if (!order_by) {
     order_by = 'id';
   }
+  order_by = 'bookmarks.' + order_by;
   req.order_by = order_by;
   if (!folder_id) {
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
-                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id; ' + '
-                  ORDER BY ' + order_by;
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                  'ORDER BY ' + order_by;
     db.query(queryString, function(err, bookmarks) {
     if (err) throw err;
     req.bookmarks = bookmarks;
@@ -40,12 +41,11 @@ module.exports.listBookmarks = function(req, res, next) {
     });
   }
   else {
-    queryString = 'SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY ' + order_by;
-    queryString = 'SELECT * FROM folders WHERE user_id = ' +
-                   req.session.userId + 
+    queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                   req.session.userId +
                    ' and id = ' + folder_id +
-                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
-                   'Order By ' + order_by;
+                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
+                   'ORDER BY ' + order_by;
     db.query(queryString, function(err, bookmarks) {
       if (err) throw err;
       req.bookmarks = bookmarks;
@@ -70,10 +70,16 @@ module.exports.listStarred = function(req, res) {
   if (!order_by) {
     order_by = 'id';
   }
+  order_by = 'bookmarks.' + order_by;
   req.order_by = order_by;
-  db.query('SELECT * from bookmarks WHERE star = 1 ORDER BY ' + order_by, function(err, bookmarks) {
+  queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                  req.session.userId +
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                  'WHERE bookmarks.star = 1 ' +
+                  'ORDER BY ' + order_by;
+  db.query(queryString, function(err, bookmarks) {
     if(err) throw err;
-    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
       if(err) throw err;
         res.render('index', {bookmarks: bookmarks,
                              folders: folders,
@@ -91,7 +97,7 @@ module.exports.edit = function(req, res) {
   var id = req.params.bookmark_id;
   db.query('SELECT * from bookmarks WHERE id =  ' + id, function(err, bookmark) {
     if (err) throw err;
-    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId +' ORDER BY id', function(err, folders) {
       if (err) throw err;
       res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
     });
