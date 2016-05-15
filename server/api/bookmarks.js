@@ -56,11 +56,19 @@ module.exports.listFolders = function(req, res, next) {
 };
 
 module.exports.listStarred = function(req, res) {
-  db.query('SELECT * from bookmarks WHERE star = 1 ORDER BY id', function(err, bookmarks) {
+  var order_by = req.query['SortBy'];
+  if (!order_by) {
+    order_by = 'id';
+  }
+  req.order_by = order_by;
+  db.query('SELECT * from bookmarks WHERE star = 1 ORDER BY ' + order_by, function(err, bookmarks) {
     if(err) throw err;
     db.query('SELECT * from folders ORDER BY id', function(err, folders) {
       if(err) throw err;
-        res.render('index', {bookmarks: bookmarks, folders: folders, current_folder_id: "starred"});
+        res.render('index', {bookmarks: bookmarks,
+                             folders: folders,
+                             current_folder_id: "starred",
+                             order_by: order_by });
     });
   });
 };
