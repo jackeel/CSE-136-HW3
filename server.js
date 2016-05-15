@@ -85,15 +85,17 @@ app.post('/insert', bookmarks.insert);
 // set trap if a disallowed endpoint is hit and log them. 
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
-    res.sendFile('/views/robots.txt');
+    res.sendFile('/views/robots.txt', { root: __dirname});
 });
 
+/*
 //catches leftover requests for * 
 app.all('*', function (req, res, next) {
   var err = new Error();
   err.status = 404;
   next(err);  // jump to processing error middleware
 });
+*/
 
 //error middleware to process any errors that come around
 function logErrors(err, req, res, next)
