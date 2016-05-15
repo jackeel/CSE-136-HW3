@@ -4,6 +4,7 @@
 
 var config = require('../config/config');
 var db = require('../config/db');
+var crypto = require('crypto');
 
 /**
  * Render forms
@@ -26,8 +27,12 @@ module.exports.passwordresetForm = function(req, res){
 module.exports.login = function(req, res) {
   var username = db.escape(req.body.username);
   var password = db.escape(req.body.password);  // TODO: hash + salt
+  var hash = crypto
+              .createHmac('SHA256',config.SECRET)
+              .update(password)
+              .digest('base64');
 
-  var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = ' + password;
+  var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
   db.query(queryString, function(err, rows) {
     if (err) throw err;
@@ -47,8 +52,13 @@ module.exports.login = function(req, res) {
 module.exports.signup = function(req, res) {
   var username = db.escape(req.body.username);
   var password = db.escape(req.body.password);  // TODO: hash + salt
+  var hash = crypto
+              .createHmac('SHA256',config.SECRET)
+              .update(password)
+              .digest('base64'); 
 
-  var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', ' + password + ')';
+  var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
+
   db.query(queryString, function(err) {
     if (err) throw err;
     
