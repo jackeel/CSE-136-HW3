@@ -19,6 +19,8 @@ var mySession = session({
   }
 });
 
+var app = express();
+
 app.set('x-powered-by', false); 
 app.use(mySession);
 
@@ -83,7 +85,7 @@ app.post('/insert', bookmarks.insert);
 // set trap if a disallowed endpoint is hit and log them. 
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
-    res.send("User-agent: *\nDisallow: /");
+    res.sendFile('/views/robots.txt');
 });
 
 //catches leftover requests for * 
