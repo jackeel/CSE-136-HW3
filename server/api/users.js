@@ -23,7 +23,7 @@ module.exports.passwordresetForm = function(req, res){
 module.exports.login = function(req, res) {
 
     var username = db.escape(req.body.username);
-    var password = db.escape(req.body.password);  // TODO: hash + salt
+    var password = db.escape(req.body.password);
 
     var validate_login = {
         'username': {
@@ -47,7 +47,6 @@ module.exports.login = function(req, res) {
     if (errors) {
         res.render('login', {errors: errors});
     } else {
-
         var hash = crypto
               .createHmac('SHA256',config.SECRET)
               .update(password)
@@ -79,7 +78,7 @@ module.exports.signup = function(req, res) {
 
     var username = db.escape(req.body.username);
     var email = db.escape(req.body.email);
-    var password = db.escape(req.body.password);  // TODO: hash + salt
+    var password = db.escape(req.body.password);
     var confirm_password = db.escape(req.body.confirm_password);
 
 

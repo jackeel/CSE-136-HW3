@@ -58,8 +58,7 @@ module.exports.listStarred = function(req, res) {
 };
 
 /**
- *
- * Selects information about the passed in bood and then
+ * Selects information about the passed in bookmark and
  * renders the edit confirmation page with the edit.ejs template
  */
 module.exports.edit = function(req, res) {
@@ -68,7 +67,7 @@ module.exports.edit = function(req, res) {
     if (err) throw err;
     db.query('SELECT * from folders ORDER BY id', function(err, folders) {
       if (err) throw err;
-      res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders});
+      res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
     });
   });
 };
@@ -111,7 +110,7 @@ module.exports.insert = function(req, res){
           isLength: {
               options: [{min: 1, max:11}]
           },
-          isNumeric: true,
+          isInt: true,
           errorMessage: 'Invalid folder id'
       }
     };
@@ -120,8 +119,8 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
 
     if (errors) {
-        req.flash('error_messages', errors);  // flash error to add modal
-        res.redirect('/list#addModal');
+        req.flash('error_messages', errors);
+        res.redirect('/list#addModal');  // flash error to the add modal
     } else {
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
         db.query(queryString, function(err){
@@ -136,16 +135,47 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
-  var id = req.params.bookmark_id;
-  var title = db.escape(req.body.title);
-  var url = db.escape(req.body.url);
-  var folder_id = db.escape(req.body.folder_id);
+    var id = req.params.bookmark_id;
+    var title = db.escape(req.body.title);
+    var url = db.escape(req.body.url);
+    var folder_id = db.escape(req.body.folder_id);
 
-  var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id + ' WHERE id = ' + id;
-  db.query(queryString, function(err){
-    if (err) throw err;
-    res.redirect('/list');
-  });
+      var validate_update = {
+        'title': {
+            optional: true
+        },
+        'url': {
+            optional: {
+                options: [{checkFalsy: true}]
+            },
+            isURL: {
+                errorMessage: 'Invalid URL'
+            }
+        },
+        'folder_id': {
+            notEmpty: true,
+            isLength: {
+                options: [{min: 1, max:11}]
+            },
+            isInt: true,
+            errorMessage: 'Invalid folder id'
+        }
+      };
+
+      req.checkBody(validate_update);
+      var errors = req.validationErrors();
+
+      if (errors) {
+          req.flash('error_messages', errors);
+          res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
+      } else {
+          var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
+                            ' WHERE id = ' + id;
+          db.query(queryString, function(err){
+              if (err) throw err;
+              res.redirect('/list');
+          });
+    }
 };
 
 /**
@@ -162,7 +192,7 @@ module.exports.star = function(req, res) {
 };
 
 /**
- * Star a bookmark
+ * Unstar a bookmark
  * Redirect to the list page
  */
 module.exports.unstar = function(req, res) {

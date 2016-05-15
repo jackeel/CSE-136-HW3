@@ -22,12 +22,13 @@ var addBookmark = document.getElementById("add-bookmark");
 var importBookmark = document.getElementById("import-bookmark");
 var addBookmarkForm = document.getElementById("add-bookmark-form");
 var importBookmarkForm = document.getElementById("import-bookmark-form");
-
+var insertupdateErrors = document.getElementById("insertupdate-errors");
 
 addBookmark.onclick = function() {
 	console.log(addBookmark);
 	importBookmarkForm.style.display = 'none';
 	addBookmarkForm.style.display = 'block';
+    insertupdateErrors.style.display = 'block';
 
 	importBookmark.className = "";
 
@@ -39,6 +40,7 @@ addBookmark.onclick = function() {
 importBookmark.onclick = function() {
 	addBookmarkForm.style.display = 'none';
 	importBookmarkForm.style.display = 'block';
+    insertupdateErrors.style.display = 'none';
 
 	addBookmark.className = "";
 
