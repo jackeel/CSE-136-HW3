@@ -31,11 +31,11 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
-/*
 app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
 
+/*
 //TODO: middleware to check if js is turned off and check user-agent. 
 //if missing, log for suspicion. Store ip and differentiate from ajax requests
 
@@ -91,15 +91,6 @@ app.get('/robots.txt', function (req, res) {
     res.sendFile('/views/robots.txt', { root: __dirname});
 });
 
-/*
-//catches leftover requests for * 
-app.all('*', function (req, res, next) {
-  var err = new Error();
-  err.status = 404;
-  next(err);  // jump to processing error middleware
-});
-*/
-
 //error middleware to process any errors that come around
 function logErrors(err, req, res, next)
 {
@@ -131,4 +122,21 @@ function requireLogin (req, res, next) {
 
 app.listen(config.PORT, function () {
   console.log('Example app listening on port ' + config.PORT + '!');
+});
+
+
+app.use(function(req, res, next){
+  res.status(404);
+  // respond with html page
+  if (req.accepts('html')) {
+    res.sendFile('/views/404.html', { root: __dirname});
+    return;
+  }
+  // respond with json
+  if (req.accepts('json')) {
+    res.send({ error: 'Not found' });
+    return;
+  }
+  // default to plain-text. send()
+  res.type('txt').send('Not found');
 });
