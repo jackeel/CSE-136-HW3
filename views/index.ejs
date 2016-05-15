@@ -109,6 +109,10 @@
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
       </ul>
+      <!-- DO NOT remove these two inputs. They indicate the current folder and order status.
+      These will be used to assist the search function. In final version, will set them hidden.-->
+      <input type="text" value="<%= current_folder_id%>">
+      <input type="text" value="<%= order_by%>">
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
