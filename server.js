@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
 var mySession = session({
-  secret: 'N0deJS1sAw3some',
+  secret: config.SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: { 
