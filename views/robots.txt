@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: 
+Sitemap: http://ec2-54-191-215-183.us-west-2.compute.amazonaws.com/HW2/

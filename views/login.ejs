@@ -10,6 +10,15 @@
 </head>
 <body>
     <h1>Log In</h1>
+    <% if(typeof errors != 'undefined') { %>
+           <div class="signup-errors">
+               <ul>
+               <% for(var i=0; i < errors.length; i++) { %>
+                   <li><%= errors[i].msg %></li>
+               <% } %>
+               </ul>
+           </div>
+    <% } %>
     <div class="signup-body">
     <form action="/login" method="POST">
         <fieldset class="inputs">
