@@ -11,7 +11,7 @@
 <body>
     <h1>Log In</h1>
     <% if(typeof errors != 'undefined') { %>
-           <div class="signup-errors">
+            <div class="signup-errors">
                <ul>
                <% for(var i=0; i < errors.length; i++) { %>
                    <li><%= errors[i].msg %></li>
@@ -23,10 +23,10 @@
     <form action="/login" method="POST">
         <fieldset class="inputs">
             <div class="signup-field">
-                <input type="text" name="username" id="username" value="" placeholder="Username">
+                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false">
             </div>
             <div class="signup-field">
-                <input type="password" name="password" id="password" value="" placeholder="Password">
+                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false">
             </div>
         </fieldset>
         <div class="signup-button">

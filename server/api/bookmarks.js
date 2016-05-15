@@ -7,11 +7,11 @@ var db = require('../config/db');
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
-
 module.exports.list = function(req, res) {
     res.render('index', {
         bookmarks: req.bookmarks,
-        folders: req.folders
+        folders: req.folders,
+        errors: res.locals.error_messages
     });
 }
 
@@ -46,7 +46,6 @@ module.exports.listFolders = function(req, res, next) {
     return next();
   });
 };
-
 
 /**
  *
@@ -94,15 +93,45 @@ module.exports.delete = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.insert = function(req, res){
-  var title = db.escape(req.body.title);
-  var url = db.escape(req.body.url);
-  var folder_id = db.escape(req.body.folder_id);
+    var title = db.escape(req.body.title);
+    var url = db.escape(req.body.url);
+    var folder_id = db.escape(req.body.folder_id);
 
-  var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
-  db.query(queryString, function(err){
-	if (err) throw err;
-    res.redirect('/list');
-  });
+    var validate_insert = {
+      'title': {
+          optional: true
+      },
+      'url': {
+          optional: {
+              options: [{checkFalsy: true}]
+          },
+          isURL: {
+              errorMessage: 'Invalid URL'
+          }
+      },
+      'folder_id': {
+          notEmpty: true,
+          isLength: {
+              options: [{min: 1, max:11}]
+          },
+          isNumeric: true,
+          errorMessage: 'Invalid folder id'
+      }
+    };
+
+    req.checkBody(validate_insert);
+    var errors = req.validationErrors();
+
+    if (errors) {
+        req.flash('error_messages', errors);  // flash error to add modal
+        res.redirect('/list#addModal');
+    } else {
+        var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
+        db.query(queryString, function(err){
+      	if (err) throw err;
+          res.redirect('/list');
+        });
+    }
 };
 
 /**

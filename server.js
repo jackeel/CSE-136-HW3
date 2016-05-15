@@ -9,6 +9,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
+var flash = require('connect-flash');
 var mySession = session({
   secret: 'N0deJS1sAw3some',
   resave: true,
@@ -31,6 +32,14 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
+app.use(flash());
+
+/* Give all views access to any flashed error messages */
+app.use(function(req, res, next) {
+    res.locals.error_messages = req.flash('error_messages');
+    next();
+});
+
 /*
 app.use(logErrors);
 app.use(clientErrorHandler);
