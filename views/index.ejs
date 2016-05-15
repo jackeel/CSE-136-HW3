@@ -13,7 +13,7 @@
 
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>
 
-	<script type="text/javascript" src="index.js"></script>
+	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
 	<nav class="navbar">
@@ -31,12 +31,12 @@
 				<form method="get">
 					<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>
 			        	<option selected disabled>Sort</option>
-			        	<option value="title">Title</option>
-			        	<option value="url">URL</option>
-			        	<option value="star">Favorites</option>
-			        	<option value="create_date">Create Date</option>
-			        	<option value="last_visit_date">Last Visits</option>
-			        	<option value="star">Stared</option>
+			        	<option value="title" <%=order_by == "title" ? "selected" : ""%>>Title</option>
+			        	<option value="url" <%=order_by == "url" ? "selected" : ""%>>URL</option>
+			        	<option value="star" <%=order_by == "star" ? "selected" : ""%>>Favorites</option>
+			        	<option value="create_date" <%=order_by == "create_date" ? "selected" : ""%>>Create Date</option>
+			        	<option value="last_visit_date" <%=order_by == "last_visit_date" ? "selected" : ""%>>Last Visits</option>
+			        	<option value="star" <%=order_by == "star" ? "selected" : ""%>>Starred</option>
 			        </select>
 			        <noscript><input type="submit" value="Submit"></noscript>
 			    </form>
@@ -109,8 +109,6 @@
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
       </ul>
-      <input type="text" value="<%= current_folder_id%>">
-      <input type="text" value="<%= order_by%>">
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
       	<div><i class="fa fa-download fa-lg"></i> Export</div>

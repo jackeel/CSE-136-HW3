@@ -89,7 +89,7 @@ module.exports.edit = function(req, res) {
 };
 
 /**
- * Deletes the passed in book from the database.
+ * Deletes the passed in bookmark from the database.
  * Does a redirect to the list page
  */
 module.exports.delete = function(req, res) {
@@ -101,7 +101,7 @@ module.exports.delete = function(req, res) {
 };
 
 /**
- * Adds a new book to the database
+ * Adds a new bookmark to the database
  * Does a redirect to the list page
  */
 module.exports.insert = function(req, res){

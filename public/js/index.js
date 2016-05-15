@@ -34,6 +34,7 @@ addBookmark.onclick = function() {
 
 	addBookmark.className = "";
 	addBookmark.className = "is-active";
+
 }
 
 importBookmark.onclick = function() {
