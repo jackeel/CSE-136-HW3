@@ -85,16 +85,16 @@ app.post('/passwordReset', users.passwordReset);
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
 
-app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
-app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
-app.get('/bookmarks/delete/:bookmark_id(\\d+)', bookmarks.delete);
+app.get('/list/:folder_id(\\d+)?', requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
+app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin,bookmarks.edit);
+app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
-app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
-app.post('/insert', bookmarks.insert);
+app.post('/bookmarks/update/:bookmark_id(\\d+)', requireLogin,bookmarks.update);
+app.post('/insert', requireLogin ,bookmarks.insert);
 
-app.get('/list/starred', bookmarks.listStarred);
-app.get('/bookmarks/:bookmark_id(\\d+)/star', bookmarks.star);
-app.get('/bookmarks/:bookmark_id(\\d+)/unstar', bookmarks.unstar);
+app.get('/list/starred', requireLogin ,bookmarks.listStarred);
+app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
+app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and 
 // set trap if a disallowed endpoint is hit and log them. 
