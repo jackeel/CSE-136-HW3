@@ -51,9 +51,9 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
 
-  if(req.session && req.session.user) {
+  if(req.session && req.session.userId) {
 
-    var queryString = 'SELECT username FROM users WHERE username = "' + req.session.user + '"';
+    var queryString = 'SELECT id FROM users WHERE id = "' + req.session.userId + '"';
 
     db.query(queryString, function(err, user) {
       if(err)
@@ -61,8 +61,8 @@ app.use(function(req, res, next) {
           next(err);
         }
       if (user.length == 1) {
-        req.user = user[0].username; 
-        req.session.user = user[0].username;  //refresh the session value
+        req.userId = user[0].id; 
+        req.session.userId = user[0].id;  //refresh the session value
       }
       next();
     });
@@ -125,7 +125,7 @@ function errorHandler(err, req, res, next) {
 
 //used to confirm user is logged in in combination to the middleware
 function requireLogin (req, res, next) {
-  if (!req.user) {
+  if (!req.userId) {
     res.redirect('/login');
   } else {
     next();

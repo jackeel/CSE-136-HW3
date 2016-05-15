@@ -52,7 +52,7 @@ module.exports.login = function(req, res) {
               .update(password)
               .digest('base64');
 
-        var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
+        var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
         db.query(queryString, function(err, rows) {
 
@@ -62,7 +62,7 @@ module.exports.login = function(req, res) {
             }
 
             if (rows.length == 1) {
-                req.session.user = req.body.username;
+                req.session.userId = req.body.id;
                 res.redirect('/list');
             } else {
                 res.redirect('/login');
