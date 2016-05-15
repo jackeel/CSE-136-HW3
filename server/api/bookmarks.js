@@ -21,24 +21,33 @@ module.exports.list = function(req, res) {
  * Query all bookmarks and put in req, use next().
  */
 module.exports.listBookmarks = function(req, res, next) {
-  req.current_folder_id = req.params.folder_id;
-  req.order_by = req.query['SortBy'] ? req.query['SortBy'] : 'id';
-  var order_by = req.query['SortBy'] ? db.escape(req.query['SortBy']) : 'id';
-
-  if (!req.current_folder_id) {
-    db.query('SELECT * from bookmarks ORDER BY ' + order_by, function(err, bookmarks) {
-    if (err) throw err;
-
-    req.bookmarks = bookmarks;
-    return next();
+  var folder_id = req.params.folder_id;
+  req.current_folder_id = folder_id;
+  var order_by = 'bookmarks.' + (req.query['SortBy'] ? req.query['SortBy'] : 'id');
+  req.order_by = order_by;
+  order_by = db.escape(order_by);
+  if (!folder_id) {
+    queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                  req.session.userId +
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                  'ORDER BY ' + order_by;
+    db.query(queryString, function(err, bookmarks) {
+        if (err) throw err;
+        req.bookmarks = bookmarks;
+        return next();
     });
   }
   else {
-    var folder_id = db.escape(req.current_folder_id);
-    db.query('SELECT * from bookmarks' + ' WHERE folder_id = ' + folder_id + ' ORDER BY ' + order_by, function(err, bookmarks) {
-      if (err) throw err;
-      req.bookmarks = bookmarks;
-      return next();
+    folder_id = db.escape(folder_id);
+    queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                   req.session.userId +
+                   ' and id = ' + folder_id +
+                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
+                   'ORDER BY ' + order_by;
+    db.query(queryString, function(err, bookmarks) {
+        if (err) throw err;
+        req.bookmarks = bookmarks;
+        return next();
     });
   }
 };
@@ -47,7 +56,7 @@ module.exports.listBookmarks = function(req, res, next) {
  * Query all folders and put in req, use next().
  */
 module.exports.listFolders = function(req, res, next) {
-  db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+  db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
     if (err) throw err;
     req.folders = folders;
     return next();
@@ -59,10 +68,16 @@ module.exports.listStarred = function(req, res) {
   if (!order_by) {
     order_by = 'id';
   }
+  order_by = 'bookmarks.' + order_by;
   req.order_by = order_by;
-  db.query('SELECT * from bookmarks WHERE star = 1 ORDER BY ' + order_by, function(err, bookmarks) {
+  queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+                  req.session.userId +
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                  'WHERE bookmarks.star = 1 ' +
+                  'ORDER BY ' + order_by;
+  db.query(queryString, function(err, bookmarks) {
     if(err) throw err;
-    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
       if(err) throw err;
         res.render('index', {bookmarks: bookmarks,
                              folders: folders,
@@ -81,7 +96,7 @@ module.exports.edit = function(req, res) {
 
   db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
     if (err) throw err;
-    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId +' ORDER BY id', function(err, folders) {
       if (err) throw err;
       res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
     });
