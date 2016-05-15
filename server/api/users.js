@@ -62,7 +62,7 @@ module.exports.login = function(req, res) {
             }
 
             if (rows.length == 1) {
-                req.session.userId = req.body.id;
+                req.session.userId = rows[0].id;
                 res.redirect('/list');
             } else {
                 res.redirect('/login');
