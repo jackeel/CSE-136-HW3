@@ -1,8 +1,8 @@
 module.exports = {
   DATABASE_HOST: 'localhost',
   DATABASE_USER: 'root',
-  DATABASE_PASSWORD: 'aaaa',
-  DATABASE_NAME: 'bookmarks',
+  DATABASE_PASSWORD: 'test',
+  DATABASE_NAME: 'bookmark',
   PORT: 3000,
   USERNAME: 'kevingu',
   PASSWORD: 'test',
