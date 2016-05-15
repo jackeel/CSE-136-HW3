@@ -22,21 +22,31 @@
 				<a class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
 			</li>
 	  		<li class="navbar-left search">
-	  			<input type="text" placeholder="Search Bookmarks" />
-	  			<button><i class="fa fa-search fa-lg"></i></button>
+	  			<form method="get" name="search">
+	  				<% if(search == '') { %>
+	  					<input name="Search" type="text" placeholder="Search Bookmarks" />
+	  				<% } else { %>
+	  					<input name="Search" type="text" value="<%= search%>"/>
+	  				<% } %>
+	  				<!-- DO NOT remove these two inputs. They indicate the current folder and order status.
+      				These will be used to assist the search function. In final version, will set them hidden.-->
+      				<!--input name="CurrentFolderId" style="display: none;" type="text" value="<%= current_folder_id%>"/-->
+      				<input name="SortBy" style="display: none;" type="text" value="<%= order_by%>"/>
+	  				<button><i class="fa fa-search fa-lg"></i></button>
+	  			</form>
 	  		</li>
 		  		<li class="navbar-right">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
-				<form method="get">
+				<form method="get" name="orderBy">
 					<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>
 			        	<option selected disabled>Sort</option>
-			        	<option value="title" <%=order_by == "title" ? "selected" : ""%>>Title</option>
-			        	<option value="url" <%=order_by == "url" ? "selected" : ""%>>URL</option>
-			        	<option value="star" <%=order_by == "star" ? "selected" : ""%>>Favorites</option>
-			        	<option value="create_date" <%=order_by == "create_date" ? "selected" : ""%>>Create Date</option>
-			        	<option value="last_visit_date" <%=order_by == "last_visit_date" ? "selected" : ""%>>Last Visits</option>
-			        	<option value="star" <%=order_by == "star" ? "selected" : ""%>>Starred</option>
+			        	<option value="bookmarks.title" <%=order_by == "title" ? "selected" : ""%>>Title</option>
+			        	<option value="bookmarks.url" <%=order_by == "url" ? "selected" : ""%>>URL</option>
+			        	<option value="bookmarks.star" <%=order_by == "star" ? "selected" : ""%>>Favorites</option>
+			        	<option value="bookmarks.create_date" <%=order_by == "create_date" ? "selected" : ""%>>Create Date</option>
+			        	<option value="bookmarks.last_visit_date" <%=order_by == "last_visit_date" ? "selected" : ""%>>Last Visits</option>
+			        	<option value="bookmarks.star" <%=order_by == "star" ? "selected" : ""%>>Starred</option>
 			        </select>
 			        <noscript><input type="submit" value="Submit"></noscript>
 			    </form>
@@ -109,10 +119,6 @@
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
       </ul>
-      <!-- DO NOT remove these two inputs. They indicate the current folder and order status.
-      These will be used to assist the search function. In final version, will set them hidden.-->
-      <input type="text" value="<%= current_folder_id%>">
-      <input type="text" value="<%= order_by%>">
       <div class="buttonWrapper">
       	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
