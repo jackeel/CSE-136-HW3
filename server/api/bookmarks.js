@@ -82,10 +82,10 @@ module.exports.edit = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.delete = function(req, res) {
-  var id = req.params.book_id;
-  db.query('DELETE from books where id = ' + id, function(err){
+  var id = req.params.bookmark_id;
+  db.query('DELETE from bookmarks where id = ' + id, function(err){
     if (err) throw err;
-    res.redirect('/books');
+    res.redirect('/list');
   });
 };
 

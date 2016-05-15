@@ -36,7 +36,7 @@ app.get('/passwordReset', users.passwordresetForm);
 
 app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
 app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
-//app.get('/delete')
+app.get('/bookmarks/delete/:bookmark_id(\\d+)', bookmarks.delete);
 //app.get('/add', bookmarks.add);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
 //app.get('/books/delete/:book_id(\\d+)', books.delete);
