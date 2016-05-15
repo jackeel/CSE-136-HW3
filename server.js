@@ -2,6 +2,7 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
+var reset = require('./server/api/emailReset.js');
 
 db.init();
 
@@ -14,16 +15,16 @@ var mySession = session({
   secret: config.SECRET,
   resave: true,
   saveUninitialized: true,
-  cookie: { 
+  cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 3600000 * 24 * 7 //one week 
+    maxAge: 3600000 * 24 * 7 //one week
   }
 });
 
 var app = express();
 
-app.set('x-powered-by', false); 
+app.set('x-powered-by', false);
 app.use(mySession);
 
 
@@ -33,9 +34,9 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
-app.use(logErrors);
-app.use(clientErrorHandler);
-app.use(errorHandler);
+// app.use(logErrors);
+// app.use(clientErrorHandler);
+// app.use(errorHandler);
 
 /* Give all views access to any flashed error messages */
 app.use(function(req, res, next) {
@@ -44,10 +45,10 @@ app.use(function(req, res, next) {
 });
 
 
-//TODO: middleware to check if js is turned off and check user-agent. 
+//TODO: middleware to check if js is turned off and check user-agent.
 //if missing, log for suspicion. Store ip and differentiate from ajax requests
 
-//global middleware to refresh session 
+//global middleware to refresh session
 
 app.use(function(req, res, next) {
 
@@ -61,12 +62,12 @@ app.use(function(req, res, next) {
           next(err);
         }
       if (user.length == 1) {
-        req.userId = user[0].id; 
+        req.userId = user[0].id;
         req.session.userId = user[0].id;  //refresh the session value
       }
       next();
     });
-  } 
+  }
   else {
     next();
   }
@@ -79,8 +80,8 @@ app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
-app.get('/passwordReset', users.passwordresetForm);
-app.post('/passwordReset', users.passwordReset);
+app.get('/passwordReset', reset.passwordresetForm);
+app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
@@ -96,8 +97,8 @@ app.get('/list/starred', requireLogin ,bookmarks.listStarred);
 app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
 app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 
-// http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and 
-// set trap if a disallowed endpoint is hit and log them. 
+// http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
+// set trap if a disallowed endpoint is hit and log them.
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     res.sendFile('/views/robots.txt', { root: __dirname});
