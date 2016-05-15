@@ -48,7 +48,7 @@ module.exports.listBookmarks = function(req, res, next) {
  * Query all folders and put in req, use next().
  */
 module.exports.listFolders = function(req, res, next) {
-  db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+  db.query('SELECT * from folders WHERE user_id = ' + req.session.userID + ' ORDER BY id', function(err, folders) {
     if (err) throw err;
     req.folders = folders;
     return next();
