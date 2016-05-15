@@ -9,8 +9,9 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
+var flash = require('connect-flash');
 var mySession = session({
-  secret: 'N0deJS1sAw3some',
+  secret: config.SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: { 
@@ -31,36 +32,46 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
-/*
+app.use(flash());
 app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
+
+/* Give all views access to any flashed error messages */
+app.use(function(req, res, next) {
+    res.locals.error_messages = req.flash('error_messages');
+    next();
+});
+
 
 //TODO: middleware to check if js is turned off and check user-agent. 
 //if missing, log for suspicion. Store ip and differentiate from ajax requests
 
 //global middleware to refresh session 
-app.use(function(req, res, next) {
-  if (req.session && req.session.user) {
 
-    var queryString = 'SELECT username FROM users WHERE username = ' + req.session.user;
+app.use(function(req, res, next) {
+
+  if(req.session && req.session.user) {
+
+    var queryString = 'SELECT username FROM users WHERE username = "' + req.session.user + '"';
 
     db.query(queryString, function(err, user) {
-      if (err) throw err;
-
+      if(err)
+        {
+          next(err);
+        }
       if (user.length == 1) {
-        req.user = user[0]; 
-        delete req.user.password; 
+        req.user = user[0].username; 
         req.session.user = user[0].username;  //refresh the session value
       }
-      // finishing processing the middleware and run the route
       next();
     });
-  } else {
+  } 
+  else {
     next();
   }
 });
-*/
+
 
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);
@@ -91,15 +102,6 @@ app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     res.sendFile('/views/robots.txt', { root: __dirname});
 });
-
-/*
-//catches leftover requests for * 
-app.all('*', function (req, res, next) {
-  var err = new Error();
-  err.status = 404;
-  next(err);  // jump to processing error middleware
-});
-*/
 
 //error middleware to process any errors that come around
 function logErrors(err, req, res, next)
@@ -132,4 +134,21 @@ function requireLogin (req, res, next) {
 
 app.listen(config.PORT, function () {
   console.log('Example app listening on port ' + config.PORT + '!');
+});
+
+
+app.use(function(req, res, next){
+  res.status(404);
+  // respond with html page
+  if (req.accepts('html')) {
+    res.sendFile('/views/404.html', { root: __dirname});
+    return;
+  }
+  // respond with json
+  if (req.accepts('json')) {
+    res.send({ error: 'Not found' });
+    return;
+  }
+  // default to plain-text. send()
+  res.type('txt').send('Not found');
 });

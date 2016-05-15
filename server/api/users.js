@@ -44,7 +44,7 @@ module.exports.login = function(req, res) {
     req.checkBody(validate_login);
     var errors = req.validationErrors();
 
-    if (errors.length > 0) {
+    if (errors) {
         res.render('login', {errors: errors});
     } else {
 
@@ -56,7 +56,11 @@ module.exports.login = function(req, res) {
         var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
         db.query(queryString, function(err, rows) {
-            if (err) throw err;
+
+            if (err)
+            {
+              throw err;
+            }
 
             if (rows.length == 1) {
                 req.session.user = req.body.username;
@@ -76,7 +80,7 @@ module.exports.signup = function(req, res) {
     var username = db.escape(req.body.username);
     var email = db.escape(req.body.email);
     var password = db.escape(req.body.password);  // TODO: hash + salt
-    var confirm_password = db.escape(req.body.confirm-password);
+    var confirm_password = db.escape(req.body.confirm_password);
 
 
     var validate_signup = {
@@ -99,7 +103,7 @@ module.exports.signup = function(req, res) {
             },
             errorMessage: 'Invalid password'
         },
-        'confirm-password': {
+        'confirm_password': {
             matches: {
                 options: [req.body.password],
                 errorMessage: 'Passwords must match'
@@ -109,7 +113,7 @@ module.exports.signup = function(req, res) {
     req.checkBody(validate_signup);
     var errors = req.validationErrors();
 
-    if (errors.length > 0) {
+    if (errors) {
         res.render('signup', {errors: errors});
     } else {
         var hash = crypto
@@ -118,7 +122,9 @@ module.exports.signup = function(req, res) {
               .digest('base64'); 
 
         var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
-        db.query(queryString, function(err) {
+
+        db.query(queryString, function(err, rows) {
+
             if (err) throw err;
           
             res.redirect('/login');
@@ -141,7 +147,7 @@ module.exports.passwordReset = function(req, res) {
     req.checkBody(validate_passwordReset);
     var errors = req.validationErrors();
 
-    if (errors.length > 0) {
+    if (errors) {
         res.render('passwordReset', {errors: errors});
     } else {
         // TODO: send confirmation email, etc.
