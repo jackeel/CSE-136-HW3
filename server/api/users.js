@@ -1,5 +1,6 @@
 var config = require('../config/config');
 var db = require('../config/db');
+var crypto = require('crypto');
 
 /**
  * Render forms
@@ -20,6 +21,7 @@ module.exports.passwordresetForm = function(req, res){
  * Attempt to login the user.  Redirect to /books on successful login and /login on unsuccessful attempt.
  */
 module.exports.login = function(req, res) {
+
     var username = db.escape(req.body.username);
     var password = db.escape(req.body.password);  // TODO: hash + salt
 
@@ -45,10 +47,20 @@ module.exports.login = function(req, res) {
     if (errors) {
         res.render('login', {errors: errors});
     } else {
-        var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = ' + password;
+
+        var hash = crypto
+              .createHmac('SHA256',config.SECRET)
+              .update(password)
+              .digest('base64');
+
+        var queryString = 'SELECT username FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
         db.query(queryString, function(err, rows) {
-            if (err) throw err;
+
+            if (err)
+            {
+              throw err;
+            }
 
             if (rows.length == 1) {
                 req.session.user = req.body.username;
@@ -64,6 +76,7 @@ module.exports.login = function(req, res) {
  * Sign up user.
  */
 module.exports.signup = function(req, res) {
+
     var username = db.escape(req.body.username);
     var email = db.escape(req.body.email);
     var password = db.escape(req.body.password);  // TODO: hash + salt
@@ -103,8 +116,15 @@ module.exports.signup = function(req, res) {
     if (errors) {
         res.render('signup', {errors: errors});
     } else {
-        var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', ' + password + ')';
-        db.query(queryString, function(err) {
+        var hash = crypto
+              .createHmac('SHA256',config.SECRET)
+              .update(password)
+              .digest('base64'); 
+
+        var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
+
+        db.query(queryString, function(err, rows) {
+
             if (err) throw err;
           
             res.redirect('/login');

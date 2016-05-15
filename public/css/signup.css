@@ -105,3 +105,35 @@ footer {
 p {
 	text-align: center;
 }
+
+.center-container
+{
+	display: table;
+    height: 800px;
+    width: 100%;
+}
+
+.center-child
+{
+	display: table-cell;
+    vertical-align: middle;
+    font-size: -webkit-xxx-large;
+}
+
+@media (max-width: 768px)
+{
+	.center-container
+	{
+		display: table;
+	    height: 400px;
+	    width: 100%;
+	}
+
+	.center-child
+	{
+		display: table-cell;
+	    vertical-align: middle;
+	    font-size: 30px;
+	}
+
+}
