@@ -27,9 +27,15 @@ app.use(mySession);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+/*
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
+
+//TODO: middleware to check if js is turned off and check user-agent. 
+//if missing, log for suspicion. Store ip and differentiate from ajax requests
 
 //global middleware to refresh session 
-/*
 app.use(function(req, res, next) {
   if (req.session && req.session.user) {
 
@@ -71,6 +77,41 @@ app.get('/bookmarks/delete/:bookmark_id(\\d+)', bookmarks.delete);
 //app.get('/books/delete/:book_id(\\d+)', books.delete);
 app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
 app.post('/insert', bookmarks.insert);
+
+
+// http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and 
+// set trap if a disallowed endpoint is hit and log them. 
+app.get('/robots.txt', function (req, res) {
+    res.type('text/plain');
+    res.send("User-agent: *\nDisallow: /");
+});
+
+//catches leftover requests for * 
+app.all('*', function (req, res, next) {
+  var err = new Error();
+  err.status = 404;
+  next(err);  // jump to processing error middleware
+});
+
+//error middleware to process any errors that come around
+function logErrors(err, req, res, next)
+{
+  console.error(err.stack);
+  next(err);
+}
+
+function clientErrorHandler(err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' });
+  } else {
+    next(err);
+  }
+}
+
+function errorHandler(err, req, res, next) {
+  res.status(500);
+  res.render('error', { error: err });
+}
 
 //used to confirm user is logged in in combination to the middleware
 function requireLogin (req, res, next) {
