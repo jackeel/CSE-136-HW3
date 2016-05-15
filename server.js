@@ -42,8 +42,9 @@ app.get('/bookmarks/delete/:bookmark_id(\\d+)', bookmarks.delete);
 //app.get('/books/delete/:book_id(\\d+)', books.delete);
 app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
 app.post('/insert', bookmarks.insert);
-
-
+app.get('/list/starred', bookmarks.listStarred);
+app.get('/bookmarks/:bookmark_id(\\d+)/star', bookmarks.star);
+app.get('/bookmarks/:bookmark_id(\\d+)/unstar', bookmarks.unstar);
 
 app.listen(config.PORT, function () {
   console.log('Example app listening on port ' + config.PORT + '!');

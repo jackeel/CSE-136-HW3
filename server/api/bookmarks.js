@@ -47,17 +47,13 @@ module.exports.listFolders = function(req, res, next) {
   });
 };
 
-
-/**
- *
- * Selects information about passed in book and then
- * renders the delete confirmation page with the delete.ejs template
- */
-module.exports.confirmdelete = function(req, res){
-  var id = req.params.book_id;
-  db.query('SELECT * from books WHERE id =  ' + id, function(err, book) {
-    if (err) throw err;
-    res.render('books/delete', {book: book[0]});
+module.exports.listStarred = function(req, res) {
+  db.query('SELECT * from bookmarks WHERE star = 1 ORDER BY id', function(err, bookmarks) {
+    if(err) throw err;
+    db.query('SELECT * from folders ORDER BY id', function(err, folders) {
+      if(err) throw err;
+        res.render('index', {bookmarks: bookmarks, folders: folders});
+    });
   });
 };
 
@@ -106,7 +102,7 @@ module.exports.insert = function(req, res){
 };
 
 /**
- * Updates a book in the database
+ * Updates a bookmark in the database
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
@@ -116,6 +112,32 @@ module.exports.update = function(req, res){
   var folder_id = db.escape(req.body.folder_id);
 
   var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id + ' WHERE id = ' + id;
+  db.query(queryString, function(err){
+    if (err) throw err;
+    res.redirect('/list');
+  });
+};
+
+/**
+ * Star a bookmark
+ * Redirect to the list page
+ */
+module.exports.star = function(req, res) {
+  var id = req.params.bookmark_id;
+  var queryString = 'UPDATE bookmarks SET star = 1 WHERE id = ' + id;
+  db.query(queryString, function(err){
+    if (err) throw err;
+    res.redirect('/list');
+  });
+};
+
+/**
+ * Star a bookmark
+ * Redirect to the list page
+ */
+module.exports.unstar = function(req, res) {
+  var id = req.params.bookmark_id;
+  var queryString = 'UPDATE bookmarks SET star = 0 WHERE id = ' + id;
   db.query(queryString, function(err){
     if (err) throw err;
     res.redirect('/list');
