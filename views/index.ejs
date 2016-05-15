@@ -91,7 +91,6 @@
       <ul>
             <li class="pinned"><a href="starred.html"><i class="fa fa-star fa-lg"></i> Starred</a></li>
             <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
-            <!--li><a href="courses.html">Courses</a></li-->
             <% folders.forEach(function(folder) { %>
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
             <% }); %>
@@ -108,45 +107,21 @@
       				<h1>BookMarks</h1>
       			</div>
       		</div>
-
-						<!--<table>
-						<tr>
-								<th>ID</th>
-								<th>Title</th>
-								<th>Author</th>
-								<th>Price</th>
-								<th></th>
-						</tr>
-						<% bookmarks.forEach(function(bookmarks) { %>
-						<tr>
-								<!-- Useful for testing purposed to show ID.  Remove in practice.
-								<td><%= bookmarks.id %></td>
-								<td><%= bookmarks.title %></td>
-								<td><%= bookmarks.url %></td>
-								<td>$<%= bookmarks.folder_id %></td>
-							<td><a href="/books/confirmdelete/<%= bookmarks.id %>"><img src='/images/trash.gif' alt='delete' title='Delete' border='0'></a>
-								&nbsp;<a href="/books/edit/<%= bookmarks.id %>"><img src='/images/pencil.gif' alt='edit' title='Edit' border='0'></a>
-							</td>
-						</tr>
-						<% }); %>
-					</table>-->
-					<!--Start of one book mark code -->
-					<% bookmarks.forEach(function(bookmarks) { %>
+			<% bookmarks.forEach(function(bookmark) { %>
 	      	<div class="col-1-3 mobile-col-1-3">
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a href="<%= bookmarks.url %>"><h2 class="card__title"><%= bookmarks.title %></h2></a>
+						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<a class="card__button"><i class="fa fa-star fa-lg"></i></a>
-							<a class="card__button" href="edit-youtube.html"><i class="fa fa-info-circle fa-lg"></i></a>
-							<a class="card__button"><i class="fa fa-trash-o fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
 			</div>
 			<% }); %>
-			<!--End of one book mark code -->
       </div>
     </div>
 		<br>

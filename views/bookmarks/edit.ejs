@@ -1,0 +1,29 @@
+<!-- Could use same template as add.ejs, but chose to split for clarity in example -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Bookmark</title>
+</head>
+<body>
+<form action="/bookmarks/update/<%= bookmark.id %>" method="post">
+    <!--  Use CSS to be modern -->
+    <table>
+        <tr><td>Title: </td><td><input type="text" name="title"  value="<%= bookmark.title %>" ></td></tr>
+        <tr><td>URL: </td><td><input type="text" name="url" value="<%= bookmark.url %>"></td></tr>
+        <tr><td>Folder: </td><td>
+            <select name="folder_id">
+                <% folders.forEach(function(folder) { %>
+                    <option value="<%= folder.id%>"><%= folder.name %></option>
+                <% }); %>
+            </select>
+        </td>
+        </tr>
+        <tr><td colspan="2">
+                <input type='submit' value="Save">
+                &nbsp;
+                <!-- Could also pass to the server as a submit and determine redirect action there -->
+                <a href='/list' style="text-decoration: none;"><input type="button" value='Cancel Edit'></a>
+            </td></tr>
+    </table>
+</form>
