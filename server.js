@@ -3,7 +3,7 @@ var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
 var folders = require('./server/api/folders.js');
-//var reset = require('./server/api/passwordReset.js');
+var reset = require('./server/api/passwordReset.js');
 
 db.init();
 
@@ -12,6 +12,7 @@ var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
+var winston = require('winston');
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -22,8 +23,37 @@ var mySession = session({
     maxAge: 3600000 * 24 * 7 //one week
   }
 });
-
 var app = express();
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.File({
+            name: '404-errors',
+            level: 'info',
+            filename: './server/logs/request-errors.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: false
+        }),
+        new winston.transports.File({
+            name: 'stack-trace',
+            level: 'error',
+            filename: './server/logs/stack-errors.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: true
+        })
+    ],
+    exitOnError: false
+});
+
+//initialize db
+db.init();
 
 app.set('x-powered-by', false);
 app.use(mySession);
@@ -35,9 +65,9 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
-// app.use(logErrors);
-// app.use(clientErrorHandler);
-// app.use(errorHandler);
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
 
 /* Give all views access to any flashed error messages */
 app.use(function(req, res, next) {
@@ -76,6 +106,7 @@ app.use(function(req, res, next) {
 
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);
+app.get('/', users.loginForm);
 app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
@@ -90,24 +121,24 @@ app.post('/signup', users.signup);
  * Redirect to login page if user isn't logged in.
  * Note: Place login route before this and any routes that require login after this.
  */
-app.use(function(req, res, next) {
-    if (req.session.userId == null){
+function requireLogin(req, res, next) {
+    if (!req.userId){
         res.redirect('/login');
     } else {
         next();
     }
-});
+};
 
-app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
-app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
-app.get('/bookmarks/delete/:bookmark_id(\\d+)',bookmarks.delete);
+app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
+app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
+app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
-app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
-app.post('/insert',bookmarks.insert);
+app.post('/bookmarks/update/:bookmark_id(\\d+)', requireLogin,bookmarks.update);
+app.post('/insert',requireLogin ,bookmarks.insert);
 
-app.get('/list/starred', bookmarks.listStarred);
-app.get('/bookmarks/:bookmark_id(\\d+)/star', bookmarks.star);
-app.get('/bookmarks/:bookmark_id(\\d+)/unstar', bookmarks.unstar);
+app.get('/list/starred', requireLogin ,bookmarks.listStarred);
+app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
+app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 
 app.post('/folders', folders.insert);
 app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
@@ -119,10 +150,20 @@ app.get('/robots.txt', function (req, res) {
     res.sendFile('/views/robots.txt', { root: __dirname});
 });
 
+app.use('/delete',function(req, res, next){
+
+  logger.log('info', "Malicious",
+              {timestamp: Date.now(), url: req.url, method: req.method, ip: req.ip}
+            );
+  res.type('txt').send("Woah there. Very suspicious request. You've been flagged.");
+});
+
 //error middleware to process any errors that come around
 function logErrors(err, req, res, next)
 {
-  console.error(err.stack);
+  logger.log('error', 'stack-trace',
+              {timestamp: Date.now(), pid: process.pid, url: req.url, method: req.method, ip: req.ip, stack: err.stack}
+            );
   next(err);
 }
 
@@ -143,9 +184,19 @@ app.listen(config.PORT, function () {
   console.log('Bookmarx app listening on port ' + config.PORT + '!');
 });
 
+/*
+url: '/login1',
+  method: 'GET',
+
+*/
+
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
+
+  logger.log('info', "404-errors",
+              {timestamp: Date.now(), pid: process.pid, url: req.url, method: req.method, ip: req.ip}
+            );
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {

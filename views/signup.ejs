@@ -7,6 +7,8 @@
     <title>Bookmarx - Sign Up</title>
     <link rel="stylesheet" type="text/css" href="/css/signup.css">
 	<link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Open+Sans:400,300%7CMontserrat:400,700'>
+
+    <script type="text/javascript" src="/js/signup.js"></script>
 </head>
 <body>
     <h1>Sign Up</h1>
@@ -20,20 +22,20 @@
            </div>
     <% } %>
     <div class="signup-body">
-    <form action="/signup" method="POST">
+    <form id="signup_form" action="/signup" method="POST">
         <fieldset class="inputs">
             <div class="signup-field">
-                <input type="email" name="email" id="email" value="" placeholder="Email" spellcheck="false">
+                <input type="email" name="email" id="email" value="" placeholder="Email" spellcheck="false" autofocus>
             </div>
             <div class="signup-field">
-                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false">
+                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false" maxlength="25">
             </div>
             <div class="signup-field">
-                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false">
+                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64">
             </div>
-        <div class="signup-field">
-            <input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false">
-        </div>
+            <div class="signup-field">
+                <input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64">
+            </div>
         </fieldset>
         <div class="signup-button">
             <input type="submit" value="Sign up">

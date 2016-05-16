@@ -7,6 +7,8 @@
     <title>Bookmarx - Log In</title>
     <link rel="stylesheet" type="text/css" href="/css/signup.css">
 	<link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Open+Sans:400,300%7CMontserrat:400,700'>
+
+    <script type="text/javascript" src="/js/login.js"></script>
 </head>
 <body>
     <h1>Log In</h1>
@@ -20,13 +22,13 @@
            </div>
     <% } %>
     <div class="signup-body">
-    <form action="/login" method="POST">
+    <form id="login_form" action="/login" method="POST">
         <fieldset class="inputs">
             <div class="signup-field">
-                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false">
+                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false" maxlength="25" autofocus>
             </div>
             <div class="signup-field">
-                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false">
+                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64">
             </div>
         </fieldset>
         <div class="signup-button">

@@ -12,10 +12,14 @@
     "express-validator": "^2.20.4",
     "install": "^0.7.3",
     "mysql": "^2.10.2",
+    "nodemailer": "^2.4.1",
     "npm": "^3.8.8",
+    "winston": "^2.2.0",
     "xoauth2": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemailer": "^2.4.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"

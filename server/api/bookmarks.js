@@ -13,7 +13,8 @@ module.exports.list = function(req, res) {
         folders: req.folders,
         current_folder_id: req.current_folder_id,
         order_by: req.order_by,
-        errors: res.locals.error_messages
+        errors: res.locals.error_messages,
+        search: req.search
     });
 }
 
@@ -22,15 +23,25 @@ module.exports.list = function(req, res) {
  */
 module.exports.listBookmarks = function(req, res, next) {
   var folder_id = req.params.folder_id;
+  var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+  var search = req.query['Search'] ? req.query['Search'] : '';
+  req.search = search;
   req.current_folder_id = folder_id;
-  var order_by = 'bookmarks.' + (req.query['SortBy'] ? req.query['SortBy'] : 'id');
   req.order_by = order_by;
-  order_by = db.escape(order_by);
+  search = db.escape('%' + search + '%');
+
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+      (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
+      (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
+    order_by = "bookmarks.id";
+  }
   if (!folder_id) {
+    //search = db.escape(search);
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
-                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
-                  'ORDER BY ' + order_by;
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
+                  'WHERE title like ' + search + ' or description like ' + search +
+                  ' ORDER BY ' + order_by;
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -43,7 +54,8 @@ module.exports.listBookmarks = function(req, res, next) {
                    req.session.userId +
                    ' and id = ' + folder_id +
                    ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
-                   'ORDER BY ' + order_by;
+                   'WHERE title like ' +search + ' or description like ' + search +
+                   ' ORDER BY ' + order_by;
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -64,17 +76,23 @@ module.exports.listFolders = function(req, res, next) {
 };
 
 module.exports.listStarred = function(req, res) {
-  var order_by = req.query['SortBy'];
-  if (!order_by) {
-    order_by = 'id';
-  }
-  order_by = 'bookmarks.' + order_by;
+  var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+  var search = req.query['Search'] ? req.query['Search'] : '';
   req.order_by = order_by;
+  req.search = search;
+  search = db.escape('%' + search + '%');
+
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+      (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
+      (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
+    order_by = "bookmarks.id";
+  }
   queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
                   'WHERE bookmarks.star = 1 ' +
-                  'ORDER BY ' + order_by;
+                  'and title like ' + search + ' or description like ' + search +
+                  ' ORDER BY ' + order_by;
   db.query(queryString, function(err, bookmarks) {
     if(err) throw err;
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
@@ -82,7 +100,8 @@ module.exports.listStarred = function(req, res) {
         res.render('index', {bookmarks: bookmarks,
                              folders: folders,
                              current_folder_id: "starred",
-                             order_by: order_by });
+                             order_by: req.order_by,
+                             search: req.search });
     });
   });
 };
@@ -122,33 +141,34 @@ module.exports.delete = function(req, res) {
  */
 module.exports.insert = function(req, res){
     var validate_insert = {
-      'title': {
-          optional: true,
-          isLength: {
-              options: [{min: 0, max: 25}],
-              errorMessage: 'Title must be 0-25 characters'
-          },
-      },
-      'url': {
-          optional: {
-              options: [{checkFalsy: true}]
-          },
-          isLength: {
+        'title': {
+            optional: true,
+            isLength: {
+                options: [{min: 0, max: 25}],
+                errorMessage: 'Title must be 0-25 characters'
+            },
+        },
+        'url': {
+            optional: {
+                options: [{checkFalsy: true}]
+            },
+            isLength: {
                 options: [{min: 0, max: 64}],
                 errorMessage: 'URL must be 0-64 characters'
-          },
-          isURL: {
-              errorMessage: 'Invalid URL'
-          }
-      },
-      'folder_id': {
-          notEmpty: true,
-          isLength: {
-              options: [{min: 1, max:11}]
-          },
-          isInt: true,
-          errorMessage: 'Invalid folder id'
-      }
+            },
+            isURL: {
+                errorMessage: 'Invalid URL'
+            }
+        },
+        'folder_id': {
+            isInt: {
+                errorMessage: 'Folder id must be an integer'
+            },
+            isLength: {
+                options: [{min: 1, max:11}],
+                errorMessage: 'Invalid folder id'
+            }
+        }
     };
 
     req.checkBody(validate_insert);
@@ -156,7 +176,7 @@ module.exports.insert = function(req, res){
     //req.sanitizeBody('title').escape();
     req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
-    var errors = req.validationErrors();
+    var errors = req.validationErrors(); 
 
     if (errors) {
         req.flash('error_messages', errors);
