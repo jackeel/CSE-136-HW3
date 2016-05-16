@@ -29,7 +29,12 @@ module.exports.listBookmarks = function(req, res, next) {
   req.current_folder_id = folder_id;
   req.order_by = order_by;
   search = db.escape('%' + search + '%');
-  //order_by = db.escape('`' + order_by + '`');
+
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+      (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
+      (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
+    order_by = "bookmarks.id";
+  }
   if (!folder_id) {
     //search = db.escape(search);
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
@@ -37,7 +42,6 @@ module.exports.listBookmarks = function(req, res, next) {
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
                   'WHERE title like ' + search + ' or description like ' + search +
                   ' ORDER BY ' + order_by;
-    console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -77,6 +81,12 @@ module.exports.listStarred = function(req, res) {
   req.order_by = order_by;
   req.search = search;
   search = db.escape('%' + search + '%');
+
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+      (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
+      (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
+    order_by = "bookmarks.id";
+  }
   queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
