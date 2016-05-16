@@ -1,0 +1,4 @@
+{"timestamp":"2016-05-16T17:15:25.003Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
+{"timestamp":"2016-05-16T17:15:31.687Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
+{"timestamp":"2016-05-16T17:16:46.888Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
+{"timestamp":"2016-05-16T17:16:50.777Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
