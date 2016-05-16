@@ -28,18 +28,24 @@ CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(25) DEFAULT NULL,
   `password` varchar(64) DEFAULT NULL,
+  `email` varchar(254) DEFAULT NULL,
+  `salt` varchar(44) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `username`, `password`)
+/* Dummy data. 
+   Login: user1    Password: a
+   Login: user2    Password: a
+   Login: user3    Password: a
+*/
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `salt`)
 VALUES
-	(1, 'user1', 'H4ND7KTAGyUqZ8oXMFhDNDerr7JSP+opq+W7b6Rf+Ls=')/*a*/,
-	(2, 'user2', 'user2'),
-	(3, 'user3', 'user3'),
-	(4, 'a', 'H4ND7KTAGyUqZ8oXMFhDNDerr7JSP+opq+W7b6Rf+Ls=');
+	(1, 'user1', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user1@user1.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='),
+	(1, 'user2', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user2@user2.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='
+	(1, 'user3', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user3@user3.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
