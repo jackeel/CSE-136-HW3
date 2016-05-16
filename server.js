@@ -2,7 +2,11 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
+var folders = require('./server/api/folders.js');
 var reset = require('./server/api/passwordReset.js');
+
+db.init();
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
@@ -107,8 +111,8 @@ app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
-app.get('/passwordReset', reset.passwordresetForm);
-app.post('/passwordReset', reset.passwordReset);
+//app.get('/passwordReset', reset.passwordresetForm);
+//app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
@@ -135,6 +139,9 @@ app.post('/insert',requireLogin ,bookmarks.insert);
 app.get('/list/starred', requireLogin ,bookmarks.listStarred);
 app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
 app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
+
+app.post('/folders', folders.insert);
+app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
 // set trap if a disallowed endpoint is hit and log them.

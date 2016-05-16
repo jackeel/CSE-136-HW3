@@ -45,16 +45,18 @@ CREATE TABLE `bookmarks` (
 LOCK TABLES `bookmarks` WRITE;
 /*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
 
-INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`)
+INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`, description)
 VALUES
-	(1, 'bookmark1', 'bookmark1', 1),
-	(2, 'bookmark2', 'bookmark2', 2),
-	(3, 'bookmark3', 'bookmark3', 3);
+	(1, 'user1_folder1_bookmark1', 'url1', 1, 'description1'),
+	(2, 'user1_folder1_bookmark2', 'url2', 1, 'description2'),
+	(3, 'user1_folder2_bookmark1', 'url3', 2, 'description3'),
+	(4, 'user2_folder1_bookmark1', 'url4', 4, 'description4'),
+	(5, 'user2_folder1_bookmark2', 'url5', 4, 'description5'),
+	(6, 'user2_folder2_bookmark1', 'url6', 5, 'description6'),
+	(7, 'user3_folder1_bookmark1', 'url7', 6, 'description7');
 
 /*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
