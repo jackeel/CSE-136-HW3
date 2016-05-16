@@ -2,15 +2,14 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
-//var reset = require('./server/api/passwordReset.js');
-
-db.init();
-
+//var reset = require('./server/api/emailReset.js');
+var reset = require('./server/api/passwordReset.js');
 var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
+var winston = require('winston');
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -21,8 +20,24 @@ var mySession = session({
     maxAge: 3600000 * 24 * 7 //one week
   }
 });
-
 var app = express();
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.File({
+            level: 'error',
+            filename: './server/logs/all-logs.log',
+            handleExceptions: true,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: false
+        })
+    ],
+    exitOnError: false
+});
+
+//initialize db
+db.init();
 
 app.set('x-powered-by', false);
 app.use(mySession);
@@ -34,9 +49,9 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
-// app.use(logErrors);
-// app.use(clientErrorHandler);
-// app.use(errorHandler);
+app.use(logErrors);
+app.use(clientErrorHandler);
+app.use(errorHandler);
 
 /* Give all views access to any flashed error messages */
 app.use(function(req, res, next) {
@@ -79,8 +94,8 @@ app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
-//app.get('/passwordReset', reset.passwordresetForm);
-//app.post('/passwordReset', reset.passwordReset);
+app.get('/passwordReset', reset.passwordresetForm);
+app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
@@ -89,24 +104,24 @@ app.post('/signup', users.signup);
  * Redirect to login page if user isn't logged in.
  * Note: Place login route before this and any routes that require login after this.
  */
-app.use(function(req, res, next) {
+function requireLogin(req, res, next) {
     if (req.session.userId == null){
         res.redirect('/login');
     } else {
         next();
     }
-});
+};
 
-app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
-app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
-app.get('/bookmarks/delete/:bookmark_id(\\d+)',bookmarks.delete);
+app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
+app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
+app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
-app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
-app.post('/insert',bookmarks.insert);
+app.post('/bookmarks/update/:bookmark_id(\\d+)', requireLogin,bookmarks.update);
+app.post('/insert',requireLogin ,bookmarks.insert);
 
-app.get('/list/starred', bookmarks.listStarred);
-app.get('/bookmarks/:bookmark_id(\\d+)/star', bookmarks.star);
-app.get('/bookmarks/:bookmark_id(\\d+)/unstar', bookmarks.unstar);
+app.get('/list/starred', requireLogin ,bookmarks.listStarred);
+app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
+app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
 // set trap if a disallowed endpoint is hit and log them.
@@ -142,6 +157,8 @@ app.listen(config.PORT, function () {
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
+  //console.log(req);
+
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {
