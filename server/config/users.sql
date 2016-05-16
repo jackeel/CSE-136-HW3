@@ -44,9 +44,8 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `salt`)
 VALUES
 	(1, 'user1', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user1@user1.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='),
-	(1, 'user2', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user2@user2.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='
-	(1, 'user3', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user3@user3.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='
-
+	(2, 'user2', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user2@user2.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I='),
+	(3, 'user3', '9ordKrh3iU7231SuS9M3TUexHoLKjiwh2/Ag8s4k2ck=', 'user3@user3.com', 'unacjpzWYupjqbSdQvOfw+rmHcjmwFL9eEuYgGYNn5I=');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
