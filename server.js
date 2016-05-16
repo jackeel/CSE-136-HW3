@@ -2,7 +2,6 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
-//var reset = require('./server/api/emailReset.js');
 var reset = require('./server/api/passwordReset.js');
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -24,13 +23,26 @@ var app = express();
 var logger = new winston.Logger({
     transports: [
         new winston.transports.File({
-            level: 'error',
-            filename: './server/logs/all-logs.log',
-            handleExceptions: true,
+            name: '404-errors',
+            level: 'info',
+            filename: './server/logs/404-errors.log',
+            prettyPrint: true,
+            handleExceptions: false,
             json: true,
             maxsize: 5242880, //5MB
             maxFiles: 5,
             colorize: false
+        }),
+        new winston.transports.File({
+            name: 'stack-trace',
+            level: 'error',
+            filename: './server/logs/stack-errors.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: true
         })
     ],
     exitOnError: false
@@ -105,7 +117,7 @@ app.post('/passwordReset', reset.passwordReset);
  * Note: Place login route before this and any routes that require login after this.
  */
 function requireLogin(req, res, next) {
-    if (req.session.userId == null){
+    if (!req.userId){
         res.redirect('/login');
     } else {
         next();
@@ -133,7 +145,9 @@ app.get('/robots.txt', function (req, res) {
 //error middleware to process any errors that come around
 function logErrors(err, req, res, next)
 {
-  console.error(err.stack);
+  logger.log('error', 'stack-trace',
+              {timestamp: Date.now(), pid: process.pid, url: req.url, method: req.method, ip: req.ip, stack: err.stack}
+            );
   next(err);
 }
 
@@ -154,11 +168,19 @@ app.listen(config.PORT, function () {
   console.log('Bookmarx app listening on port ' + config.PORT + '!');
 });
 
+/*
+url: '/login1',
+  method: 'GET',
+
+*/
+
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
-  //console.log(req);
 
+  logger.log('info', "404-errors",
+              {timestamp: Date.now(), pid: process.pid, url: req.url, method: req.method, ip: req.ip}
+            );
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {
