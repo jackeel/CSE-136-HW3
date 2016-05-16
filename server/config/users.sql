@@ -22,6 +22,7 @@
 
 # Dump of table users
 # ------------------------------------------------------------
+DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

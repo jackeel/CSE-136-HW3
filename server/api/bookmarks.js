@@ -13,8 +13,8 @@ module.exports.list = function(req, res) {
         folders: req.folders,
         current_folder_id: req.current_folder_id,
         order_by: req.order_by,
+        search: req.search,        
         errors: res.locals.error_messages,
-        search: req.search
     });
 }
 
@@ -41,7 +41,7 @@ module.exports.listBookmarks = function(req, res, next) {
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
                   'WHERE title like ' + search + ' or description like ' + search +
-                  ' ORDER BY ' + order_by;
+                  ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -55,7 +55,7 @@ module.exports.listBookmarks = function(req, res, next) {
                    ' and id = ' + folder_id +
                    ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
                    'WHERE title like ' +search + ' or description like ' + search +
-                   ' ORDER BY ' + order_by;
+                   ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -91,8 +91,8 @@ module.exports.listStarred = function(req, res) {
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
                   'WHERE bookmarks.star = 1 ' +
-                  'and title like ' + search + ' or description like ' + search +
-                  ' ORDER BY ' + order_by;
+                  'and (title like ' + search + ' or description like ' + search +
+                  ') ORDER BY ' + order_by;
   db.query(queryString, function(err, bookmarks) {
     if(err) throw err;
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
@@ -202,33 +202,34 @@ module.exports.update = function(req, res){
     var id = req.params.bookmark_id;
 
     var validate_update = {
-      'title': {
-          optional: true,
-          isLength: {
-              options: [{min: 0, max: 25}],
-              errorMessage: 'Title must be 0-25 characters'
-          },
-      },
-      'url': {
-          optional: {
-              options: [{checkFalsy: true}]
-          },
-          isLength: {
+        'title': {
+            optional: true,
+            isLength: {
+                options: [{min: 0, max: 25}],
+                errorMessage: 'Title must be 0-25 characters'
+            },
+        },
+        'url': {
+            optional: {
+                options: [{checkFalsy: true}]
+            },
+            isLength: {
                 options: [{min: 0, max: 64}],
                 errorMessage: 'URL must be 0-64 characters'
-          },
-          isURL: {
-              errorMessage: 'Invalid URL'
-          }
-      },
-      'folder_id': {
-          notEmpty: true,
-          isLength: {
-              options: [{min: 1, max:11}]
-          },
-          isInt: true,
-          errorMessage: 'Invalid folder id'
-      }
+            },
+            isURL: {
+                errorMessage: 'Invalid URL'
+            }
+        },
+        'folder_id': {
+            isInt: {
+                errorMessage: 'Folder id must be an integer'
+            },
+            isLength: {
+                options: [{min: 1, max:11}],
+                errorMessage: 'Invalid folder id'
+            }
+        }
     };
 
     req.checkBody(validate_update);

@@ -33,7 +33,7 @@ module.exports.insert = function(req, res){
             if (err) throw err;
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
                 if (err) throw err;
-                res.send(folders);
+                res.redirect('/list');
             });
         });
     }
@@ -44,9 +44,9 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.delete = function(req, res) {
-    var id = db.escape(req.params.bookmark_id);
-
-    db.query('DELETE from bookmarks where id = ' + id, function(err){
+    var id = db.escape(req.params.folder_id);
+    console.log("Delete: "+id);
+    db.query('DELETE from folders where id = ' + id, function(err){
         if (err) throw err;
         res.redirect('/list');
     });

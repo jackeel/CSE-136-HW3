@@ -1,0 +1,12 @@
+{"timestamp":"2016-05-16T19:45:54.040Z","user":"'test'","ip":"127.0.0.1","level":"debug","message":"user-actions: new user"}
+{"timestamp":"2016-05-16T19:45:57.397Z","user":"'test'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T19:49:27.439Z","user":"'test'","ip":"127.0.0.1","level":"debug","message":"user-actions: new user"}
+{"timestamp":"2016-05-16T19:49:31.909Z","user":"'test'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T19:55:44.582Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:11:03.279Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:12:49.951Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:16:08.457Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:30:54.671Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:50:14.125Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:50:56.849Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T20:51:52.393Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}

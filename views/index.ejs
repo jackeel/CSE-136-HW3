@@ -39,21 +39,23 @@
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
 				<form method="get" name="orderBy">
-					<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>
-			        	<option selected disabled>Sort</option>
-			        	<option value="bookmarks.title" <%=order_by == "title" ? "selected" : ""%>>Title</option>
-			        	<option value="bookmarks.url" <%=order_by == "url" ? "selected" : ""%>>URL</option>
-			        	<option value="bookmarks.create_date" <%=order_by == "create_date" ? "selected" : ""%>>Create Date</option>
-			        	<option value="bookmarks.last_visit_date" <%=order_by == "last_visit_date" ? "selected" : ""%>>Last Visits</option>
-			        	<option value="bookmarks.star" <%=order_by == "star" ? "selected" : ""%>>Starred</option>
+				    <input name="Search" type="hidden" value="<%= search%>"/>
+					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
+					<select class="select-dropdown-content" name="SortBy" onchange='this.form.submit()'>
+			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
+			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
+			        	<option value="bookmarks.url" <%=order_by == "bookmarks.url" ? "selected" : ""%>>URL</option>
+			        	<option value="bookmarks.create_date" <%=order_by == "bookmarks.create_date" ? "selected" : ""%>>Create Date</option>
+			        	<option value="bookmarks.last_visit_date" <%=order_by == "bookmarks.last_visit_date" ? "selected" : ""%>>Last Visits</option>
+			        	<option value="bookmarks.star" <%=order_by == "bookmarks.star" ? "selected" : ""%>>Starred</option>
 			        </select>
 			        <noscript><input type="submit" value="Submit"></noscript>
 			    </form>
 				<!--		</div> </div>  -->
 		  		</li>
 	  			<li class="navbar-right">
-	  				<a href="#addModal" class="button"><i class="fa fa-plus fa-lg"></i></a>
-	  				<div id="addModal" class="modalDialog">
+	  				<a href="#addBookmark" class="button"><i class="fa fa-plus fa-lg"></i></a>
+	  				<div id="addBookmark" class="modalDialog">
 
 				    <div class="grid grid-pad">
 				    	<a href="#close" title="Close" class="close x-button">x</a>
@@ -107,6 +109,33 @@
 						</div>
 					</div>
 				</div>
+                    <div id="addFolder" class="modalDialog">
+                        <div class="grid grid-pad">
+                            <a href="#close" title="Close" class="close x-button">x</a>
+                            <div class="tabs is-centered">
+                                <ul>
+                                    <li id="add-bookmark" class="is-active"><a>Add Folder</a></li>
+                                </ul>
+                            </div>
+                            <form method='post' action='folders'>
+                                <div class="form" id="add-bookmark-form">
+                                    <input type="text" name="name" placeholder="Name">
+
+                                    <div class="buttonWrapper">
+                                        <div><input type='submit' value="Save"></div>
+                                    </div>
+                            </form>
+                        </div>
+                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+                        <div id="insertupdate-errors" class="insertupdate-errors">
+                            <ul>
+                                <% for(var i=0; i < errors.length; i++) { %>
+                                <li><%= errors[i].msg %></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <% } %>
+                    </div>
 	  		</li>
 		</ul>
 	</nav>
@@ -115,11 +144,17 @@
             <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
             <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
             <% folders.forEach(function(folder) { %>
-            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a></li>
+            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
+                    <a class="card__button" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+                </li>
+
             <% }); %>
       </ul>
       <div class="buttonWrapper">
-      	<div><i class="fa fa-plus-circle fa-lg"></i> Folder</div>
+
+
+      	<a href="#addFolder" ><i class="fa fa-plus-circle fa-lg"></i> Folder</a>
+
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
 	  </div>
     </div>

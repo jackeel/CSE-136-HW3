@@ -111,8 +111,8 @@ app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
-//app.get('/passwordReset', reset.passwordresetForm);
-//app.post('/passwordReset', reset.passwordReset);
+app.get('/passwordReset', reset.passwordresetForm);
+app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
