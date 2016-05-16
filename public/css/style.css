@@ -244,6 +244,12 @@ button#menu:hover .fa {
   width: 100%;
 }
 
+.navbar .form select {
+  height:30px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .navbar .form {
   display: inline;
 }
