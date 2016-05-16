@@ -25,17 +25,18 @@ module.exports.listBookmarks = function(req, res, next) {
   var folder_id = req.params.folder_id;
   var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
   var search = req.query['Search'] ? req.query['Search'] : '';
-  //order_by = db.escape(order_by);
-  //search = db.escape(search);
   req.search = search;
   req.current_folder_id = folder_id;
   req.order_by = order_by;
+  search = db.escape('%' + search + '%');
+  //order_by = db.escape('`' + order_by + '`');
   if (!folder_id) {
+    //search = db.escape(search);
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
-                  'WHERE title like \'%' + search + '%\' or description like \'%' + search + '%\' ' +
-                  'ORDER BY ' + order_by;
+                  'WHERE title like ' + search + ' or description like ' + search +
+                  ' ORDER BY ' + order_by;
     console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
@@ -49,8 +50,8 @@ module.exports.listBookmarks = function(req, res, next) {
                    req.session.userId +
                    ' and id = ' + folder_id +
                    ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
-                   'WHERE title like \'%' + search + '%\' or description like \'%' + search + '%\' ' +
-                   'ORDER BY ' + order_by;
+                   'WHERE title like ' +search + ' or description like ' + search +
+                   ' ORDER BY ' + order_by;
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -71,22 +72,17 @@ module.exports.listFolders = function(req, res, next) {
 };
 
 module.exports.listStarred = function(req, res) {
-  var order_by = req.query['SortBy'];
-  var search = req.query['Search'];
-  if (!order_by) {
-    order_by = 'bookmarks.id';
-  }
-  if (!search) {
-    search = '';
-  }
+  var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+  var search = req.query['Search'] ? req.query['Search'] : '';
   req.order_by = order_by;
   req.search = search;
+  search = db.escape('%' + search + '%');
   queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
                   'WHERE bookmarks.star = 1 ' +
-                  "and title like '%" + search + "%' or description like '%" + search + "%' " +
-                  'ORDER BY ' + order_by;
+                  'and title like ' + search + ' or description like ' + search +
+                  ' ORDER BY ' + order_by;
   db.query(queryString, function(err, bookmarks) {
     if(err) throw err;
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
@@ -94,8 +90,8 @@ module.exports.listStarred = function(req, res) {
         res.render('index', {bookmarks: bookmarks,
                              folders: folders,
                              current_folder_id: "starred",
-                             order_by: order_by,
-                             search: search });
+                             order_by: req.order_by,
+                             search: req.search });
     });
   });
 };
