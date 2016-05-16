@@ -23,8 +23,6 @@
 # Dump of table users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
-
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(25) DEFAULT NULL,
@@ -37,7 +35,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `password`)
 VALUES
-	(1, 'user1', 'user1'),
+	(1, 'user1', 'H4ND7KTAGyUqZ8oXMFhDNDerr7JSP+opq+W7b6Rf+Ls=')/*a*/,
 	(2, 'user2', 'user2'),
 	(3, 'user3', 'user3');
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bookmarx - Sign Up</title>
+    <link rel="stylesheet" type="text/css" href="/css/signup.css">
+	<link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Open+Sans:400,300%7CMontserrat:400,700'>
+</head>
+<body>
+    <h1>Sign Up</h1>
+    <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+           <div class="signup-errors">
+               <ul>
+               <% for(var i=0; i < errors.length; i++) { %>
+                   <li><%= errors[i].msg %></li>
+               <% } %>
+               </ul>
+           </div>
+    <% } %>
+    <div class="signup-body">
+    <form action="/signup" method="POST">
+        <fieldset class="inputs">
+            <div class="signup-field">
+                <input type="email" name="email" id="email" value="" placeholder="Email" spellcheck="false">
+            </div>
+            <div class="signup-field">
+                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false">
+            </div>
+            <div class="signup-field">
+                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false">
+            </div>
+        <div class="signup-field">
+            <input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false">
+        </div>
+        </fieldset>
+        <div class="signup-button">
+            <input type="submit" value="Sign up">
+        </div>
+    </form>
+    </div>
+
+    <footer>
+        <div class="signup-redirect">
+        <a href="/login"> Already have an account? Log in </a>
+        </div>
+    </footer>
+</body>

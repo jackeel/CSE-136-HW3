@@ -1,8 +1,8 @@
 /**
-	blue-gray: #6C7A89;
-	light-gray: #CACACA;
+  blue-gray: #6C7A89;
+  light-gray: #CACACA;
   dark-gray: #474448;
-	pink: #FF9EAE;
+  pink: #FF9EAE;
  **/
 
 html, body {
@@ -16,12 +16,12 @@ body{
 }
 
 header, footer {
-	display: block;
+  display: block;
 }
 
 h1 {
-	text-align: center;
-	letter-spacing: 1px;
+  text-align: center;
+  letter-spacing: 1px;
   font-weight: 700;
   font-size: 40px;
   color: #474448;
@@ -84,23 +84,23 @@ h1 {
 }
 
 #sidebar ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 #sidebar li {
-	padding: 0.5em 1em;
-	border: 1px solid #FFF;
-	font-size: 15px;
-	border-right: none;
-	border-left: none;
-	border-top: none;
+  padding: 0.5em 1em;
+  border: 1px solid #FFF;
+  font-size: 15px;
+  border-right: none;
+  border-left: none;
+  border-top: none;
 }
 
 #sidebar a {
-	text-decoration: none;
-	color: #CACACA;
+  text-decoration: none;
+  color: #CACACA;
   font-weight: 300;
 }
 
@@ -136,8 +136,8 @@ h1 {
 }
 
 .main {
-	padding: 80px 1em;
-	padding-right: 0;
+  padding: 80px 1em;
+  padding-right: 0;
   background-color: #FFF;
 }
 
@@ -150,8 +150,8 @@ input {
 }
 
 input:focus {
-	outline: none;
-	border:2px solid #FF9EAE;
+  outline: none;
+  border:2px solid #FF9EAE;
 }
 
 .button,
@@ -181,13 +181,13 @@ button:focus {
 }
 
 a#menu {
-	width: 25.7%;
-	letter-spacing: 2px;
-	color:#FF9EAE;
+  width: 25.7%;
+  letter-spacing: 2px;
+  color:#FF9EAE;
 }
 
 a#menu:hover {
-	color:#FFF;
+  color:#FFF;
   cursor: pointer;
 }
 
@@ -197,27 +197,27 @@ a#menu:hover {
 
 .button .fa,
 button .fa {
-	color: #FFF;
+  color: #FFF;
 }
 
 button#menu .fa {
-	color: #FF9EAE;
+  color: #FF9EAE;
 }
 
 button#menu:hover .fa {
-	color: #FFF;
+  color: #FFF;
 }
 
 .button:hover .fa {
-	color: #FF9EAE;
+  color: #FF9EAE;
 }
 
 /*** NAVBAR ***/
 .navbar {
-	width: 100%;
-	position: fixed;
-	top: 0;
-	z-index: 10;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 10;
 }
 
 .navbar ul {
@@ -249,7 +249,7 @@ button#menu:hover .fa {
 }
 
 .navbar-left {
-	float: left;
+  float: left;
 }
 
 li.navbar-left {
@@ -257,7 +257,7 @@ li.navbar-left {
 }
 
 .navbar-right {
-	float: right;
+  float: right;
 }
 
 .navbar-left, .navbar-right {
@@ -369,12 +369,12 @@ li.navbar-left {
 }
 
 button.card__button .fa {
-	color: #474448;
+  color: #474448;
   display: none;
 }
 
 button.card__button:hover {
-	background-color: #FFF;
+  background-color: #FFF;
 }
 
 .card--small {
@@ -536,7 +536,7 @@ button.card__button:hover {
 }
 
 #import-bookmark-form {
-	display: none;
+  display: none;
 }
 
 /*** MODAL ***/
@@ -561,7 +561,7 @@ button.card__button:hover {
 }
 
 .modalDialog .tabs{
-	text-align: center;
+  text-align: center;
 }
 .modalDialog > div {
     width: 400px;
@@ -574,18 +574,18 @@ button.card__button:hover {
 }
 
 .modalDialog button {
-	border: 2px solid #FF9EAE;
-	background-color: #6C7A89;
-	color: #FF9EAE;
-	width: 100%;
-	font-weight: 700;
-	letter-spacing: 1px;
-	font-size: 20px;
+  border: 2px solid #FF9EAE;
+  background-color: #6C7A89;
+  color: #FF9EAE;
+  width: 100%;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 20px;
   
 }
 .modalDialog button:hover {
-	background-color: #FF9EAE;
-	color: #6C7A89;
+  background-color: #FF9EAE;
+  color: #6C7A89;
 }
 .modalDialog .buttonWrapper {
   font-size: 20px;
@@ -624,24 +624,37 @@ button.card__button:hover {
   color: #FFF;
 }
 
+.insertupdate-errors {
+  color: #FF4242;
+}
+
+.insertupdate-errors ul {
+  padding: 0px;
+  list-style: disc;
+  list-style-position: inside;
+}
+
+.insertupdate-errors li {
+  display: list-item;
+}
 /************************/
 
 @media screen and (max-width: 980px) {
-	.navbar-right {
-		margin-right: 3%;
-	}
+  .navbar-right {
+    margin-right: 3%;
+  }
 }
 
 @media screen and (max-width: 1030px) {
-	#sidebar {
-		display: none;
-	}
-	.right {
-		width: 100%;
-	}
-	.navbar {
-		width: 100%;
-	}
+  #sidebar {
+    display: none;
+  }
+  .right {
+    width: 100%;
+  }
+  .navbar {
+    width: 100%;
+  }
 }
 
 a.card__button .fa {

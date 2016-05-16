@@ -5,5 +5,6 @@ module.exports = {
   DATABASE_NAME: 'bookmark',
   PORT: 3000,
   USERNAME: 'kevingu',
-  PASSWORD: 'test'
+  PASSWORD: 'test',
+  SECRET: 'ArmandoKeepsAGoodSecret'
 };
