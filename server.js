@@ -2,7 +2,8 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
-var reset = require('./server/api/emailReset.js');
+//var reset = require('./server/api/emailReset.js');
+var reset = require('./server/api/passwordReset.js');
 var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
@@ -35,7 +36,7 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
-//initialize db 
+//initialize db
 db.init();
 
 app.set('x-powered-by', false);
@@ -156,7 +157,7 @@ app.listen(config.PORT, function () {
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
-  //console.log(req); 
+  //console.log(req);
 
   res.status(404);
   // respond with html page
