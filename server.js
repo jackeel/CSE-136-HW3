@@ -25,7 +25,7 @@ var logger = new winston.Logger({
         new winston.transports.File({
             name: '404-errors',
             level: 'info',
-            filename: './server/logs/404-errors.log',
+            filename: './server/logs/request-errors.log',
             prettyPrint: true,
             handleExceptions: false,
             json: true,
@@ -141,6 +141,14 @@ app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     res.sendFile('/views/robots.txt', { root: __dirname});
+});
+
+app.use('/delete',function(req, res, next){
+
+  logger.log('info', "Malicious",
+              {timestamp: Date.now(), url: req.url, method: req.method, ip: req.ip}
+            );
+  res.type('txt').send("Woah there. Very suspicious request. You've been flagged.");
 });
 
 //error middleware to process any errors that come around
