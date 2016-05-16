@@ -6,11 +6,11 @@ var crypto = require('crypto');
  * Render forms
  */
 module.exports.loginForm = function(req, res){
-  res.render('login');
+    res.render('login');
 };
 
 module.exports.signupForm = function(req, res){
-  res.render('signup');
+    res.render('signup');
 };
 
 module.exports.passwordresetForm = function(req, res){
@@ -64,7 +64,8 @@ module.exports.login = function(req, res) {
                 req.session.userId = rows[0].id;
                 res.redirect('/list');
             } else {
-                res.redirect('/login');
+                errors = [{msg: 'Incorrect username/password'}];
+                res.render('login', {errors: errors});
             }
         });
     }
