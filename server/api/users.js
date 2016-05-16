@@ -21,10 +21,6 @@ module.exports.passwordresetForm = function(req, res){
  * Attempt to login the user.  Redirect to /books on successful login and /login on unsuccessful attempt.
  */
 module.exports.login = function(req, res) {
-
-    var username = db.escape(req.body.username);
-    var password = db.escape(req.body.password);
-
     var validate_login = {
         'username': {
             isLength: {
@@ -47,6 +43,9 @@ module.exports.login = function(req, res) {
     if (errors) {
         res.render('login', {errors: errors});
     } else {
+        var username = db.escape(req.body.username);
+        var password = db.escape(req.body.password);
+
         var hash = crypto
               .createHmac('SHA256',config.SECRET)
               .update(password)
@@ -75,13 +74,6 @@ module.exports.login = function(req, res) {
  * Sign up user.
  */
 module.exports.signup = function(req, res) {
-
-    var username = db.escape(req.body.username);
-    var email = db.escape(req.body.email);
-    var password = db.escape(req.body.password);
-    var confirm_password = db.escape(req.body.confirm_password);
-
-
     var validate_signup = {
         'email': {
             isEmail: {
@@ -115,6 +107,11 @@ module.exports.signup = function(req, res) {
     if (errors) {
         res.render('signup', {errors: errors});
     } else {
+        var username = db.escape(req.body.username);
+        var email = db.escape(req.body.email);
+        var password = db.escape(req.body.password);
+        var confirm_password = db.escape(req.body.confirm_password);
+
         var hash = crypto
               .createHmac('SHA256',config.SECRET)
               .update(password)
@@ -123,7 +120,6 @@ module.exports.signup = function(req, res) {
         var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
 
         db.query(queryString, function(err, rows) {
-
             if (err) throw err;
           
             res.redirect('/login');

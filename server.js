@@ -2,6 +2,7 @@ var config = require('./server/config/config');
 var db = require('./server/config/db');
 var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
+//var reset = require('./server/api/passwordReset.js');
 
 db.init();
 
@@ -14,16 +15,16 @@ var mySession = session({
   secret: config.SECRET,
   resave: true,
   saveUninitialized: true,
-  cookie: { 
+  cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 3600000 * 24 * 7 //one week 
+    maxAge: 3600000 * 24 * 7 //one week
   }
 });
 
 var app = express();
 
-app.set('x-powered-by', false); 
+app.set('x-powered-by', false);
 app.use(mySession);
 
 
@@ -33,9 +34,9 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
-app.use(logErrors);
-app.use(clientErrorHandler);
-app.use(errorHandler);
+// app.use(logErrors);
+// app.use(clientErrorHandler);
+// app.use(errorHandler);
 
 /* Give all views access to any flashed error messages */
 app.use(function(req, res, next) {
@@ -43,11 +44,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-
-//TODO: middleware to check if js is turned off and check user-agent. 
+//TODO: middleware to check if js is turned off and check user-agent.
 //if missing, log for suspicion. Store ip and differentiate from ajax requests
 
-//global middleware to refresh session 
+//global middleware to refresh session
 
 app.use(function(req, res, next) {
 
@@ -61,12 +61,12 @@ app.use(function(req, res, next) {
           next(err);
         }
       if (user.length == 1) {
-        req.userId = user[0].id; 
+        req.userId = user[0].id;
         req.session.userId = user[0].id;  //refresh the session value
       }
       next();
     });
-  } 
+  }
   else {
     next();
   }
@@ -79,25 +79,37 @@ app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
-app.get('/passwordReset', users.passwordresetForm);
-app.post('/passwordReset', users.passwordReset);
+//app.get('/passwordReset', reset.passwordresetForm);
+//app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
 
-app.get('/list/:folder_id(\\d+)?', requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
-app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin,bookmarks.edit);
-app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
+/**
+ * Redirect to login page if user isn't logged in.
+ * Note: Place login route before this and any routes that require login after this.
+ */
+app.use(function(req, res, next) {
+    if (req.session.userId == null){
+        res.redirect('/login');
+    } else {
+        next();
+    }
+});
+
+app.get('/list/:folder_id(\\d+)?', bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
+app.get('/bookmarks/edit/:bookmark_id(\\d+)', bookmarks.edit);
+app.get('/bookmarks/delete/:bookmark_id(\\d+)',bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
-app.post('/bookmarks/update/:bookmark_id(\\d+)', requireLogin,bookmarks.update);
-app.post('/insert', requireLogin ,bookmarks.insert);
+app.post('/bookmarks/update/:bookmark_id(\\d+)', bookmarks.update);
+app.post('/insert',bookmarks.insert);
 
-app.get('/list/starred', requireLogin ,bookmarks.listStarred);
-app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
-app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
+app.get('/list/starred', bookmarks.listStarred);
+app.get('/bookmarks/:bookmark_id(\\d+)/star', bookmarks.star);
+app.get('/bookmarks/:bookmark_id(\\d+)/unstar', bookmarks.unstar);
 
-// http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and 
-// set trap if a disallowed endpoint is hit and log them. 
+// http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
+// set trap if a disallowed endpoint is hit and log them.
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
     res.sendFile('/views/robots.txt', { root: __dirname});
@@ -123,20 +135,12 @@ function errorHandler(err, req, res, next) {
   res.render('error', { error: err });
 }
 
-//used to confirm user is logged in in combination to the middleware
-function requireLogin (req, res, next) {
-  if (!req.userId) {
-    res.redirect('/login');
-  } else {
-    next();
-  }
-};
-
 app.listen(config.PORT, function () {
   console.log('Bookmarx app listening on port ' + config.PORT + '!');
 });
 
 
+/* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
   res.status(404);
   // respond with html page
