@@ -122,33 +122,34 @@ module.exports.delete = function(req, res) {
  */
 module.exports.insert = function(req, res){
     var validate_insert = {
-      'title': {
-          optional: true,
-          isLength: {
-              options: [{min: 0, max: 25}],
-              errorMessage: 'Title must be 0-25 characters'
-          },
-      },
-      'url': {
-          optional: {
-              options: [{checkFalsy: true}]
-          },
-          isLength: {
+        'title': {
+            optional: true,
+            isLength: {
+                options: [{min: 0, max: 25}],
+                errorMessage: 'Title must be 0-25 characters'
+            },
+        },
+        'url': {
+            optional: {
+                options: [{checkFalsy: true}]
+            },
+            isLength: {
                 options: [{min: 0, max: 64}],
                 errorMessage: 'URL must be 0-64 characters'
-          },
-          isURL: {
-              errorMessage: 'Invalid URL'
-          }
-      },
-      'folder_id': {
-          notEmpty: true,
-          isLength: {
-              options: [{min: 1, max:11}]
-          },
-          isInt: true,
-          errorMessage: 'Invalid folder id'
-      }
+            },
+            isURL: {
+                errorMessage: 'Invalid URL'
+            }
+        },
+        'folder_id': {
+            isInt: {
+                errorMessage: 'Folder id must be an integer'
+            },
+            isLength: {
+                options: [{min: 1, max:11}],
+                errorMessage: 'Invalid folder id'
+            }
+        }
     };
 
     req.checkBody(validate_insert);
@@ -156,7 +157,7 @@ module.exports.insert = function(req, res){
     //req.sanitizeBody('title').escape();
     req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
-    var errors = req.validationErrors();
+    var errors = req.validationErrors(); 
 
     if (errors) {
         req.flash('error_messages', errors);

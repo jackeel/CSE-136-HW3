@@ -39,7 +39,8 @@ INSERT INTO `users` (`id`, `username`, `password`)
 VALUES
 	(1, 'user1', 'H4ND7KTAGyUqZ8oXMFhDNDerr7JSP+opq+W7b6Rf+Ls=')/*a*/,
 	(2, 'user2', 'user2'),
-	(3, 'user3', 'user3');
+	(3, 'user3', 'user3'),
+	(4, 'a', 'H4ND7KTAGyUqZ8oXMFhDNDerr7JSP+opq+W7b6Rf+Ls=');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
