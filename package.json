@@ -15,7 +15,9 @@
     "npm": "^3.8.8",
     "xoauth2": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemailer": "^2.4.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
