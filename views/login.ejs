@@ -20,13 +20,13 @@
            </div>
     <% } %>
     <div class="signup-body">
-    <form action="/login" method="POST">
+    <form action="/login" method="POST" onsubmit="return validateForm()">
         <fieldset class="inputs">
             <div class="signup-field">
-                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false">
+                <input type="text" name="username" id="username" value="" placeholder="Username" spellcheck="false" maxlength="25" autofocus>
             </div>
             <div class="signup-field">
-                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false">
+                <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64">
             </div>
         </fieldset>
         <div class="signup-button">
