@@ -468,6 +468,23 @@ button.card__button:hover {
   color: #FF9EAE;
 }
 
+/*** Select Dropdown ***/
+select.select-dropdown-content {
+    border: 1px solid #a7a7a7;
+    border-radius: 4px;
+    background-color: #6C7A89;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #fff;
+}
+
+select.select-dropdown-content option {
+    color: #FFF;
+    background-color: #6C7A89;
+    display: block;
+}
+
+
 /*** TABS ***/
 .tabs {
   line-height: 24px;

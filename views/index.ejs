@@ -39,13 +39,15 @@
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
 				<form method="get" name="orderBy">
-					<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>
-			        	<option selected disabled>Sort</option>
-			        	<option value="bookmarks.title" <%=order_by == "title" ? "selected" : ""%>>Title</option>
-			        	<option value="bookmarks.url" <%=order_by == "url" ? "selected" : ""%>>URL</option>
-			        	<option value="bookmarks.create_date" <%=order_by == "create_date" ? "selected" : ""%>>Create Date</option>
-			        	<option value="bookmarks.last_visit_date" <%=order_by == "last_visit_date" ? "selected" : ""%>>Last Visits</option>
-			        	<option value="bookmarks.star" <%=order_by == "star" ? "selected" : ""%>>Starred</option>
+				    <input name="Search" type="hidden" value="<%= search%>"/>
+					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
+					<select class="select-dropdown-content" name="SortBy" onchange='this.form.submit()'>
+			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
+			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
+			        	<option value="bookmarks.url" <%=order_by == "bookmarks.url" ? "selected" : ""%>>URL</option>
+			        	<option value="bookmarks.create_date" <%=order_by == "bookmarks.create_date" ? "selected" : ""%>>Create Date</option>
+			        	<option value="bookmarks.last_visit_date" <%=order_by == "bookmarks.last_visit_date" ? "selected" : ""%>>Last Visits</option>
+			        	<option value="bookmarks.star" <%=order_by == "bookmarks.star" ? "selected" : ""%>>Starred</option>
 			        </select>
 			        <noscript><input type="submit" value="Submit"></noscript>
 			    </form>
