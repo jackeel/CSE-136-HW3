@@ -102,6 +102,7 @@ app.use(function(req, res, next) {
 
 /* Routes - consider putting in routes.js */
 app.get('/login', users.loginForm);
+app.get('/', users.loginForm);
 app.post('/login', users.login);
 //app.get('/logout', users.logout);
 app.get('/signup', users.signupForm);
