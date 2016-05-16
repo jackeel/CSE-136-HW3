@@ -10,3 +10,5 @@
 {"timestamp":"2016-05-16T20:50:14.125Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:50:56.849Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:51:52.393Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T22:12:27.008Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T22:14:37.235Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
