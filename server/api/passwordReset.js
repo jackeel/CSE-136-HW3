@@ -3,12 +3,12 @@ var db = require('../config/db');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
 
+
 module.exports.passwordresetForm = function(req, res){
   res.render('passwordReset');
 };
 
 var smtpTransport = nodemailer.createTransport('smtps://BookmarxBot%40gmail.com:b00kmarx@smtp.gmail.com');
-
 var mailOptions = {
     from: '',
     to: '',
@@ -25,13 +25,27 @@ module.exports.passwordReset = function(req, res){
     // Uncomment once email is added
     // var email = db.escape(req.body.email);
     // var queryString = 'SELECT * FROM users WHERE email = ' + email;
+    var password = req.body.password;
+    var retypePassword = req.body.retypePassword;
+    if (password == retypePassword) {
     var username = db.escape(req.body.username);
     var queryString = 'SELECT * FROM users WHERE username = ' + username;
     db.query(queryString, function(err, users) {
         if(err) throw err;
         if (users.length == 1) {
             var generatedLink = 'DUMMY LINK';
-            setMailOptions(mailOptions, users[0].username, users[0].email, generatedLink);
+            var password = crypto
+                  .createHmac('SHA256',config.SECRET)
+                  .update(req.body.password)
+                  .digest('base64');
+
+            var updateQueryString = 'UPDATE users SET password = ' + "'" + password + "'" +  ' WHERE username = ' + username;
+            db.query(updateQueryString, function(err, users) {
+               if (err) throw err;
+            });
+
+            setMailOptions(mailOptions, users[0].username, generatedLink);
+            //setMailOptions(mailOptions, users[0].username, users[0].email, generatedLink);
 
             smtpTransport.sendMail(mailOptions, function(error, info) {
                 if(error) {
@@ -44,25 +58,28 @@ module.exports.passwordReset = function(req, res){
             res.render('passwordReset', {errors: [{msg: "No account exists for that email."}]});
         }
     });
+  }
+  else {
+    res.render('passwordReset', {errors: [{msg: "Not same password"}]});
+  }
+
 };
 
 
 /**
  * Set params for mailOptions.
  */
-function setMailOptions(mailOptions, username, email, link) {
+//function setMailOptions(mailOptions, username, email, link) {
+function setMailOptions(mailOptions, username,link) {
     mailOptions.from = 'BookmarxBot@gmail.com';
     // Hardcode your own email here to test.
-    mailOptions.to = 'jal179@ucsd.edu'; // Use email once it's added to schema
-    mailOptions.subject = 'Bookmarx - Password Reset Link';
+    mailOptions.to = 'sthapa@ucsd.edu'; // Use email once it's added to schema
+    mailOptions.subject = 'Bookmarx - Password Reset Successful';
     mailOptions.text = 'Hello ' + username +
-                       ', \n\nYou told us you forgot your password. ' +
-                       'Use the following link to set a new password.\n\n' + link + ' \n\n' +
-                       'If you didn\'t mean to reset your password, ignore this email and your email will stay the same.' +
+                       ', \n\nYour Password has been reset successfully. ' +
+                       'If you didn\'t mean to reset your password, ignore this email and your password will stay the same.' +
                        '\n\nThe Bookmarx Team';
-    mailOptions.html = '<p>Hello ' + username+ ',</p><br><p>You told us you forgot your password. ' +
-                       'Use the following link to set a new password.</p><br><br>' +
-                       '<a href="' + link + '">' + link + '</a><br><br>' +
-                       '<p>If you didn\'t mean to reset your password, ignore this email and your email will stay the same.</p>' +
+    mailOptions.html = '<p>Hello ' + username+ ',</p><br><p>Your Password has been reset successfully. ' +
+                       '<p>If you didn\'t mean to reset your password, ignore this email and your password will stay the same.</p>' +
                        '<br><br><p>The Bookmarx Team</p>';
 }
