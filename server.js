@@ -4,9 +4,6 @@ var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
 var folders = require('./server/api/folders.js');
 var reset = require('./server/api/passwordReset.js');
-
-db.init();
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
@@ -54,12 +51,14 @@ var logger = new winston.Logger({
 
 //initialize db
 db.init();
-
 app.set('x-powered-by', false);
 app.use(mySession);
 
-
 /*  Not overwriting default views directory of 'views' */
+if( app.get('env') != 'development' ) {
+  app.set('views', __dirname + '/www/views');
+}
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -147,7 +146,7 @@ app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
 // set trap if a disallowed endpoint is hit and log them.
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
-    res.sendFile('/views/robots.txt', { root: __dirname});
+    res.sendFile(app.get('views')+'/robots.txt');
 });
 
 app.use('/delete',function(req, res, next){
@@ -200,7 +199,7 @@ app.use(function(req, res, next){
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {
-    res.sendFile('/views/404.html', { root: __dirname});
+    res.sendFile(app.get('views')+'/404.html');
     return;
   }
   // respond with json
