@@ -1,6 +1,24 @@
 var config = require('../config/config');
 var db = require('../config/db');
 var crypto = require('crypto');
+var winston = require('winston');
+
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.File({
+            name: 'user-actions',
+            level: 'debug',
+            filename: './server/logs/db.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: false
+        })
+    ],
+    exitOnError: false
+});
 
 /**
  * Render forms
@@ -63,6 +81,9 @@ module.exports.login = function(req, res) {
             if (rows.length == 1) {
                 req.session.userId = rows[0].id;
                 res.redirect('/list');
+                logger.log('debug', "user-actions: login",
+                    {timestamp: Date.now(), user:username, ip: req.ip}
+                );
             } else {
                 errors = [{msg: 'Incorrect username/password'}];
                 res.render('login', {errors: errors});
@@ -122,8 +143,10 @@ module.exports.signup = function(req, res) {
 
         db.query(queryString, function(err, rows) {
             if (err) throw err;
-          
             res.redirect('/login');
+            logger.log('debug', "user-actions: new user",
+              {timestamp: Date.now(), user:username, ip: req.ip}
+            );
         });
     }
 };
@@ -156,16 +179,4 @@ module.exports.passwordReset = function(req, res) {
 module.exports.logout = function(req, res) {
     req.session.destroy();
     res.redirect('/login');
-};
-
-/**
- * Verify a user is logged in.  This middleware will be called before every request to the books directory.
- */
-module.exports.auth = function(req, res, next) {
-  if (req.session && req.session.user === config.USERNAME) {
-    return next();
-  }
-  else {
-    res.redirect('/login');
-  }
 };
