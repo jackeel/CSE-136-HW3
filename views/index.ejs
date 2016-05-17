@@ -113,11 +113,11 @@
                             <a href="#close" title="Close" class="close x-button">x</a>
                             <div class="tabs is-centered">
                                 <ul>
-                                    <li id="add-bookmark" class="is-active"><a>Add Folder</a></li>
+                                    <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
                             <form method='post' action='folders'>
-                                <div class="form" id="add-bookmark-form">
+                                <div class="form" id="add-bookmark-form1">
                                     <input type="text" name="name" placeholder="Name">
 
                                     <div class="buttonWrapper">
@@ -126,7 +126,7 @@
                             </form>
                         </div>
                         <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors" class="insertupdate-errors">
+                        <div id="insertupdate-errors1" class="insertupdate-errors">
                             <ul>
                                 <% for(var i=0; i < errors.length; i++) { %>
                                 <li><%= errors[i].msg %></li>
@@ -177,7 +177,7 @@
 							<% } else { %>
 								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>
-							
+
 							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
