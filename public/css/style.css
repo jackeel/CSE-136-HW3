@@ -346,9 +346,10 @@ h1 {
 
 #sidebar{
   width: 18%;
+  min-width: 160px;
   height: 100%;
   float: left;
-  background-color: #474448; 
+  background-color: #474448;
   position: fixed;
   z-index: 5;
   padding-top: 100px;
@@ -435,6 +436,13 @@ h1 {
   padding: 80px 1em;
   padding-right: 0;
   background-color: #FFF;
+}
+
+input[type="file" i]::-webkit-file-upload-button, button {
+  border:2px solid #FFF;
+  background-color: #6C7A89;
+  color: #fff;
+  font-size: 15px;
 }
 
 input {
@@ -529,7 +537,7 @@ button#menu:hover .fa {
 }
 
 .navbar input,
-.navbar button, 
+.navbar button,
 .navbar a  {
     padding: 10px;
     text-decoration: none;
@@ -857,6 +865,12 @@ select.select-dropdown-content option {
 #import-bookmark-form {
   display: none;
 }
+/***hide sidebar csss ***/ 
+.showSidebar:target #sidebar
+{
+  display: block; 
+}
+
 
 /*** MODAL ***/
 .modalDialog {
@@ -900,7 +914,7 @@ select.select-dropdown-content option {
   font-weight: 700;
   letter-spacing: 1px;
   font-size: 20px;
-  
+
 }
 .modalDialog button:hover {
   background-color: #FF9EAE;
@@ -956,6 +970,12 @@ select.select-dropdown-content option {
 .insertupdate-errors li {
   display: list-item;
 }
+
+.hideClose
+  {
+    display: none; 
+  }
+
 /************************/
 
 @media screen and (max-width: 765px) {
@@ -968,6 +988,10 @@ select.select-dropdown-content option {
     padding: 160px 1em;
     padding-right: 0;
     background-color: #FFF;
+  }
+  #sidebar
+  {
+    padding-top: 170px !important;
   }
 }
 
@@ -984,8 +1008,10 @@ select.select-dropdown-content option {
 }
 
 @media screen and (max-width: 1030px) {
+
   #sidebar {
     display: none;
+    padding-top: 120px;
   }
   .right {
     width: 100%;
@@ -995,17 +1021,24 @@ select.select-dropdown-content option {
   }
   .card-min-width
   {
+    float: right;
     min-width: 380px;
   }
   #right
   {
-    width: 100%; 
+    width: 100%;
     height: 100%;
-    float: none; 
+    float: none;
     background-color: #FFF;
   }
 
+  .hideClose
+  {
+    display: block; 
+  }
+
 }
+
 
 a.card__button .fa {
   color: #474448;
@@ -1114,7 +1147,7 @@ a.card__button {
 }
 
 .dropdown input.input-description {
-  padding-bottom: 3em; 
+  padding-bottom: 3em;
   word-wrap: break-word;
 }
 
@@ -1127,15 +1160,15 @@ a.card__button {
 }
 
 .dropdown :-moz-placeholder { /* Firefox 18- */
-   color: #CACACA;  
+   color: #CACACA;
 }
 
 .dropdown ::-moz-placeholder {  /* Firefox 19+ */
-   color: #CACACA;  
+   color: #CACACA;
 }
 
-.dropdown :-ms-input-placeholder {  
-   color: #CACACA;  
+.dropdown :-ms-input-placeholder {
+   color: #CACACA;
 }
 
 /*GOOOGLE FONT*/
@@ -1336,7 +1369,7 @@ input.edit-button, a.edit-button {
 
 .nav-btn
 {
-  padding: 6px !important; 
+  padding: 6px !important;
   cursor: pointer;
 }
 
