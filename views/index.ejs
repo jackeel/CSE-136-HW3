@@ -40,8 +40,6 @@
 				<form method="get" name="orderBy">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
-
-					<nobr>
 					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
 			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
 			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
@@ -50,9 +48,7 @@
 			        	<option value="bookmarks.last_visit_date" <%=order_by == "bookmarks.last_visit_date" ? "selected" : ""%>>Last Visits</option>
 			        	<option value="bookmarks.star" <%=order_by == "bookmarks.star" ? "selected" : ""%>>Starred</option>
 			        </select>
-
-			        <noscript><input class="nav-btn" type="submit" value="Sort!"></noscript>
-			        </nobr>
+			        <noscript><input class = "nav-btn" type="submit" value="Sort!"></noscript>
 			    </form>
 				<!--		</div> </div>  -->
 		  		</li>
@@ -89,7 +85,7 @@
 
 											<div class="ListFieldWrapper">
 											<select class="select-dropdown-content" name="folder_id">
-                                                <% folders.forEach(function(folder) { %>
+												<% folders.forEach(function(folder) { %>
 													<option value="<%= folder.id%>" <%=current_folder_id == folder.id ? "selected" : ""%> ><%= folder.name %></option>
 												<% }); %>
 											</select>
@@ -117,11 +113,11 @@
                             <a href="#close" title="Close" class="close x-button">x</a>
                             <div class="tabs is-centered">
                                 <ul>
-                                    <li id="add-bookmark" class="is-active"><a>Add Folder</a></li>
+                                    <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
                             <form method='post' action='folders'>
-                                <div class="form" id="add-bookmark-form">
+                                <div class="form" id="add-bookmark-form1">
                                     <input type="text" name="name" placeholder="Name">
 
                                     <div class="buttonWrapper">
@@ -130,7 +126,7 @@
                             </form>
                         </div>
                         <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors" class="insertupdate-errors">
+                        <div id="insertupdate-errors1" class="insertupdate-errors">
                             <ul>
                                 <% for(var i=0; i < errors.length; i++) { %>
                                 <li><%= errors[i].msg %></li>
@@ -139,44 +135,6 @@
                         </div>
                         <% } %>
                     </div>
-                </div>
-                <% bookmarks.forEach(function(bookmark) { %>
-                <div id="editBookmark<%= bookmark.id %>" class="modalDialog">
-                        <div class="grid grid-pad">
-                            <a href="#close" title="Close" class="close x-button">x</a>
-                            <div class="tabs is-centered">
-                                <ul>
-                                    <li id="edit-bookmark" class="is-active"><a>Edit Bookmark</a></li>
-                                </ul>
-                            </div>
-                            <form action="/bookmarks/update/<%= bookmark.id %>" method="post">
-                                <div class="form" id="edit-bookmark-form">
-                                    <input type="text" name="title"  value="<%= bookmark.title %>" maxlength="25" autofocus>
-                                    <input type="text" name="url" value="<%= bookmark.url %>" maxlength="64">
-                                    <select name="folder_id">
-                        				<% folders.forEach(function(folder) { %>
-                            				<option value="<%= folder.id%>" <%=bookmark.folder_id == folder.id ? "selected" : ""%>><%= folder.name %></option>
-                        				<% }); %>
-                    				</select>
-
-                                    <div class="buttonWrapper">
-                                        <div><input type='submit' value="Save"></div>
-										      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
-                                    </div>
-                            </form>
-                        </div>
-                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors" class="insertupdate-errors">
-                            <ul>
-                                <% for(var i=0; i < errors.length; i++) { %>
-                                <li><%= errors[i].msg %></li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-                <% }); %>
 	  		</li>
 		</ul>
 	</nav>
@@ -194,10 +152,16 @@
       <div class="buttonWrapper">
 
 
+<<<<<<< HEAD
+      	<a href="#addFolder" ><i class="fa fa-plus-circle fa-lg"></i> Folder</a>
+          <%console.log(current_folder_id)%>
+      	<div><a href="/bookmarks/download" class="fa fa-download fa-lg"></a> Export</div>
+=======
       	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
 
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
       	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
+>>>>>>> 584773a06db797787fb4d020114dd54783718a00
 	  </div>
     </div>
     <div id="right">
@@ -219,7 +183,8 @@
 							<% } else { %>
 								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>
-							<a class="card__button" href="#editBookmark<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+
+							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
