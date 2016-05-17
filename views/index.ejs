@@ -79,10 +79,10 @@
 						<!-- -->
 							  <form method='post' action='/insert'>
 							        <div class="form" id="add-bookmark-form">
-									    <input type="text" name="title" placeholder="Title">
+									    <input type="text" name="title" placeholder="Title" required>
 
 									    <div class="textFieldWrapper">
-									      <input type="text" name="url" placeholder="http://www.example.com">
+									      <input type="text" name="url" placeholder="http://www.example.com" required>
 									    </div>
 
 											<div class="ListFieldWrapper">
@@ -131,7 +131,7 @@
                                     </div>
                             </form>
                         </div>
-                   
+
                     </div>
                 </div>
 
@@ -144,27 +144,25 @@
                                     <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
+                            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+                            <div id="insertupdate-errors1" class="insertupdate-errors">
+                                <ul>
+                                    <% for(var i=0; i < errors.length; i++) { %>
+                                    <li><%= errors[i].msg %></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            <% } %>
                             <form method='post' action='folders'>
                                 <div class="form" id="add-bookmark-form1">
-                                    <input type="text" name="name" placeholder="Name">
+                                    <input type="text" name="name" placeholder="Name" required>
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Save"></div>
                                     </div>
                             </form>
                         </div>
-                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors1" class="insertupdate-errors">
-                            <ul>
-                                <% for(var i=0; i < errors.length; i++) { %>
-                                <li><%= errors[i].msg %></li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <% } %>
                     </div>
-
-
 	  		</li>
 		</ul>
 	</nav>

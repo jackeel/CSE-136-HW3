@@ -145,19 +145,15 @@ module.exports.insert = function(req, res){
     req.sanitizeBody('url').trim();
     var validate_insert = {
         'title': {
-            optional: true,
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Title must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Bookmark title must be 1-25 characters'
             },
         },
         'url': {
-            optional: {
-                options: [{checkFalsy: true}]
-            },
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'URL must be 0-64 characters'
+                options: [{min: 1, max: 64}],
+                errorMessage: 'Bookmark URL must be 1-64 characters'
             },
             isURL: {
                 errorMessage: 'Invalid URL'
@@ -211,19 +207,15 @@ module.exports.update = function(req, res){
 
     var validate_update = {
         'title': {
-            optional: true,
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Title must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Bookmark title must be 1-25 characters'
             },
         },
         'url': {
-            optional: {
-                options: [{checkFalsy: true}]
-            },
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'URL must be 0-64 characters'
+                options: [{min: 1, max: 64}],
+                errorMessage: 'Bookmark URL must be 1-64 characters'
             },
             isURL: {
                 errorMessage: 'Invalid URL'

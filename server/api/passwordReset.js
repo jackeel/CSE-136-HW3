@@ -33,16 +33,14 @@ module.exports.passwordReset = function(req, res) {
         'username': {
             isLength: {
                 options: [{min: 0, max: 25}],
-                errorMessage: 'Username must be 0-25 characters'
+                errorMessage: 'Username must be 1-25 characters'
             },
-            errorMessage: 'Invalid username'
         },
         'password': {
             isLength: {
                 options: [{min: 0, max: 64}],
-                errorMessage: 'Password must be 0-64 characters'
+                errorMessage: 'Password must be 1-64 characters'
             },
-            errorMessage: 'Invalid password'
         },
         'confirm_password': {
             equals: {
