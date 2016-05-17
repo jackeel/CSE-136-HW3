@@ -17,10 +17,10 @@
 <body>
 	<nav class="navbar">
 		<ul>
-			<li class="navbar-left menu-button">
+			<li class="navbar-left menu-button full-width">
 				<a class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
 			</li>
-	  		<li class="navbar-left search">
+	  		<li class="navbar-left search full-width">
 	  			<form method="get" name="search">
 	  				<% if(search == '') { %>
 	  					<input name="Search" type="text" placeholder="Search Bookmarks" />
@@ -34,13 +34,13 @@
 	  				<button><i class="fa fa-search fa-lg"></i></button>
 	  			</form>
 	  		</li>
-		  		<li class="navbar-right">
+		  		<li class="navbar-right min-sort-size">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
 				<form method="get" name="orderBy">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
-					<select class="select-dropdown-content" name="SortBy" onchange='this.form.submit()'>
+					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
 			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
 			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
 			        	<option value="bookmarks.url" <%=order_by == "bookmarks.url" ? "selected" : ""%>>URL</option>
@@ -48,7 +48,7 @@
 			        	<option value="bookmarks.last_visit_date" <%=order_by == "bookmarks.last_visit_date" ? "selected" : ""%>>Last Visits</option>
 			        	<option value="bookmarks.star" <%=order_by == "bookmarks.star" ? "selected" : ""%>>Starred</option>
 			        </select>
-			        <noscript><input type="submit" value="Submit"></noscript>
+			        <noscript><input class = "nav-btn" type="submit" value="Sort!"></noscript>
 			    </form>
 				<!--		</div> </div>  -->
 		  		</li>
