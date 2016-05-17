@@ -141,26 +141,21 @@ app.post('/upload', function(request, response) {
       }
       //console.log(data);
       var json_bookmark = JSON.parse(data);
-      json_bookmark["folders"].forEach(function(folder) {
-        folder_name = folder["name"];
-        folder["bookmarks"].forEach(function(bookmark) {
+      json_bookmark.forEach(function(bookmark) {
           title = bookmark["title"];
           url = bookmark["url"];
-          bookmark_desc = bookmark["description"];
-
-          var selectString = 'SELECT * FROM folders WHERE name = "' + folder_name + '"';
-          console.log(selectString);
-          db.query(selectString, function(err, folder) {
-          if (err) throw err;
-          console.log(folder[0].id);
-          var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES ( "' + title + '", "' + url + '", ' + folder[0].id + ')';
-          console.log(queryString);
+          id = bookmark["id"];
+          desc = bookmark["description"];
+          user_id = bookmark["user_id]"];
+          star = bookmark["star"];
+          folder_id = bookmark["folder_id"];
+          var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
+            title + '", "' + url + '", ' + folder_id + ', "' + desc + '", '
+             + star + ')';
             db.query(queryString, function(err){
               if (err) throw err;
             });
           });
-        });
-      });
     });
   response.redirect('/list');
   })
