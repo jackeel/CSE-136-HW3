@@ -12,6 +12,15 @@
 </head>
 <body>
     <h1>Log In</h1>
+    <% if(typeof successes !== 'undefined' && successes.length > 0) { %>
+            <div class="signup-successes">
+               <ul>
+               <% for(var i=0; i < successes.length; i++) { %>
+                   <li><%= successes[i].msg %></li>
+               <% } %>
+               </ul>
+           </div>
+    <% } %>
     <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
             <div class="signup-errors">
                <ul>

@@ -73,8 +73,9 @@ app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
 
-/* Give all views access to any flashed error messages */
+/* Give all views access to any flashed success or error messages */
 app.use(function(req, res, next) {
+    res.locals.success_messages = req.flash('success_messages');
     res.locals.error_messages = req.flash('error_messages');
     next();
 });
@@ -109,10 +110,10 @@ app.use(function(req, res, next) {
 
 
 /* Routes - consider putting in routes.js */
-app.get('/login', users.loginForm);
+app.get('/login', requireLogout, users.loginForm);
 app.get('/', users.loginForm);
 app.post('/login', users.login);
-//app.get('/logout', users.logout);
+app.get('/logout', requireLogin, users.logout);
 app.get('/signup', users.signupForm);
 app.post('/signup', users.signup);
 app.get('/passwordReset', reset.passwordresetForm);
@@ -132,6 +133,15 @@ function requireLogin(req, res, next) {
         next();
     }
 };
+
+function requireLogout(req, res, next) {
+    if (req.userId){
+        res.redirect('/list');
+    } else {
+        next();
+    }
+};
+
 
 app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
 app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
