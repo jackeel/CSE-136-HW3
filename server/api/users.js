@@ -24,7 +24,10 @@ var logger = new winston.Logger({
  * Render forms
  */
 module.exports.loginForm = function(req, res){
-    res.render('login');
+    res.render('login', {
+        successes: res.locals.success_messages,
+        errors: res.locals.error_messages
+    });
 };
 
 module.exports.signupForm = function(req, res){
@@ -177,7 +180,8 @@ module.exports.signup = function(req, res) {
         db.query(queryString, function(err, rows) {
             if (err) throw err;
             var successes = [{msg: 'You have signed up'}];
-            res.render('login', {successes: successes});
+            req.flash("success_messages", successes);
+            res.redirect('/login');
             logger.log('debug', "user-actions: new user",
               {timestamp: Date.now(), user:username, ip: req.ip}
             );
@@ -189,7 +193,9 @@ module.exports.signup = function(req, res) {
  * Clear out the session to logout the user
  */
 module.exports.logout = function(req, res) {
-    var successes = [{msg: 'You have logged out.'}]
-    req.session.destroy();
-    res.render('login', {successes: successes});
+    var successes = [{msg: 'You have logged out'}];
+    req.flash('success_messages', successes);
+
+    req.session.destroy();  // must flash message first before destroying session
+    res.redirect('/login');
 };

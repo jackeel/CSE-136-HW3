@@ -115,14 +115,14 @@ app.use(function(req, res, next) {
 
 
 /* Routes - consider putting in routes.js */
+app.get('/', requireLogout, users.loginForm);
 app.get('/login', requireLogout, users.loginForm);
-app.get('/', users.loginForm);
-app.post('/login', users.login);
+app.post('/login', requireLogout, users.login);
 app.get('/logout', requireLogin, users.logout);
-app.get('/signup', users.signupForm);
-app.post('/signup', users.signup);
-app.get('/passwordReset', reset.passwordresetForm);
-app.post('/passwordReset', reset.passwordReset);
+app.get('/signup', requireLogout, users.signupForm);
+app.post('/signup', requireLogout, users.signup);
+app.get('/passwordReset', requireLogout, reset.passwordresetForm);
+app.post('/passwordReset', requireLogout, reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);

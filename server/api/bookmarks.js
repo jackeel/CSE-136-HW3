@@ -14,7 +14,7 @@ module.exports.list = function(req, res) {
         current_folder_id: req.current_folder_id,
         order_by: req.order_by,
         search: req.search,        
-        errors: res.locals.error_messages,
+        errors: res.locals.error_messages
     });
 }
 
