@@ -45,7 +45,7 @@ module.exports.passwordReset = function(req, res) {
             errorMessage: 'Invalid password'
         },
         'confirm_password': {
-            matches: {
+            equals: {
                 options: [req.body.password],
                 errorMessage: 'Passwords must match'
             },
@@ -53,8 +53,9 @@ module.exports.passwordReset = function(req, res) {
     };
     req.checkBody(validate_passwordReset);
     var errors = req.validationErrors();
-    if (req.validationErrors()) {
+    if (errors) {
         res.render('passwordReset', {errors: errors});
+        return;
     } else {
         // Uncomment once email is added
         // var email = db.escape(req.body.email);
@@ -63,7 +64,7 @@ module.exports.passwordReset = function(req, res) {
         var password = db.escape(req.body.password);
         var confirm_password = db.escape(req.body.confirm_password);
 
-        var queryString = 'SELECT salt FROM users WHERE username = ' + username;
+        var queryString = 'SELECT * FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
             if(err) throw err;
             if(rows.length == 1) {
@@ -92,7 +93,7 @@ module.exports.passwordReset = function(req, res) {
                     */
                 });
                 /* Remove block after figuring out async */
-                setMailOptions(mailOptions, username, email);
+                setMailOptions(mailOptions, username, rows[0].email);
                 //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
 
                 smtpTransport.sendMail(mailOptions, function(error, info) {

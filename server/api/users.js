@@ -32,7 +32,7 @@ module.exports.signupForm = function(req, res){
 };
 
 /**
- * Attempt to login the user.  Redirect to /books on successful login and /login on unsuccessful attempt.
+ * Attempt to login the user.  Redirect to /list on successful login and /login on unsuccessful attempt.
  */
 module.exports.login = function(req, res) {
     var validate_login = {
@@ -120,7 +120,7 @@ module.exports.signup = function(req, res) {
             errorMessage: 'Invalid password'
         },
         'confirm_password': {
-            matches: {
+            equals: {
                 options: [req.body.password],
                 errorMessage: 'Passwords must match'
             },
@@ -131,6 +131,7 @@ module.exports.signup = function(req, res) {
 
     if (errors) {
         res.render('signup', {errors: errors});
+        return;
     } else {
         // Fields are valid. Continue signup
         var username = db.escape(req.body.username);
@@ -147,6 +148,7 @@ module.exports.signup = function(req, res) {
                     errors = [{msg: 'Username already taken'}];
                     res.render('signup', {errors: errors});
                     console.log("inside query ..." + errors.msg);
+                    return;
                 }
         });
 
@@ -157,6 +159,7 @@ module.exports.signup = function(req, res) {
             if(rows.length > 0) {
                 errors = [{msg: 'Email already taken'}];
                 res.render('signup', {errors: errors});
+                return;
             }
         }); 
     */
