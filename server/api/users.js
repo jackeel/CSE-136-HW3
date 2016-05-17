@@ -41,17 +41,15 @@ module.exports.login = function(req, res) {
     var validate_login = {
         'username': {
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Username must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Username must be 1-25 characters'
             },
-            errorMessage: 'Invalid username'
         },
         'password': {
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'Password must be 0-64 characters'
+                options: [{min: 1, max: 64}],
+                errorMessage: 'Password must be 1-64 characters'
             },
-            errorMessage: 'Invalid password'
         }
     };
     req.checkBody(validate_login);
@@ -110,17 +108,15 @@ module.exports.signup = function(req, res) {
         },
         'username': {
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Username must be 0-25 characters'
-            },
-            errorMessage: 'Invalid username'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Username must be 1-25 characters'
+            }
         },
         'password': {
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'Password must be 0-64 characters'
-            },
-            errorMessage: 'Invalid password'
+                options: [{min: 1, max: 64}],
+                errorMessage: 'Password must be 1-64 characters'
+            }
         },
         'confirm_password': {
             equals: {
@@ -142,31 +138,6 @@ module.exports.signup = function(req, res) {
         var password = db.escape(req.body.password);
         var confirm_password = db.escape(req.body.confirm_password);
 
-
-        // Check if username already exists
-        /*var queryString = 'SELECT id FROM users WHERE username = ' + username;
-        db.query(queryString, function(err, rows) {
-                if(err) throw err;
-                if(rows.length > 0) {
-                    errors = [{msg: 'Username already taken'}];
-                    res.render('signup', {errors: errors});
-                    console.log("inside query ..." + errors.msg);
-                    return;
-                }
-        });
-
-        // Check if email already exists
-        var queryString = 'SELECT id FROM users WHERE email = ' + email;
-        db.query(queryString, function(err, rows) {
-            if(err) throw err;
-            if(rows.length > 0) {
-                errors = [{msg: 'Email already taken'}];
-                res.render('signup', {errors: errors});
-                return;
-            }
-        });
-    */
-
         // Valid data so insert user
         var salt = crypto.randomBytes(32).toString('base64');
         var hash = crypto
@@ -178,15 +149,15 @@ module.exports.signup = function(req, res) {
                           '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")'
                            'WHERE NOT EXISTS ( SELECT username FROM users WHERE username = ' + username +
                                          ' and email = ' + email + ')';
-        console.log (queryString);
 
         db.query(queryString, function(err, rows) {
             //if (err) throw err;
             if (err) {
-              errors = [{msg: 'Username/Email is already taken'}];
+              errors = [{msg: 'Email/username already taken'}];
               res.render('signup', {errors: errors});
               return;
             }
+
             var successes = [{msg: 'You have signed up'}];
             req.flash("success_messages", successes);
             res.redirect('/login');
