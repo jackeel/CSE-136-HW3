@@ -54,6 +54,8 @@
 		  		</li>
 	  			<li class="navbar-right">
 	  				<a href="#addBookmark" class="button"><i class="fa fa-plus fa-lg"></i></a>
+	  				<a href="#importBookmark" class="button">import&nbsp;&nbsp;&nbsp;<i class="fa fa-download fa-lg"></i></a>
+
 	  				<div id="addBookmark" class="modalDialog">
 
 				    <div class="grid grid-pad">
@@ -61,7 +63,7 @@
 				    	<div class="tabs is-centered">
 						  <ul>
 						    <li id="add-bookmark" class="is-active"><a>Add Bookmark</a></li>
-						    <li id="import-bookmark"><a>Import Bookmarks</a></li>
+						<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 						  </ul>
 						</div>
 						<!-- Error messages -->
@@ -108,6 +110,35 @@
 						</div>
 					</div>
 				</div>
+				<div id="importBookmark" class="modalDialog">
+                        <div class="grid grid-pad">
+                            <a href="#close" title="Close" class="close x-button">x</a>
+                            <div class="tabs is-centered">
+                                <ul>
+                                    <li id="add-bookmark1" class="is-active"><a>Import Bookmarks!</a></li>
+                                </ul>
+                            </div>
+                            <form method='post' action='folders'>
+                                <div class="form" id="add-bookmark-form1">
+                                    <input type="file" name="file" placeholder="Select JSON File">
+
+                                    <div class="buttonWrapper">
+                                        <div><input type='submit' value="Import"></div>
+                                    </div>
+                            </form>
+                        </div>
+                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+                        <div id="insertupdate-errors1" class="insertupdate-errors">
+                            <ul>
+                                <% for(var i=0; i < errors.length; i++) { %>
+                                <li><%= errors[i].msg %></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <% } %>
+                    </div>
+
+
                     <div id="addFolder" class="modalDialog">
                         <div class="grid grid-pad">
                             <a href="#close" title="Close" class="close x-button">x</a>
@@ -135,6 +166,8 @@
                         </div>
                         <% } %>
                     </div>
+
+
 	  		</li>
 		</ul>
 	</nav>
@@ -154,7 +187,8 @@
 
       	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
 
-          <a href="/bookmarks/download" ><div><i class="fa fa-download fa-lg"></i> Export</div></a>
+
+        <a href="/bookmarks/download" ><div><i class="fa fa-upload fa-lg"></i> Export</div></a>
       	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
 	  </div>
     </div>
