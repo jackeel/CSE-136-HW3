@@ -10,6 +10,8 @@ var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
+var compression = require('compression')
+
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -53,6 +55,8 @@ var logger = new winston.Logger({
 db.init();
 app.set('x-powered-by', false);
 app.use(mySession);
+//turn on compression
+app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
 if( app.get('env') != 'development' ) {
