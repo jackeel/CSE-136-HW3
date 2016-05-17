@@ -1330,9 +1330,10 @@ table.edit-table {
     font-size: 14px;
 }
 
-div.edit-form-container input[type='text'] {
+div.edit-form-container input[type='text'],
+div.edit-form-container input[type='url'] {
     width:100%;
-    border: 1px solid #F0F0F0;
+    border: 1px solid #a7a7a7;
     border-radius: 5px;
 }
 

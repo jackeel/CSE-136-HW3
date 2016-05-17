@@ -141,6 +141,8 @@ module.exports.delete = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.insert = function(req, res){
+    req.sanitizeBody('title').trim();
+    req.sanitizeBody('url').trim();
     var validate_insert = {
         'title': {
             optional: true,
@@ -159,6 +161,10 @@ module.exports.insert = function(req, res){
             },
             isURL: {
                 errorMessage: 'Invalid URL'
+            },
+            matches: {
+                options: ['^https?://', 'i'],
+                errorMessage: 'URL must start with http:// or https://'
             }
         },
         'folder_id': {
@@ -172,16 +178,14 @@ module.exports.insert = function(req, res){
         }
     };
 
-    req.checkBody(validate_insert);
-    req.sanitizeBody('title').trim();
     //req.sanitizeBody('title').escape();
-    req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
+    req.checkBody(validate_insert);
     var errors = req.validationErrors(); 
 
     if (errors) {
         req.flash('error_messages', errors);
-        res.redirect('/list#addModal');  // flash error to the add modal
+        res.redirect('/list#addBookmark');  // flash error to the add modal
     } else {
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
@@ -202,6 +206,9 @@ module.exports.insert = function(req, res){
 module.exports.update = function(req, res){
     var id = req.params.bookmark_id;
 
+    req.sanitizeBody('title').trim();
+    req.sanitizeBody('url').trim();
+
     var validate_update = {
         'title': {
             optional: true,
@@ -220,6 +227,10 @@ module.exports.update = function(req, res){
             },
             isURL: {
                 errorMessage: 'Invalid URL'
+            },
+            matches: {
+                options: ['^https?://', 'i'],
+                errorMessage: 'URL must start with http:// or https://'
             }
         },
         'folder_id': {
@@ -234,11 +245,8 @@ module.exports.update = function(req, res){
     };
 
     req.checkBody(validate_update);
-    req.sanitizeBody('title').trim();
     //req.sanitizeBody('title').escape();
-    req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
-
     var errors = req.validationErrors();
 
     if (errors) {
