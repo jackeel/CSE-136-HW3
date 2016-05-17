@@ -57,6 +57,11 @@ app.use(mySession);
 /*  Not overwriting default views directory of 'views' */
 if( app.get('env') != 'development' ) {
   app.set('views', __dirname + '/www/views');
+  app.use(express.static(__dirname+'/www/public'));
+}
+else
+{
+  app.use(express.static('public'));
 }
 
 app.set('view engine', 'ejs');
