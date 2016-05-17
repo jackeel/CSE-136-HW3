@@ -60,8 +60,10 @@ app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
 if( app.get('env') != 'development' ) {
+  //5 days worth of time
+  var oneWeek = 3600000 * 24 * 7; 
   app.set('views', __dirname + '/www/views');
-  app.use(express.static(__dirname+'/www/public'));
+  app.use(express.static(__dirname+'/www/public', { maxAge: oneWeek }));
 }
 else
 {
