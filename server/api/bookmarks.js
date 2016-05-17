@@ -3,6 +3,7 @@
  */
 
 var db = require('../config/db');
+var fs = require('fs');
 
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
@@ -283,3 +284,13 @@ module.exports.unstar = function(req, res) {
     res.redirect('/list');
   });
 };
+//
+module.exports.download = function(req, res){
+    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(req.bookmarks), function(err) {
+        if(err) {
+            throw err;
+        }
+        var file = __dirname + '/../tmp/bookmarks.json';
+        res.download(file); // Set disposition and send it.
+    });
+}

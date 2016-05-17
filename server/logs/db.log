@@ -10,3 +10,15 @@
 {"timestamp":"2016-05-16T20:50:14.125Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:50:56.849Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:51:52.393Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:02:00.308Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:09:49.297Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:12:34.090Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:15:19.423Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:16:52.325Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:19:19.737Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:20:46.843Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:25:04.015Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:29:13.897Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:31:54.276Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:32:45.898Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-17T04:43:03.633Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
