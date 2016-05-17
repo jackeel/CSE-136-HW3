@@ -10,6 +10,7 @@
 {"timestamp":"2016-05-16T20:50:14.125Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:50:56.849Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-16T20:51:52.393Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+<<<<<<< HEAD
 {"timestamp":"2016-05-17T04:02:00.308Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T04:09:49.297Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T04:12:34.090Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
@@ -22,3 +23,7 @@
 {"timestamp":"2016-05-17T04:31:54.276Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T04:32:45.898Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T04:43:03.633Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+=======
+{"timestamp":"2016-05-16T22:12:27.008Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-16T22:14:37.235Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+>>>>>>> 584773a06db797787fb4d020114dd54783718a00

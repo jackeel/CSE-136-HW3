@@ -6,12 +6,21 @@
 
     <title>Bookmarx - Log In</title>
     <link rel="stylesheet" type="text/css" href="/css/signup.css">
-	<link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Open+Sans:400,300%7CMontserrat:400,700'>
+	<!-- <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Open+Sans:400,300%7CMontserrat:400,700'> -->
 
     <script type="text/javascript" src="/js/login.js"></script>
 </head>
 <body>
     <h1>Log In</h1>
+    <% if(typeof successes !== 'undefined' && successes.length > 0) { %>
+            <div class="signup-successes">
+               <ul>
+               <% for(var i=0; i < successes.length; i++) { %>
+                   <li><%= successes[i].msg %></li>
+               <% } %>
+               </ul>
+           </div>
+    <% } %>
     <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
             <div class="signup-errors">
                <ul>

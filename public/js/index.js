@@ -19,16 +19,36 @@ menuButton.onclick = function() {
 };
 
 var addBookmark = document.getElementById("add-bookmark");
+var addBookmark1 = document.getElementById("add-bookmark1");
 var importBookmark = document.getElementById("import-bookmark");
 var addBookmarkForm = document.getElementById("add-bookmark-form");
+var addBookmarkForm1 = document.getElementById("add-bookmark-form1");
 var importBookmarkForm = document.getElementById("import-bookmark-form");
 var insertupdateErrors = document.getElementById("insertupdate-errors");
+var insertupdateErrors1 = document.getElementById("insertupdate-errors1");
 
 addBookmark.onclick = function() {
 	console.log(addBookmark);
 	importBookmarkForm.style.display = 'none';
 	addBookmarkForm.style.display = 'block';
-    insertupdateErrors.style.display = 'block';
+	addBookmarkForm1.style.display = 'block';
+  insertupdateErrors.style.display = 'block';
+	insertupdateErrors1.style.display = 'block';
+
+	importBookmark.className = "";
+
+	addBookmark.className = "";
+	addBookmark.className = "is-active";
+
+}
+
+addBookmark1.onclick = function() {
+	console.log(addBookmark);
+	importBookmarkForm.style.display = 'none';
+	addBookmarkForm.style.display = 'block';
+	addBookmarkForm1.style.display = 'block';
+  insertupdateErrors.style.display = 'block';
+	insertupdateErrors1.style.display = 'block';
 
 	importBookmark.className = "";
 
@@ -39,8 +59,10 @@ addBookmark.onclick = function() {
 
 importBookmark.onclick = function() {
 	addBookmarkForm.style.display = 'none';
+	addBookmarkForm1.style.display = 'none';
 	importBookmarkForm.style.display = 'block';
-    insertupdateErrors.style.display = 'none';
+  insertupdateErrors.style.display = 'none';
+	insertupdateErrors1.style.display = 'block';
 
 	addBookmark.className = "";
 

@@ -4,15 +4,14 @@ var bookmarks = require('./server/api/bookmarks.js');
 var users = require('./server/api/users.js');
 var folders = require('./server/api/folders.js');
 var reset = require('./server/api/passwordReset.js');
-
-db.init();
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
+var compression = require('compression')
+var oneWeek = 3600000 * 24 * 7; 
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -20,7 +19,7 @@ var mySession = session({
   cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 3600000 * 24 * 7 //one week
+    maxAge: oneWeek //one week
   }
 });
 var app = express();
@@ -54,12 +53,22 @@ var logger = new winston.Logger({
 
 //initialize db
 db.init();
-
 app.set('x-powered-by', false);
 app.use(mySession);
-
+//turn on compression
+app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
+if( app.get('env') != 'development' ) {
+  //5 days worth of time
+  app.set('views', __dirname + '/www/views');
+  app.use(express.static(__dirname+'/www/public', { maxAge: oneWeek }));
+}
+else
+{
+  app.use(express.static('public'));
+}
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -69,8 +78,9 @@ app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
 
-/* Give all views access to any flashed error messages */
+/* Give all views access to any flashed success or error messages */
 app.use(function(req, res, next) {
+    res.locals.success_messages = req.flash('success_messages');
     res.locals.error_messages = req.flash('error_messages');
     next();
 });
@@ -105,14 +115,14 @@ app.use(function(req, res, next) {
 
 
 /* Routes - consider putting in routes.js */
-app.get('/login', users.loginForm);
-app.get('/', users.loginForm);
-app.post('/login', users.login);
-//app.get('/logout', users.logout);
-app.get('/signup', users.signupForm);
-app.post('/signup', users.signup);
-app.get('/passwordReset', reset.passwordresetForm);
-app.post('/passwordReset', reset.passwordReset);
+app.get('/', requireLogout, users.loginForm);
+app.get('/login', requireLogout, users.loginForm);
+app.post('/login', requireLogout, users.login);
+app.get('/logout', requireLogin, users.logout);
+app.get('/signup', requireLogout, users.signupForm);
+app.post('/signup', requireLogout, users.signup);
+app.get('/passwordReset', requireLogout, reset.passwordresetForm);
+app.post('/passwordReset', requireLogout, reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
@@ -128,6 +138,15 @@ function requireLogin(req, res, next) {
         next();
     }
 };
+
+function requireLogout(req, res, next) {
+    if (req.userId){
+        res.redirect('/list');
+    } else {
+        next();
+    }
+};
+
 
 app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.list);
 app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
@@ -149,7 +168,8 @@ app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
 // set trap if a disallowed endpoint is hit and log them.
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
-    res.sendFile('/views/robots.txt', { root: __dirname});
+    res.header("Cache-Control", "public, max-age=" + oneWeek);
+    res.sendFile(app.get('views')+'/robots.txt');
 });
 
 app.use('/delete',function(req, res, next){
@@ -186,12 +206,6 @@ app.listen(config.PORT, function () {
   console.log('Bookmarx app listening on port ' + config.PORT + '!');
 });
 
-/*
-url: '/login1',
-  method: 'GET',
-
-*/
-
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
@@ -202,7 +216,8 @@ app.use(function(req, res, next){
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {
-    res.sendFile('/views/404.html', { root: __dirname});
+    res.header("Cache-Control", "public, max-age=" + oneWeek)
+    res.sendFile(app.get('views')+'/404.html');
     return;
   }
   // respond with json

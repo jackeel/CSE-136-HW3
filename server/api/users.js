@@ -24,19 +24,18 @@ var logger = new winston.Logger({
  * Render forms
  */
 module.exports.loginForm = function(req, res){
-    res.render('login');
+    res.render('login', {
+        successes: res.locals.success_messages,
+        errors: res.locals.error_messages
+    });
 };
 
 module.exports.signupForm = function(req, res){
     res.render('signup');
 };
 
-module.exports.passwordresetForm = function(req, res){
-  res.render('passwordReset');
-};
-
 /**
- * Attempt to login the user.  Redirect to /books on successful login and /login on unsuccessful attempt.
+ * Attempt to login the user.  Redirect to /list on successful login and /login on unsuccessful attempt.
  */
 module.exports.login = function(req, res) {
     var validate_login = {
@@ -64,28 +63,35 @@ module.exports.login = function(req, res) {
         var username = db.escape(req.body.username);
         var password = db.escape(req.body.password);
 
-        var hash = crypto
-              .createHmac('SHA256',config.SECRET)
-              .update(password)
-              .digest('base64');
-
-        var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
-
+        // Find user with provided username/password
+        var queryString = 'SELECT salt FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
+            if (err) throw err;
+            if(rows.length == 1) {
+                var salt = rows[0].salt;
+                var hash = crypto
+                  .createHmac('SHA256', salt)
+                  .update(password)
+                  .digest('base64');
 
-            if (err)
-            {
-              throw err;
-            }
+                var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
-            if (rows.length == 1) {
-                req.session.userId = rows[0].id;
-                res.redirect('/list');
-                logger.log('debug', "user-actions: login",
-                    {timestamp: Date.now(), user:username, ip: req.ip}
-                );
+                db.query(queryString, function(err, rows) {
+                    if (err) throw err;
+
+                    if (rows.length == 1) {
+                        req.session.userId = rows[0].id;
+                        res.redirect('/list');
+                        logger.log('debug', "user-actions: login",
+                            {timestamp: Date.now(), user:username, ip: req.ip}
+                        );
+                    } else {
+                        errors = [{msg: 'Incorrect username/password'}];
+                        res.render('login', {errors: errors});
+                    }
+                });
             } else {
-                errors = [{msg: 'Incorrect username/password'}];
+                errors = [{msg: 'Provided username doesn\'t exist'}];
                 res.render('login', {errors: errors});
             }
         });
@@ -117,7 +123,7 @@ module.exports.signup = function(req, res) {
             errorMessage: 'Invalid password'
         },
         'confirm_password': {
-            matches: {
+            equals: {
                 options: [req.body.password],
                 errorMessage: 'Passwords must match'
             },
@@ -128,21 +134,53 @@ module.exports.signup = function(req, res) {
 
     if (errors) {
         res.render('signup', {errors: errors});
+        return;
     } else {
+        // Fields are valid. Continue signup
         var username = db.escape(req.body.username);
         var email = db.escape(req.body.email);
         var password = db.escape(req.body.password);
         var confirm_password = db.escape(req.body.confirm_password);
 
-        var hash = crypto
-              .createHmac('SHA256',config.SECRET)
-              .update(password)
-              .digest('base64'); 
+    /*
+        // Check if username already exists
+        var queryString = 'SELECT id FROM users WHERE username = ' + username;
+        db.query(queryString, function(err, rows) {
+                if(err) throw err;
+                if(rows.length > 0) {
+                    errors = [{msg: 'Username already taken'}];
+                    res.render('signup', {errors: errors});
+                    console.log("inside query ..." + errors.msg);
+                    return;
+                }
+        });
 
-        var queryString = 'INSERT INTO users (username, password) VALUES (' + username + ', "' +  hash + '")';
+        // Check if email already exists
+        var queryString = 'SELECT id FROM users WHERE email = ' + email;
+        db.query(queryString, function(err, rows) {
+            if(err) throw err;
+            if(rows.length > 0) {
+                errors = [{msg: 'Email already taken'}];
+                res.render('signup', {errors: errors});
+                return;
+            }
+        }); 
+    */
+
+        // Valid data so insert user
+        var salt = crypto.randomBytes(32).toString('base64');
+        var hash = crypto
+              .createHmac('SHA256', salt)
+              .update(password)
+              .digest('base64');
+
+        var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
+                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
 
         db.query(queryString, function(err, rows) {
             if (err) throw err;
+            var successes = [{msg: 'You have signed up'}];
+            req.flash("success_messages", successes);
             res.redirect('/login');
             logger.log('debug', "user-actions: new user",
               {timestamp: Date.now(), user:username, ip: req.ip}
@@ -152,31 +190,12 @@ module.exports.signup = function(req, res) {
 };
 
 /**
- * Reset password
- */
-module.exports.passwordReset = function(req, res) {
-    var validate_passwordReset = {
-        'email': {
-            isEmail: {
-                errorMessage: 'Please enter a valid email'
-            }
-        }
-    };
-
-    req.checkBody(validate_passwordReset);
-    var errors = req.validationErrors();
-
-    if (errors) {
-        res.render('passwordReset', {errors: errors});
-    } else {
-        // TODO: send confirmation email, etc.
-    }
-};
-
-/**
  * Clear out the session to logout the user
  */
 module.exports.logout = function(req, res) {
-    req.session.destroy();
+    var successes = [{msg: 'You have logged out'}];
+    req.flash('success_messages', successes);
+
+    req.session.destroy();  // must flash message first before destroying session
     res.redirect('/login');
 };

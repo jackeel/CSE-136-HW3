@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: 
+Disallow: /list
+Disallow: /bookmarks
+Disallow: /insert
+Disallow: /delete
+Sitemap: http://ec2-54-191-215-183.us-west-2.compute.amazonaws.com/HW2/
