@@ -348,7 +348,7 @@ h1 {
   width: 18%;
   height: 100%;
   float: left;
-  background-color: #474448; 
+  background-color: #474448;
   position: fixed;
   z-index: 5;
   padding-top: 100px;
@@ -435,6 +435,13 @@ h1 {
   padding: 80px 1em;
   padding-right: 0;
   background-color: #FFF;
+}
+
+input[type="file" i]::-webkit-file-upload-button, button {
+  border:2px solid #FFF;
+  background-color: #6C7A89;
+  color: #fff;
+  font-size: 15px;
 }
 
 input {
@@ -529,7 +536,7 @@ button#menu:hover .fa {
 }
 
 .navbar input,
-.navbar button, 
+.navbar button,
 .navbar a  {
     padding: 10px;
     text-decoration: none;
@@ -900,7 +907,7 @@ select.select-dropdown-content option {
   font-weight: 700;
   letter-spacing: 1px;
   font-size: 20px;
-  
+
 }
 .modalDialog button:hover {
   background-color: #FF9EAE;
@@ -999,9 +1006,9 @@ select.select-dropdown-content option {
   }
   #right
   {
-    width: 100%; 
+    width: 100%;
     height: 100%;
-    float: none; 
+    float: none;
     background-color: #FFF;
   }
 
@@ -1114,7 +1121,7 @@ a.card__button {
 }
 
 .dropdown input.input-description {
-  padding-bottom: 3em; 
+  padding-bottom: 3em;
   word-wrap: break-word;
 }
 
@@ -1127,15 +1134,15 @@ a.card__button {
 }
 
 .dropdown :-moz-placeholder { /* Firefox 18- */
-   color: #CACACA;  
+   color: #CACACA;
 }
 
 .dropdown ::-moz-placeholder {  /* Firefox 19+ */
-   color: #CACACA;  
+   color: #CACACA;
 }
 
-.dropdown :-ms-input-placeholder {  
-   color: #CACACA;  
+.dropdown :-ms-input-placeholder {
+   color: #CACACA;
 }
 
 /*GOOOGLE FONT*/
@@ -1278,7 +1285,7 @@ a.card__button {
 
 .nav-btn
 {
-  padding: 6px !important; 
+  padding: 6px !important;
   cursor: pointer;
 }
 
