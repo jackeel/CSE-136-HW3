@@ -956,6 +956,11 @@ select.select-dropdown-content option {
     width: 100% !important;
     text-align: center;
   }
+  .main {
+    padding: 160px 1em;
+    padding-right: 0;
+    background-color: #FFF;
+  }
 }
 
 
@@ -980,6 +985,18 @@ select.select-dropdown-content option {
   .navbar {
     width: 100%;
   }
+  .card-min-width
+  {
+    min-width: 380px;
+  }
+  #right
+  {
+    width: 100%; 
+    height: 100%;
+    float: none; 
+    background-color: #FFF;
+  }
+
 }
 
 a.card__button .fa {
@@ -1255,4 +1272,9 @@ a.card__button {
 {
   padding: 6px !important; 
   cursor: pointer;
+}
+
+.min-input
+{
+  min-width: 300px;
 }

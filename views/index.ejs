@@ -23,7 +23,7 @@
 	  		<li class="navbar-left search full-width">
 	  			<form method="get" name="search">
 	  				<% if(search == '') { %>
-	  					<input name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input class = "min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
 	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
@@ -166,7 +166,7 @@
       			</div>
       		</div>
 			<% bookmarks.forEach(function(bookmark) { %>
-	      	<div class="col-1-3 mobile-col-1-3">
+	      	<div class="col-1-3 mobile-col-1-3 card-min-width">
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
