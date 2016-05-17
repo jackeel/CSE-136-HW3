@@ -346,6 +346,7 @@ h1 {
 
 #sidebar{
   width: 18%;
+  min-width: 160px;
   height: 100%;
   float: left;
   background-color: #474448; 
@@ -857,6 +858,12 @@ select.select-dropdown-content option {
 #import-bookmark-form {
   display: none;
 }
+/***hide sidebar csss ***/ 
+.showSidebar:target #sidebar
+{
+  display: block; 
+}
+
 
 /*** MODAL ***/
 .modalDialog {
@@ -956,6 +963,12 @@ select.select-dropdown-content option {
 .insertupdate-errors li {
   display: list-item;
 }
+
+.hideClose
+  {
+    display: none; 
+  }
+
 /************************/
 
 @media screen and (max-width: 765px) {
@@ -968,6 +981,10 @@ select.select-dropdown-content option {
     padding: 160px 1em;
     padding-right: 0;
     background-color: #FFF;
+  }
+  #sidebar
+  {
+    padding-top: 170px !important;
   }
 }
 
@@ -984,8 +1001,10 @@ select.select-dropdown-content option {
 }
 
 @media screen and (max-width: 1030px) {
+
   #sidebar {
     display: none;
+    padding-top: 120px;
   }
   .right {
     width: 100%;
@@ -995,6 +1014,7 @@ select.select-dropdown-content option {
   }
   .card-min-width
   {
+    float: right;
     min-width: 380px;
   }
   #right
@@ -1005,7 +1025,13 @@ select.select-dropdown-content option {
     background-color: #FFF;
   }
 
+  .hideClose
+  {
+    display: block; 
+  }
+
 }
+
 
 a.card__button .fa {
   color: #474448;

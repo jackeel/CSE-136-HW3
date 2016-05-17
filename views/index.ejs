@@ -172,26 +172,29 @@
 	  		</li>
 		</ul>
 	</nav>
-	<div id="sidebar">
-      <ul>
-            <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
-            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
-            <% folders.forEach(function(folder) { %>
-            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
-                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
-                </li>
+	<div id="openSidebar" class="showSidebar">
+		<div id="sidebar">
+	      <ul>
+	            <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
+	            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
+	            <% folders.forEach(function(folder) { %>
+	            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
+	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+	                </li>
 
-            <% }); %>
-      </ul>
-      <div class="buttonWrapper">
-
-
-      	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
+	            <% }); %>
+	      </ul>
+	      <div class="buttonWrapper">
 
 
-        <a href="/bookmarks/download" ><div><i class="fa fa-upload fa-lg"></i> Export</div></a>
-      	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
-	  </div>
+	      	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
+
+
+	        <a href="/bookmarks/download" ><div><i class="fa fa-upload fa-lg"></i> Export</div></a>
+	        	<a class="hideClose" href="#" ><div><i class="fa fa-times fa-lg"></i>Close</div></a>
+	      	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
+		  </div>
+	    </div>
     </div>
     <div id="right">
       <div class="main grid grid-pad">
