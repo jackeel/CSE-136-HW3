@@ -102,13 +102,16 @@
 								  </form>
 							 </div>
 						<div class="form" id="import-bookmark-form">
+							<form method="post" action="/upload" enctype="multipart/form-data">
 							<div class="textFieldWrapper">
-						      <input type="url" name="url" placeholder="File Path">
+						      <input type="file" name="bookmark-import" placeholder="File Path">
 						    </div>
 						    <div class="buttonWrapper">
-							      	<div><i class="fa fa-folder-open fa-lg"></i> Browse</div>
+						    		<div><input type='submit' value="Upload"></div>
+							      	<!--div><i class="fa fa-folder-open fa-lg" type="submit"></i> Submit</div-->
 							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
 							</div>
+						</form>
 						</div>
 					</div>
 				</div>
