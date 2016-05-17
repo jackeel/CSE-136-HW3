@@ -10,6 +10,8 @@ var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
+var compression = require('compression')
+var oneWeek = 3600000 * 24 * 7; 
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -17,7 +19,7 @@ var mySession = session({
   cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 3600000 * 24 * 7 //one week
+    maxAge: oneWeek //one week
   }
 });
 var app = express();
@@ -53,11 +55,14 @@ var logger = new winston.Logger({
 db.init();
 app.set('x-powered-by', false);
 app.use(mySession);
+//turn on compression
+app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
 if( app.get('env') != 'development' ) {
+  //5 days worth of time
   app.set('views', __dirname + '/www/views');
-  app.use(express.static(__dirname+'/www/public'));
+  app.use(express.static(__dirname+'/www/public', { maxAge: oneWeek }));
 }
 else
 {
@@ -161,6 +166,7 @@ app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
 // set trap if a disallowed endpoint is hit and log them.
 app.get('/robots.txt', function (req, res) {
     res.type('text/plain');
+    res.header("Cache-Control", "public, max-age=" + oneWeek);
     res.sendFile(app.get('views')+'/robots.txt');
 });
 
@@ -198,12 +204,6 @@ app.listen(config.PORT, function () {
   console.log('Bookmarx app listening on port ' + config.PORT + '!');
 });
 
-/*
-url: '/login1',
-  method: 'GET',
-
-*/
-
 
 /* Redirect all 404 to 404.html */
 app.use(function(req, res, next){
@@ -214,6 +214,7 @@ app.use(function(req, res, next){
   res.status(404);
   // respond with html page
   if (req.accepts('html')) {
+    res.header("Cache-Control", "public, max-age=" + oneWeek)
     res.sendFile(app.get('views')+'/404.html');
     return;
   }
