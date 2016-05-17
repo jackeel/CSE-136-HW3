@@ -139,23 +139,62 @@ app.post('/upload', function(request, response) {
       if (err) {
         return console.log(err);
       }
-      //console.log(data);
       var json_bookmark = JSON.parse(data);
       json_bookmark.forEach(function(bookmark) {
-          title = bookmark["title"];
-          url = bookmark["url"];
-          id = bookmark["id"];
-          desc = bookmark["description"];
-          user_id = bookmark["user_id]"];
-          star = bookmark["star"];
-          folder_id = bookmark["folder_id"];
-          var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
-            title + '", "' + url + '", ' + folder_id + ', "' + desc + '", '
-             + star + ')';
-            db.query(queryString, function(err){
-              if (err) throw err;
-            });
+          var bookmark_id = bookmark["id"];
+          var user_id = bookmark["user_id"];
+          var folder_name = bookmark["name"];
+          var title = bookmark["title"];
+          var url = bookmark["url"];
+          var desc = bookmark["description"];
+          var star = bookmark["star"];
+          var folder_id = bookmark["folder_id"];
+          var session_id = request.session.userId;
+          // Not checking if user id is same as the session id, is this necessary?
+          // Checks if the folder exists, and add it if not existing.
+          var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder_name +
+          '" AND id = ' + folder_id;
+          console.log(checkFolder);
+          db.query(checkFolder, function(err, fol){
+            console.log("Check folder!!!");
+            if (err) throw err;
+            // When a folder with same name and folder id does not exist.
+            // Add this folder.
+            if (fol.length == 0) {
+              console.log("NO folder, try to add!!!");
+              var insertFolder = 'INSERT INTO folders (id, name, user_id) VALUES ( ' + 
+              folder_id + ', "' + folder_name + '", ' + session_id + ')';
+              console.log(insertFolder);
+              db.query(insertFolder, function(err){
+                if (err) throw err;
+              });
+            }
           });
+          // Importing other users bookmarks
+          //else {
+          //}
+      });
+
+      // Insert the bookmark
+      /*json_bookmark.forEach(function(bookmark) {
+          var bookmark_id = bookmark["id"];
+          var user_id = bookmark["user_id"];
+          var folder_name = bookmark["name"];
+          var title = bookmark["title"];
+          var url = bookmark["url"];
+          var desc = bookmark["description"];
+          var star = bookmark["star"];
+          var folder_id = bookmark["folder_id"];
+          var session_id = request.session.userId;
+          var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description, star, id) VALUES ( "' + 
+            title + '", "' + url + '", ' + folder_id + ', "' + desc + '", '
+             + star + ', ' + bookmark_id + ')';
+          console.log(insertBookmark);
+          db.query(insertBookmark, function(err){
+            if (err) throw err;
+          });
+      });*/
+
     });
   response.redirect('/list');
   })
