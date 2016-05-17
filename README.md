@@ -1,6 +1,10 @@
 #CSE-136-HW3#
 
-##Technologies implemented: ##
+##Testing##
+Dummy data was preset in the database for testing.
+Please note that the data is reset every time the application is reset (dropped if exist in schemas).
+
+##Technologies implemented##
 
 * compression and caching static files
 * logging 
@@ -14,7 +18,7 @@
 * sanitizing input backend to combat mysql injections
 * hashing and salting passwords implemented with randomized salts for each user for maximum security
 * top notch session management implemented to keep user session valids, destroy on logout, and refresh on page traversal 
-* password reset implemented, including sending notifications to account owners (although it's not very useful in its current incomplete form)
+* password reset implemented, including sending notifications emails to account owners (although it's not very useful in its current incomplete form)
 * gulp for automated task management
  * minification of js, ejs, html, css, etc. implemented to decrease load time and requests
 * production and development environment created and managed

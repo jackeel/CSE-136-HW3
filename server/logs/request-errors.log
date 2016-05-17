@@ -1,9 +1,0 @@
-{"timestamp":"2016-05-16T17:15:25.003Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T17:15:31.687Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T17:16:46.888Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T17:16:50.777Z","pid":10100,"url":"/passwordReset","method":"GET","ip":"::1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T20:10:53.980Z","pid":24403,"url":"/l","method":"GET","ip":"127.0.0.1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T20:13:26.171Z","pid":24403,"url":"/url1","method":"GET","ip":"127.0.0.1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T20:13:29.253Z","pid":24403,"url":"/url2","method":"GET","ip":"127.0.0.1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T20:22:35.041Z","pid":26072,"url":"/list'","method":"GET","ip":"127.0.0.1","level":"info","message":"404-errors"}
-{"timestamp":"2016-05-16T20:31:03.128Z","pid":27013,"url":"/folders/insert","method":"POST","ip":"127.0.0.1","level":"info","message":"404-errors"}

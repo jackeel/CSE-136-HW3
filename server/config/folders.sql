@@ -42,12 +42,31 @@ LOCK TABLES `folders` WRITE;
 
 INSERT INTO `folders` (`id`, `name`, `user_id`)
 VALUES
-	(1, 'user1_folder1', 1),
-	(2, 'user1_folder2', 1),
-	(3, 'user1_folder3', 1),
-	(4, 'user2_folder1', 2),
-	(5, 'user2_folder2', 2),
-	(6, 'user3_folder1', 3);
+	(1, 'folder1', 1),
+	(2, 'folder2', 1),
+	(3, 'folder3', 1),
+  (4, 'folder4', 1),
+  (5, 'folder5', 1),
+  (6, 'folder1', 2),
+  (7, 'folder2', 2),
+  (8, 'folder3', 2),
+  (9, 'folder4', 2),
+  (10, 'folder5', 2),
+  (11, 'folder1', 3),
+  (12, 'folder2', 3),
+  (13, 'folder3', 3),
+  (14, 'folder4', 3),
+  (15, 'folder5', 3),
+  (16, 'folder1', 4),
+  (17, 'folder2', 4),
+  (18, 'folder3', 4),
+  (19, 'folder4', 4),
+  (20, 'folder5', 4),
+  (21, 'folder1', 5),
+  (22, 'folder2', 5),
+  (23, 'folder3', 5),
+  (24, 'folder4', 5),
+  (25, 'folder5', 5);
 
 /*!40000 ALTER TABLE `folders` ENABLE KEYS */;
 UNLOCK TABLES;

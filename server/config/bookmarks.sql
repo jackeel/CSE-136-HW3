@@ -2,7 +2,7 @@
 # Sequel Pro SQL dump
 # Version 3408
 #
-# http://www.sequelpro.com/
+# http://http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
 # Host: 127.0.0.1 (MySQL 5.1.63)
@@ -42,19 +42,33 @@ CREATE TABLE `bookmarks` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
 LOCK TABLES `bookmarks` WRITE;
 /*!40000 ALTER TABLE `bookmarks` DISABLE KEYS */;
 
-INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`, description)
+/* Bookmarks inserted into user1 and user 2 accounts */
+INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`, `description`)
 VALUES
-	(1, 'user1_folder1_bookmark1', 'url1', 1, 'description1'),
-	(2, 'user1_folder1_bookmark2', 'url2', 1, 'description2'),
-	(3, 'user1_folder2_bookmark1', 'url3', 2, 'description3'),
-	(4, 'user2_folder1_bookmark1', 'url4', 4, 'description4'),
-	(5, 'user2_folder1_bookmark2', 'url5', 4, 'description5'),
-	(6, 'user2_folder2_bookmark1', 'url6', 5, 'description6'),
-	(7, 'user3_folder1_bookmark1', 'url7', 6, 'description7');
-
+	(1, 'Google', 'http://www.google.com', 1, 'description1'),
+	(2, 'Yahoo', 'http://www.yahoo.com', 1, 'description2'),
+	(3, 'UCSD', 'http://www.ucsd.edu', 2, 'description3'),
+	(4, 'Facebook', 'http://www.facebook.com', 2, 'description4'),
+	(5, 'Reddit', 'http://www.reddit.com', 3, 'description5'),
+  (6, 'CSE136 Slack', 'http://www.cse136.slack.com', 3, 'description6'),
+  (7, 'Piazza', 'http://www.piazza.com', 4, 'description7'),
+  (8, 'Github', 'http://www.github.com', 4, 'description8'),
+  (9, 'Bing', 'http://www.bing.com', 5, 'description9'),
+  (10, 'Amazon', 'http://www.amazon.com', 5, 'description10'),
+  (11, 'Google', 'http://www.google.com', 6, 'description1'),
+  (12, 'Yahoo', 'http://www.yahoo.com', 6, 'description2'),
+  (13, 'UCSD', 'http://www.ucsd.edu', 7, 'description3'),
+  (14, 'Facebook', 'http://www.facebook.com', 7, 'description4'),
+  (15, 'Reddit', 'http://www.reddit.com', 8, 'description5'),
+  (16, 'CSE136 Slack', 'http://www.cse136.slack.com', 8, 'description6'),
+  (17, 'Piazza', 'http://www.piazza.com', 9, 'description7'),
+  (18, 'Github', 'http://www.github.com', 9, 'description8'),
+  (19, 'Bing', 'http://www.bing.com', 10, 'description9'),
+  (20, 'Amazon', 'http://www.amazon.com', 10, 'description10');
 /*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
 UNLOCK TABLES;
 
