@@ -142,9 +142,9 @@ module.exports.signup = function(req, res) {
         var password = db.escape(req.body.password);
         var confirm_password = db.escape(req.body.confirm_password);
 
-    /*
+
         // Check if username already exists
-        var queryString = 'SELECT id FROM users WHERE username = ' + username;
+        /*var queryString = 'SELECT id FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
                 if(err) throw err;
                 if(rows.length > 0) {
@@ -164,7 +164,7 @@ module.exports.signup = function(req, res) {
                 res.render('signup', {errors: errors});
                 return;
             }
-        }); 
+        });
     */
 
         // Valid data so insert user
@@ -175,10 +175,17 @@ module.exports.signup = function(req, res) {
               .digest('base64');
 
         var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
-                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
+                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")'
+                           'WHERE NOT EXISTS ( SELECT username FROM users WHERE username = ' + username + ')';
+        console.log (queryString);
 
         db.query(queryString, function(err, rows) {
-            if (err) throw err;
+            //if (err) throw err;
+            if (err) {
+              errors = [{msg: 'Username already taken'}];
+              res.render('signup', {errors: errors});
+              return;
+            }
             var successes = [{msg: 'You have signed up'}];
             req.flash("success_messages", successes);
             res.redirect('/login');
