@@ -22,3 +22,4 @@ Please note that the data is reset every time the application is reset (dropped 
 * gulp for automated task management
  * minification of js, ejs, html, css, etc. implemented to decrease load time and requests
 * production and development environment created and managed
+* Config file on github and that on server are different for security reasons.
