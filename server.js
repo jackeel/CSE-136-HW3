@@ -120,16 +120,9 @@ var storage = multer.diskStorage({
     callback(null, './uploadDir');
   },
   filename: function (request, file, callback) {
-    var file_name = file.fieldname + '-' + Date.now() + '.json';
+    //var file_name = file.fieldname + '-' + Date.now() + '.json';
+    var file_name = "upload.json";
     callback(null, file_name);
-    fs = require('fs')
-    fs.readFile('./uploadDir/' + file_name, 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
-      }
-      //console.log(data);
-      var json_bookmark = JSON.parse(data);
-    });
   }
 });
 var upload = multer({ storage : storage}).single('bookmark-import');
@@ -140,6 +133,35 @@ app.post('/upload', function(request, response) {
     console.log('Error Occured');
     return;
   }
+  fs = require('fs');
+  file_name = "upload.json";
+  fs.readFile('./uploadDir/' + file_name, 'utf8', function (err,data) {
+      if (err) {
+        return console.log(err);
+      }
+      //console.log(data);
+      var json_bookmark = JSON.parse(data);
+      json_bookmark["folders"].forEach(function(folder) {
+        folder_name = folder["name"];
+        folder["bookmarks"].forEach(function(bookmark) {
+          title = bookmark["title"];
+          url = bookmark["url"];
+          bookmark_desc = bookmark["description"];
+
+          var selectString = 'SELECT * FROM folders WHERE name = "' + folder_name + '"';
+          console.log(selectString);
+          db.query(selectString, function(err, folder) {
+          if (err) throw err;
+          console.log(folder[0].id);
+          var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES ( "' + title + '", "' + url + '", ' + folder[0].id + ')';
+          console.log(queryString);
+            db.query(queryString, function(err){
+              if (err) throw err;
+            });
+          });
+        });
+      });
+    });
   response.redirect('/list');
   })
 });
