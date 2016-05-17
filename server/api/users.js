@@ -66,7 +66,8 @@ module.exports.login = function(req, res) {
         var username = db.escape(req.body.username);
         var password = db.escape(req.body.password);
 
-        var queryString = 'SELECT salt, password FROM users WHERE username = ' + username;
+        // Find user with provided username/password
+        var queryString = 'SELECT salt FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
             if (err) throw err;
             if(rows.length == 1) {
@@ -136,31 +137,55 @@ module.exports.signup = function(req, res) {
 
     if (errors) {
         res.render('signup', {errors: errors});
-    } else {
-        var username = db.escape(req.body.username);
-        var email = db.escape(req.body.email);
-        var password = db.escape(req.body.password);
-        var confirm_password = db.escape(req.body.confirm_password);
-
-        var salt = crypto.randomBytes(32).toString('base64');
-
-        var hash = crypto
-              .createHmac('SHA256', salt)
-              .update(password)
-              .digest('base64');
-
-        var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
-                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
-
-
-        db.query(queryString, function(err, rows) {
-            if (err) throw err;
-            res.redirect('/login');
-            logger.log('debug', "user-actions: new user",
-              {timestamp: Date.now(), user:username, ip: req.ip}
-            );
-        });
+        return;
     }
+
+    // Fields are valid. Continue signup
+    var username = db.escape(req.body.username);
+    var email = db.escape(req.body.email);
+    var password = db.escape(req.body.password);
+    var confirm_password = db.escape(req.body.confirm_password);
+
+/*
+    // Check if username already exists
+    var queryString = 'SELECT id FROM users WHERE username = ' + username;
+    db.query(queryString, function(err, rows) {
+            if(err) throw err;
+            if(rows.length > 0) {
+                errors = [{msg: 'Username already taken'}];
+                res.render('signup', {errors: errors});
+                console.log("inside query ..." + errors.msg);
+            }
+    });
+
+    // Check if email already exists
+    var queryString = 'SELECT id FROM users WHERE email = ' + email;
+    db.query(queryString, function(err, rows) {
+        if(err) console.log(err);//throw err;
+        if(rows.length > 0) {
+            errors = [{msg: 'Email already taken'}];
+            res.render('signup', {errors: errors});
+        }
+    }); 
+*/
+
+    // Valid data so insert user
+    var salt = crypto.randomBytes(32).toString('base64');
+    var hash = crypto
+          .createHmac('SHA256', salt)
+          .update(password)
+          .digest('base64');
+
+    var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
+                      '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
+
+    db.query(queryString, function(err, rows) {
+        if (err) console.log(err);//throw err;
+        res.redirect('/login');
+        logger.log('debug', "user-actions: new user",
+          {timestamp: Date.now(), user:username, ip: req.ip}
+        );
+    });
 };
 
 /**
