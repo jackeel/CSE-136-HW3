@@ -17,13 +17,13 @@
 <body>
 	<nav class="navbar">
 		<ul>
-			<li class="navbar-left menu-button">
+			<li class="navbar-left menu-button full-width">
 				<a class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
 			</li>
-	  		<li class="navbar-left search">
+	  		<li class="navbar-left search full-width">
 	  			<form method="get" name="search">
 	  				<% if(search == '') { %>
-	  					<input name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input class = "min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
 	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
@@ -34,14 +34,15 @@
 	  				<button><i class="fa fa-search fa-lg"></i></button>
 	  			</form>
 	  		</li>
-		  		<li class="navbar-right">
+		  		<li class="navbar-right min-sort-size">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
 				<form method="get" name="orderBy">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
+
 					<nobr>
-					<select class="select-dropdown-content" name="SortBy" onchange='this.form.submit()'>
+					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
 			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
 			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
 			        	<option value="bookmarks.url" <%=order_by == "bookmarks.url" ? "selected" : ""%>>URL</option>
@@ -49,7 +50,8 @@
 			        	<option value="bookmarks.last_visit_date" <%=order_by == "bookmarks.last_visit_date" ? "selected" : ""%>>Last Visits</option>
 			        	<option value="bookmarks.star" <%=order_by == "bookmarks.star" ? "selected" : ""%>>Starred</option>
 			        </select>
-			        <noscript><input style="padding:0px;" type="submit" value="Submit"></noscript>
+
+			        <noscript><input class="nav-btn" type="submit" value="Sort!"></noscript>
 			        </nobr>
 			    </form>
 				<!--		</div> </div>  -->
@@ -184,7 +186,7 @@
             <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
             <% folders.forEach(function(folder) { %>
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
-                    <a class="card__button" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
                 </li>
 
             <% }); %>
@@ -195,7 +197,7 @@
       	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
 
       	<div><i class="fa fa-download fa-lg"></i> Export</div>
-      	<a href="#" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
+      	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
 	  </div>
     </div>
     <div id="right">
@@ -206,7 +208,7 @@
       			</div>
       		</div>
 			<% bookmarks.forEach(function(bookmark) { %>
-	      	<div class="col-1-3 mobile-col-1-3">
+	      	<div class="col-1-3 mobile-col-1-3 card-min-width">
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>

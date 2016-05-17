@@ -16,6 +16,16 @@ h1 {
 	color: #474448;
 }
 
+.signup-successes {
+	max-width: 300px;
+	margin: 0 auto;
+	color: #00DD00;
+}
+
+.signup-successes ul {
+	padding-left: 20px;
+}
+
 .signup-errors {
 	max-width: 300px;
 	margin: 0 auto;
