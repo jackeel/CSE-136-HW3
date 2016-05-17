@@ -144,7 +144,7 @@
             <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
             <% folders.forEach(function(folder) { %>
             	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
-                    <a class="card__button" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
                 </li>
 
             <% }); %>
