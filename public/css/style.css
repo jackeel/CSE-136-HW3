@@ -1301,6 +1301,64 @@ a.card__button {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
+/******** Edit Page ********/
+body.edit-body {
+  overflow: hidden;
+  background-color: #F0F0F0;
+}
+
+div.edit-title-container {
+    width: 100%;
+    background-color: #6C7A89;
+}
+
+h1.edit-title {
+    color: #F0F0F0;
+}
+
+div.edit-form-container {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+table.edit-table {
+    border: none;
+    border-radius: 4px;
+    background-color: #d0d0d0;
+    width:100%;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+div.edit-form-container input[type='text'] {
+    width:100%;
+    border: 1px solid #F0F0F0;
+    border-radius: 5px;
+}
+
+select.edit-select-content {
+    border: 1px solid #a7a7a7;
+    border-radius: 4px;
+    background-color: #6C7A89;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #fff;
+}
+
+select.edit-select-content option {
+    color: #FFF;
+    background-color: #6C7A89;
+    display: block;
+}
+
+input.edit-button, a.edit-button {
+    width: 47%;
+    border: none;
+    border-radius: 5px;
+}
+
+/***************************/
+
 
 /*responisive adjustments*/
 .min-sort-size
