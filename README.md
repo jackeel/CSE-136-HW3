@@ -4,9 +4,9 @@
 
 *compression and caching static files
 *logging 
-	*errors
-	*suspicious activities
-	*database activity
+ *errors
+ *suspicious activities
+ *database activity
 *robot.txt file with traps built in to track users who are trying to access directories where they shouldn't be.
 *hiding technolgies, such as: powered-by
 *404 redirects and error messages with logging
