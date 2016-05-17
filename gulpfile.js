@@ -3,7 +3,6 @@
 var path = require('path');
 var gulp = require('gulp');
 var minifycss = require('gulp-minify-css');
-var minifyjs = require('gulp-minify');
 var rename = require('gulp-rename');
 var htmlmin = require('gulp-htmlmin');
 var concat = require('gulp-concat');

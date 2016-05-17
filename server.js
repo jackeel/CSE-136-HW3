@@ -10,6 +10,7 @@ var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
+var multer = require('multer');
 var compression = require('compression')
 var oneWeek = 3600000 * 24 * 7; 
 var mySession = session({
@@ -113,6 +114,52 @@ app.use(function(req, res, next) {
   }
 });
 
+// disk setting for file upload.
+var storage = multer.diskStorage({
+  destination: function (request, file, callback) {
+    callback(null, './uploadDir');
+  },
+  filename: function (request, file, callback) {
+    //var file_name = file.fieldname + '-' + Date.now() + '.json';
+    var file_name = "upload.json";
+    callback(null, file_name);
+  }
+});
+var upload = multer({ storage : storage}).single('bookmark-import');
+
+app.post('/upload', function(request, response) {
+  upload(request, response, function(err) {
+  if(err) {
+    console.log('Error Occured');
+    return;
+  }
+  fs = require('fs');
+  file_name = "upload.json";
+  fs.readFile('./uploadDir/' + file_name, 'utf8', function (err,data) {
+      if (err) {
+        return console.log(err);
+      }
+      //console.log(data);
+      var json_bookmark = JSON.parse(data);
+      json_bookmark.forEach(function(bookmark) {
+          title = bookmark["title"];
+          url = bookmark["url"];
+          id = bookmark["id"];
+          desc = bookmark["description"];
+          user_id = bookmark["user_id]"];
+          star = bookmark["star"];
+          folder_id = bookmark["folder_id"];
+          var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
+            title + '", "' + url + '", ' + folder_id + ', "' + desc + '", '
+             + star + ')';
+            db.query(queryString, function(err){
+              if (err) throw err;
+            });
+          });
+    });
+  response.redirect('/list');
+  })
+});
 
 /* Routes - consider putting in routes.js */
 app.get('/', requireLogout, users.loginForm);
