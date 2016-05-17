@@ -33,7 +33,6 @@ module.exports.passwordReset = function(req, res){
     db.query(queryString, function(err, users) {
         if(err) throw err;
         if (users.length == 1) {
-            var generatedLink = 'DUMMY LINK';
             var password = crypto
                   .createHmac('SHA256',config.SECRET)
                   .update(req.body.password)
@@ -44,7 +43,7 @@ module.exports.passwordReset = function(req, res){
                if (err) throw err;
             });
 
-            setMailOptions(mailOptions, users[0].username, generatedLink);
+            setMailOptions(mailOptions, users[0].username, users[0].email);
             //setMailOptions(mailOptions, users[0].username, users[0].email, generatedLink);
 
             smtpTransport.sendMail(mailOptions, function(error, info) {
@@ -70,10 +69,10 @@ module.exports.passwordReset = function(req, res){
  * Set params for mailOptions.
  */
 //function setMailOptions(mailOptions, username, email, link) {
-function setMailOptions(mailOptions, username,link) {
+function setMailOptions(mailOptions, username,email) {
     mailOptions.from = 'BookmarxBot@gmail.com';
     // Hardcode your own email here to test.
-    mailOptions.to = 'sthapa@ucsd.edu'; // Use email once it's added to schema
+    mailOptions.to = email; // Use email once it's added to schema
     mailOptions.subject = 'Bookmarx - Password Reset Successful';
     mailOptions.text = 'Hello ' + username +
                        ', \n\nYour Password has been reset successfully. ' +
