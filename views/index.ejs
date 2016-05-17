@@ -173,7 +173,7 @@
 						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
-  								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star"><i class="fa fa-star fa-lg"></i></a>
+  								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
 							<% } else { %>
 								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>

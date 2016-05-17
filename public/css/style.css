@@ -323,9 +323,17 @@ h1 {
   color: #FF9EAE;
 }
 
+.fa-star-inactive:before {
+  content: "\f006";
+}
+
 .fa-star:hover:before {
   content: "\f006";
   color: #FF9EAE;
+}
+
+.fa-star-inactive:hover:before {
+  content: "\f005";
 }
 
 #right {
