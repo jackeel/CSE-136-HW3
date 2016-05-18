@@ -127,7 +127,8 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage : storage}).single('bookmark-import');
 
-app.post('/upload', requireLogout ,function(request, response) {
+app.post('/upload',function(request, response) {
+  console.log('hit upload route'); 
   upload(request, response, function(err) {
   if(err) {
     console.log('Error Occured');
@@ -145,16 +146,26 @@ app.post('/upload', requireLogout ,function(request, response) {
 
       folders.forEach(function(folder) {
         //same user
-          var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name;
-
+        console.log(folders); 
+          var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
+          console.log(checkFolder); 
           db.query(checkFolder, function(err, fol){
+
+            console.log("inside checkFolder"); 
+            console.log(fol); 
             if (err) throw err;
 
             //if folder is not present, insert folder. else just insert bookmarks
             if (fol.length == 0) {
-              var insertFolder = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder_name + '", ' + session_id + ')';
+              var insertFolder = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
+              
+              console.log(insertFolder); 
+
               db.query(insertFolder, function(err){
                 if (err) throw err;
+                console.log('inside of inserFolder');
+                console.log(insertFolder); 
+                console.log(folder.bookmarks); 
                 insertBookmarks(folder.bookmarks, insertFolder[0].id);
               });
             }
@@ -165,7 +176,7 @@ app.post('/upload', requireLogout ,function(request, response) {
           });
       });
     });
-  response.redirect('/list');
+  //response.redirect('/list');
   })
 });
 
@@ -174,14 +185,13 @@ function insertBookmarks(bookmarks, folderId)
   bookmarks.forEach(function(bookmark) {
 
     var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
-            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '", '
-             + bookmark.star + ')';
+            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description'")';
     
     db.query(insertBookmark, function(err){
       if (err) throw err;
     });
 
-  }
+  });
 }
 
 /* Routes - consider putting in routes.js */
