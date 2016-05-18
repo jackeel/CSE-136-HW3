@@ -157,36 +157,43 @@ app.post('/upload',function(request, response) {
 
             //if folder is not present, insert folder. else just insert bookmarks
             if (fol.length == 0) {
-              var insertFolder = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
+              var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
               
-              console.log(insertFolder); 
+              console.log(insertFolderQuery); 
 
-              db.query(insertFolder, function(err){
+              db.query(insertFolderQuery, function(err, row){
                 if (err) throw err;
-                console.log('inside of inserFolder');
-                console.log(insertFolder); 
-                console.log(folder.bookmarks); 
-                insertBookmarks(folder.bookmarks, insertFolder[0].id);
+                console.log('inside of inserFolderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+                console.log(row); 
+               // console.log(folder.bookmarks); 
+                insertBookmarks(folder.bookmarks, row.insertId);
               });
             }
             else
             {
+              console.log('elseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'); 
               insertBookmarks(folder.bookmarks, fol[0].id); 
             }
           });
       });
     });
-  //response.redirect('/list');
+  response.redirect('/list');
   })
 });
 
 function insertBookmarks(bookmarks, folderId)
 {
+  console.log("folder Id");
+  console.log(folderId); 
+
   bookmarks.forEach(function(bookmark) {
 
     var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
             bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
     
+    console.log('last bookmark'); 
+    console.log(insertBookmark);
+
     db.query(insertBookmark, function(err){
       if (err) throw err;
     });
