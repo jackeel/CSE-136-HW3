@@ -12,7 +12,7 @@ Please note that the data is reset every time the application is reset (dropped 
  * suspicious activity
  * database activity
 * robot.txt file with traps built in to track users who are trying to access directories where they shouldn't be
- *If you hit the /delete route, we will track your ip in logging. 
+ * If you hit the /delete route, we will track your ip in logging. 
 * hiding technologies, such as: powered-by
 * 404 redirects and error messages with logging
 * front end and backend validation implemented for security
