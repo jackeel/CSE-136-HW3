@@ -22,7 +22,7 @@ module.exports.insert = function(req, res) {
 
     if (errors) {
         req.flash('error_messages', errors);
-        res.redirect('/list#addFolder');  // flash error to the add modal
+        res.redirect('/list');  // flash error to the add modal
     } else {
         var name = db.escape(req.body.name);
         var user_id = db.escape(req.session.userId);
@@ -32,7 +32,7 @@ module.exports.insert = function(req, res) {
             if (err) {
                 errors = [{msg: 'A folder with the same name already exists'}];
                 req.flash('error_messages', errors);
-                res.redirect('/list#addFolder');
+                res.redirect('/list');
                 return;
             }
             

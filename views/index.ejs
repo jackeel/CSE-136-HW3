@@ -66,17 +66,6 @@
 						<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 						  </ul>
 						</div>
-						<!-- Error messages -->
-			            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-					      <div id="insertupdate-errors" class="insertupdate-errors">
-					        <ul>
-                            <% for(var i=0; i < errors.length; i++) { %>
-                                  <li><%= errors[i].msg %></li>
-                            <% } %>
-					        </ul>
-					      </div>
-					    <% } %>
-						<!-- -->
 							  <form method='post' action='/insert'>
 							        <div class="form" id="add-bookmark-form">
 									    <input type="text" name="title" placeholder="Title" required>

@@ -181,7 +181,7 @@ module.exports.insert = function(req, res){
 
     if (errors) {
         req.flash('error_messages', errors);
-        res.redirect('/list#addBookmark');  // flash error to the add modal
+        res.redirect('/list');  // flash error to the add modal
     } else {
         var user_id = req.session.userId;
         var title = db.escape(req.body.title);
@@ -193,7 +193,7 @@ module.exports.insert = function(req, res){
       	    if (err) {
                 errors = [{msg: 'A bookmark with the same title already exists in the selected folder'}]
                 req.flash('error_messages', errors);
-                res.redirect('/list#addBookmark');
+                res.redirect('/list');
                 return;
             }
 
