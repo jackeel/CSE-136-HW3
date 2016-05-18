@@ -169,10 +169,10 @@
 	<div id="openSidebar" class="showSidebar">
 		<div id="sidebar">
 	      <ul>
-	            <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
-	            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
+	            <li class="pinned"><a href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
+	            <li class="pinned"><a href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg"></i> All</a></li>
 	            <% folders.forEach(function(folder) { %>
-	            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
+	            	<li><a href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 	                </li>
 
