@@ -60,7 +60,7 @@ app.use(mySession);
 app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
-if( app.get('env') != 'development' ) {
+if( config.ENVIRONMENT != 'development' ) {
   //5 days worth of time
   app.set('views', __dirname + '/www/views');
   app.use(express.static(__dirname+'/www/public', { maxAge: oneWeek }));
