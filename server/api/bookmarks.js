@@ -330,7 +330,7 @@ module.exports.download = function(req, res){
     for (var key in folderMap) {
       array_json_bookmark.push(folderMap[key]);
     }
-    console.log(JSON.stringify(array_json_bookmark));
+    //console.log(JSON.stringify(array_json_bookmark));
     fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
             throw err;
