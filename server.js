@@ -184,8 +184,8 @@ function insertBookmarks(bookmarks, folderId)
 {
   bookmarks.forEach(function(bookmark) {
 
-    var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
-            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description'")';
+    var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
+            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
     
     db.query(insertBookmark, function(err){
       if (err) throw err;
