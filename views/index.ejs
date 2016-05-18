@@ -144,6 +144,14 @@
                                     <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
+                            <form method='post' action='folders'>
+                                <div class="form" id="add-bookmark-form1">
+                                    <input type="text" name="name" placeholder="Name" required>
+
+                                    <div class="buttonWrapper">
+                                        <div><input type='submit' value="Save"></div>
+                                    </div>
+                            </form>
                             <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
                             <div id="insertupdate-errors1" class="insertupdate-errors">
                                 <ul>
@@ -153,14 +161,6 @@
                                 </ul>
                             </div>
                             <% } %>
-                            <form method='post' action='folders'>
-                                <div class="form" id="add-bookmark-form1">
-                                    <input type="text" name="name" placeholder="Name" required>
-
-                                    <div class="buttonWrapper">
-                                        <div><input type='submit' value="Save"></div>
-                                    </div>
-                            </form>
                         </div>
                     </div>
 	  		</li>

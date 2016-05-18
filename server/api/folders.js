@@ -28,12 +28,15 @@ module.exports.insert = function(req, res) {
         var user_id = db.escape(req.session.userId);
 
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
-        db.query(queryString, function(err){
-            if (err) throw err;
-            db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
-                if (err) throw err;
-                res.redirect('/list');
-            });
+        console.log(queryString);
+        db.query(queryString, function(err) {
+            if (err) {
+                errors = [{msg: 'A folder with the same name already exists'}];
+                res.redirect('/list#addFolder');
+                return;
+            }
+            
+            res.redirect('/list');
         });
     }
 };

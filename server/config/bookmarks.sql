@@ -35,6 +35,7 @@ CREATE TABLE `bookmarks` (
   `last_visit_date` TIMESTAMP DEFAULT 0,
   `folder_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `bookmark_duplicate` (`title`, `folder_id`),
   INDEX(`folder_id`),
   FOREIGN KEY(`folder_id`)
     REFERENCES `folders`(`id`)

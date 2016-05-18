@@ -112,7 +112,7 @@ module.exports.listStarred = function(req, res) {
  * renders the edit confirmation page with the edit.ejs template
  */
 module.exports.edit = function(req, res) {
-  var id = db.escape(req.params.bookmark_id);
+   var id = db.escape(req.params.bookmark_id);
 
   db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
     if (err) throw err;
@@ -147,13 +147,13 @@ module.exports.insert = function(req, res){
         'title': {
             isLength: {
                 options: [{min: 1, max: 25}],
-                errorMessage: 'Bookmark title must be 1-25 characters'
+                errorMessage: 'Bookmark title must be 1-25 characters long'
             },
         },
         'url': {
             isLength: {
                 options: [{min: 1, max: 64}],
-                errorMessage: 'Bookmark URL must be 1-64 characters'
+                errorMessage: 'Bookmark URL must be 1-2083 characters long'
             },
             isURL: {
                 errorMessage: 'Invalid URL'
@@ -183,14 +183,22 @@ module.exports.insert = function(req, res){
         req.flash('error_messages', errors);
         res.redirect('/list#addBookmark');  // flash error to the add modal
     } else {
+        var user_id = req.session.userId;
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
 
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
+console.log(queryString);
         db.query(queryString, function(err){
-      	if (err) throw err;
-          res.redirect('/list');
+      	    if (err) {
+                errors = [{msg: 'A bookmark with the same title already exists in the selected folder'}]
+                req.flash('error_messages', errors);
+                res.redirect('/list#addBookmark');
+                return;
+            }
+
+            res.redirect('/list');
         });
     }
 };
@@ -200,7 +208,7 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
-    var id = req.params.bookmark_id;
+    var bookmark_id = req.params.bookmark_id;
 
     req.sanitizeBody('title').trim();
     req.sanitizeBody('url').trim();
@@ -214,8 +222,8 @@ module.exports.update = function(req, res){
         },
         'url': {
             isLength: {
-                options: [{min: 1, max: 64}],
-                errorMessage: 'Bookmark URL must be 1-64 characters'
+                options: [{min: 1, max: 2083}],
+                errorMessage: 'Bookmark URL must be 1-2083 characters'
             },
             isURL: {
                 errorMessage: 'Invalid URL'
@@ -243,17 +251,22 @@ module.exports.update = function(req, res){
 
     if (errors) {
         req.flash('error_messages', errors);
-        res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
+        res.redirect('/bookmarks/edit/' + bookmark_id);  // flash error to edit page
     } else {
-        id = db.escape(id);
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
-
         var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
-                          ' WHERE id = ' + id;
+                          ' WHERE id = ' + db.escape(bookmark_id);
+
         db.query(queryString, function(err){
-            if (err) throw err;
+            if (err) {
+                errors = [{msg: 'A bookmark with the same title already exists in the selected folder'}]
+                req.flash('error_messages', errors);
+                res.redirect('/bookmarks/edit/' + bookmark_id);
+                return;
+            }
+
             res.redirect('/list');
         });
     }

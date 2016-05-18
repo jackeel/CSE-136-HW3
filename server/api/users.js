@@ -146,16 +146,14 @@ module.exports.signup = function(req, res) {
               .digest('base64');
 
         var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
-                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")'
-                           'WHERE NOT EXISTS ( SELECT username FROM users WHERE username = ' + username +
-                                         ' and email = ' + email + ')';
+                          '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
 
         db.query(queryString, function(err, rows) {
             //if (err) throw err;
             if (err) {
-              errors = [{msg: 'Email/username already taken'}];
-              res.render('signup', {errors: errors});
-              return;
+                errors = [{msg: 'Email/username already taken'}];
+                res.render('signup', {errors: errors});
+                return;
             }
 
             var successes = [{msg: 'You have signed up'}];

@@ -30,6 +30,7 @@ CREATE TABLE `folders` (
   `name` varchar(25) DEFAULT NULL,
   `user_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `folder_duplicate` (`name`, `user_id`),
   INDEX(`user_id`),
   FOREIGN KEY(`user_id`)
     REFERENCES `users`(`id`)

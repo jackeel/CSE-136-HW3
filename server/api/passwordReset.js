@@ -75,33 +75,20 @@ module.exports.passwordReset = function(req, res) {
                 var updateQueryString = 'UPDATE users SET password = ' + password + ' WHERE username = ' + username;
                 db.query(updateQueryString, function(err) {
                     if (err) throw err;
-                    /* Uncomment after figuring out async
-                    setMailOptions(mailOptions, rows[0].username, rows[0].email);
+                
+                    setMailOptions(mailOptions, username, rows[0].email);
                     //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
 
                     smtpTransport.sendMail(mailOptions, function(error, info) {
                         if(error) {
                             // throw error;
                             console.log(error);
-                        } // else {
-                            var successes = [{msg: 'Confirmation email sent'}];
-                            res.render('passwordReset', {successes: successes});
-                        //}
-                    });
-                    */
-                });
-                /* Remove block after figuring out async */
-                setMailOptions(mailOptions, username, rows[0].email);
-                //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
+                            return;
+                        }
 
-                smtpTransport.sendMail(mailOptions, function(error, info) {
-                    if(error) {
-                        // throw error;
-                        console.log(error);
-                    } // else {
                         var successes = [{msg: 'Confirmation email sent'}];
                         res.render('passwordReset', {successes: successes});
-                    //}
+                    });
                 });
                 /**************************/
             } else {
