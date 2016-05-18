@@ -31,18 +31,19 @@ module.exports.insert = function(req, res) {
         db.query(queryString, function(err) {
             if (err) {
                 errors = [{msg: 'A folder with the same name already exists'}];
+                req.flash('error_messages', errors);
                 res.redirect('/list#addFolder');
                 return;
             }
             
-            res.redirect('back');
+            res.redirect('/list');
         });
     }
 };
 
 /**
- * Deletes the passed in bookmark from the database.
- * Does a redirect to the list page
+ * Deletes the passed in folder from the database.
+ * Does a redirect to the current page
  */
 module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);

@@ -125,7 +125,7 @@ module.exports.edit = function(req, res) {
 
 /**
  * Deletes the passed in bookmark from the database.
- * Does a redirect to the list page
+ * Does a redirect to the current page
  */
 module.exports.delete = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
@@ -177,7 +177,7 @@ module.exports.insert = function(req, res){
     //req.sanitizeBody('title').escape();
     //req.sanitizeBody('url').escape();
     req.checkBody(validate_insert);
-    var errors = req.validationErrors(); 
+    var errors = req.validationErrors();
 
     if (errors) {
         req.flash('error_messages', errors);
@@ -273,7 +273,7 @@ module.exports.update = function(req, res){
 
 /**
  * Star a bookmark
- * Redirect to the list page
+ * Redirect to the current page
  */
 module.exports.star = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
@@ -286,7 +286,7 @@ module.exports.star = function(req, res) {
 
 /**
  * Unstar a bookmark
- * Redirect to the list page
+ * Redirect to the current page
  */
 module.exports.unstar = function(req, res) {
   var id = db.escape(req.params.bookmark_id);

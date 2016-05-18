@@ -32,8 +32,6 @@ addBookmark.onclick = function() {
 	importBookmarkForm.style.display = 'none';
 	addBookmarkForm.style.display = 'block';
 	addBookmarkForm1.style.display = 'block';
-  insertupdateErrors.style.display = 'block';
-	insertupdateErrors1.style.display = 'block';
 
 	importBookmark.className = "";
 
@@ -47,22 +45,17 @@ addBookmark1.onclick = function() {
 	importBookmarkForm.style.display = 'none';
 	addBookmarkForm.style.display = 'block';
 	addBookmarkForm1.style.display = 'block';
-  insertupdateErrors.style.display = 'block';
-	insertupdateErrors1.style.display = 'block';
 
 	importBookmark.className = "";
 
 	addBookmark.className = "";
 	addBookmark.className = "is-active";
-
 }
 
 importBookmark.onclick = function() {
 	addBookmarkForm.style.display = 'none';
 	addBookmarkForm1.style.display = 'none';
 	importBookmarkForm.style.display = 'block';
-  insertupdateErrors.style.display = 'none';
-	insertupdateErrors1.style.display = 'block';
 
 	addBookmark.className = "";
 
