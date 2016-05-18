@@ -28,7 +28,6 @@ module.exports.insert = function(req, res) {
         var user_id = db.escape(req.session.userId);
 
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
-        console.log(queryString);
         db.query(queryString, function(err) {
             if (err) {
                 errors = [{msg: 'A folder with the same name already exists'}];
@@ -47,7 +46,6 @@ module.exports.insert = function(req, res) {
  */
 module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);
-    console.log("Delete: "+id);
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err) throw err;
         res.redirect('/list');

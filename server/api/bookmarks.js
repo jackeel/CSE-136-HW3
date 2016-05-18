@@ -189,7 +189,6 @@ module.exports.insert = function(req, res){
         var folder_id = db.escape(req.body.folder_id);
 
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
-console.log(queryString);
         db.query(queryString, function(err){
       	    if (err) {
                 errors = [{msg: 'A bookmark with the same title already exists in the selected folder'}]
