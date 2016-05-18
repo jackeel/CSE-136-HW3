@@ -132,7 +132,7 @@ module.exports.delete = function(req, res) {
 
   db.query('DELETE from bookmarks where id = ' + id, function(err){
     if (err) throw err;
-    res.redirect('/list');
+    res.redirect('back');
   });
 };
 
@@ -197,7 +197,7 @@ module.exports.insert = function(req, res){
                 return;
             }
 
-            res.redirect('/list');
+            res.redirect('back');
         });
     }
 };
@@ -280,7 +280,7 @@ module.exports.star = function(req, res) {
   var queryString = 'UPDATE bookmarks SET star = 1 WHERE id = ' + id;
   db.query(queryString, function(err){
     if (err) throw err;
-    res.redirect('/list');
+    res.redirect('back');
   });
 };
 
@@ -293,7 +293,7 @@ module.exports.unstar = function(req, res) {
   var queryString = 'UPDATE bookmarks SET star = 0 WHERE id = ' + id;
   db.query(queryString, function(err){
     if (err) throw err;
-    res.redirect('/list');
+    res.redirect('back');
   });
 };
 //

@@ -35,7 +35,7 @@ module.exports.insert = function(req, res) {
                 return;
             }
             
-            res.redirect('/list');
+            res.redirect('back');
         });
     }
 };
@@ -48,6 +48,6 @@ module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err) throw err;
-        res.redirect('/list');
+        res.redirect('back');
     });
 };
