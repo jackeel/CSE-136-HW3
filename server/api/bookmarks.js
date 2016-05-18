@@ -286,7 +286,55 @@ module.exports.unstar = function(req, res) {
 };
 //
 module.exports.download = function(req, res){
-    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(req.bookmarks), function(err) {
+    //console.log(req.bookmarks);
+    //var listFolder = [];
+    var folderMap = new Map();
+    req.bookmarks.forEach(function(bookmark) {
+      var bookmark_id = bookmark["id"];
+      var user_id = bookmark["user_id"];
+      var folder_name = bookmark["name"];
+      var title = bookmark["title"];
+      var url = bookmark["url"];
+      var desc = bookmark["description"];
+      var star = bookmark["star"];
+      var folder_id = bookmark["folder_id"];
+      var session_id = req.session.userId;
+      // Not existing folder, set up the folder information.
+      // Key by folder_name.
+      if (!folderMap.has(folder_name)) {
+        folderItem = new Map();
+        folderItem.set('name', folder_name);
+        folderItem.set('folder_id', folder_id);
+        folderItem.set('user_id', user_id);
+        list_bookmark = new Array();
+        folderItem.set('bookmarks', list_bookmark);
+        folderMap.set(folder_name, folderItem);
+      }
+
+      // Folder item already exist in the map, just need to get it
+      else {
+        folderItem = folderMap.get(folder_name);
+      }
+
+      // Add the bookmark item
+      bookmark_item = new Map();
+      bookmark_item.set('title', title);
+      bookmark_item.set('url', url);
+      bookmark_item.set('description', desc);
+      bookmark_item.set('star', star);
+      folderItem.get('bookmarks').push(bookmark_item);
+    });
+    //console.log(folderMap);
+    array_json_bookmark = new Array();
+    
+    folderMap.forEach(function (value, key, mapObj) {
+      array_json_bookmark.push(value);
+    });
+
+    //console.log(array_json_bookmark);
+    console.log(JSON.stringify(array_json_bookmark));
+    //JSON.stringify(array_json_bookmark)
+    fs.writeFile("server/tmp/bookmarks.json", array_json_bookmark, function(err) {
         if(err) {
             throw err;
         }
