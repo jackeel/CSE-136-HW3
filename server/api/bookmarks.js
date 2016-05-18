@@ -152,7 +152,7 @@ module.exports.insert = function(req, res){
         },
         'url': {
             isLength: {
-                options: [{min: 1, max: 64}],
+                options: [{min: 1, max: 2083}],
                 errorMessage: 'Bookmark URL must be 1-2083 characters long'
             },
             isURL: {
