@@ -298,7 +298,52 @@ module.exports.unstar = function(req, res) {
 };
 //
 module.exports.download = function(req, res){
-    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(req.bookmarks), function(err) {
+    //console.log(req.bookmarks);
+    //var listFolder = [];
+    var folderMap = {}
+    req.bookmarks.forEach(function(bookmark) {
+      var bookmark_id = bookmark["id"];
+      var user_id = bookmark["user_id"];
+      var folder_name = bookmark["name"];
+      var title = bookmark["title"];
+      var url = bookmark["url"];
+      var desc = bookmark["description"];
+      var star = bookmark["star"];
+      var folder_id = bookmark["folder_id"];
+      var session_id = req.session.userId;
+      // Not existing folder, set up the folder information.
+      // Key by folder_name.
+      if (!folderMap[folder_name]) {
+        folderItem = {};
+        folderItem['name'] = folder_name;
+        folderItem['folder_id'] =  folder_id;
+        folderItem['user_id'] = user_id;
+        list_bookmark = [];
+        folderItem['bookmarks'] = list_bookmark;
+        folderMap[folder_name] = folderItem;
+      }
+
+      // Folder item already exist in the map, just need to get it
+      else {
+        folderItem = folderMap[folder_name];
+      }
+
+      // Add the bookmark item
+      bookmark_item = {};
+      bookmark_item['title'] = title;
+      bookmark_item['url'] = url;
+      bookmark_item['description'] = desc;
+      bookmark_item['star'] = star;
+      folderItem['bookmarks'].push(bookmark_item);
+    });
+    //console.log(folderMap);
+    array_json_bookmark = [];
+    
+    for (var key in folderMap) {
+      array_json_bookmark.push(folderMap[key]);
+    }
+    //console.log(JSON.stringify(array_json_bookmark));
+    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
             throw err;
         }

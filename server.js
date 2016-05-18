@@ -60,7 +60,7 @@ app.use(mySession);
 app.use(compression());
 
 /*  Not overwriting default views directory of 'views' */
-if( app.get('env') != 'development' ) {
+if( config.ENVIRONMENT != 'development' ) {
   //5 days worth of time
   app.set('views', __dirname + '/www/views');
   app.use(express.static(__dirname+'/www/public', { maxAge: oneWeek }));
@@ -127,7 +127,7 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage : storage}).single('bookmark-import');
 
-app.post('/upload', function(request, response) {
+app.post('/upload',function(request, response) {
   upload(request, response, function(err) {
   if(err) {
     console.log('Error Occured');
@@ -139,27 +139,59 @@ app.post('/upload', function(request, response) {
       if (err) {
         return console.log(err);
       }
-      //console.log(data);
-      var json_bookmark = JSON.parse(data);
-      json_bookmark.forEach(function(bookmark) {
-          title = bookmark["title"];
-          url = bookmark["url"];
-          id = bookmark["id"];
-          desc = bookmark["description"];
-          user_id = bookmark["user_id]"];
-          star = bookmark["star"];
-          folder_id = bookmark["folder_id"];
-          var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description, star) VALUES ( "' + 
-            title + '", "' + url + '", ' + folder_id + ', "' + desc + '", '
-             + star + ')';
-            db.query(queryString, function(err){
-              if (err) throw err;
-            });
+
+      var folders = JSON.parse(data);
+      var session_id = request.session.userId;
+
+      folders.forEach(function(folder) {
+        //same user
+          var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
+          db.query(checkFolder, function(err, fol){
+ 
+            if (err) throw err;
+
+            //if folder is not present, insert folder. else just insert bookmarks
+            if (fol.length == 0) {
+              var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
+
+              db.query(insertFolderQuery, function(err, row){
+                if (err) throw err;
+               // console.log(folder.bookmarks); 
+                insertBookmarks(folder.bookmarks, row.insertId);
+              });
+            }
+            else
+            {
+              insertBookmarks(folder.bookmarks, fol[0].id); 
+            }
           });
+      });
     });
   response.redirect('/list');
   })
 });
+
+function insertBookmarks(bookmarks, folderId)
+{
+
+  bookmarks.forEach(function(bookmark) {
+
+
+    var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;   
+
+    db.query(bookmarkInTable, function(err, row){
+      if(row.length == 0)
+      {
+        var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
+            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
+
+        db.query(insertBookmark, function(err){
+          if (err) throw err;
+        });
+      }
+    }); 
+  });
+}
 
 /* Routes - consider putting in routes.js */
 app.get('/', requireLogout, users.loginForm);
