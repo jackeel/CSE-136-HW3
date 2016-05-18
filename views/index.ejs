@@ -152,15 +152,6 @@
                                         <div><input type='submit' value="Save"></div>
                                     </div>
                             </form>
-                            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                            <div id="insertupdate-errors1" class="insertupdate-errors">
-                                <ul>
-                                    <% for(var i=0; i < errors.length; i++) { %>
-                                          <li><%= errors[i].msg %></li>
-                                    <% } %>
-                                </ul>
-                            </div>
-                            <% } %>
                         </div>
                     </div>
 	  		</li>
@@ -194,9 +185,18 @@
     </div>
     <div id="right">
       <div class="main grid grid-pad">
+          <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+            <div id="insertupdate-errors1" class="insertupdate-errors">
+                <ul>
+                    <% for(var i=0; i < errors.length; i++) { %>
+                          <li><%= errors[i].msg %></li>
+                    <% } %>
+                </ul>
+            </div>
+          <% } %>
       		<div id="title" class="col-1-1">
       			<div class="content">
-      				<h1>BookMarks</h1>
+      				<h1>BookMarx</h1>
       			</div>
       		</div>
 			<% bookmarks.forEach(function(bookmark) { %>
