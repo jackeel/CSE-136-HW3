@@ -128,7 +128,6 @@ var storage = multer.diskStorage({
 var upload = multer({ storage : storage}).single('bookmark-import');
 
 app.post('/upload',function(request, response) {
-  console.log('hit upload route'); 
   upload(request, response, function(err) {
   if(err) {
     console.log('Error Occured');
@@ -146,32 +145,23 @@ app.post('/upload',function(request, response) {
 
       folders.forEach(function(folder) {
         //same user
-        console.log(folders); 
           var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
-          console.log(checkFolder); 
           db.query(checkFolder, function(err, fol){
-
-            console.log("inside checkFolder"); 
-            console.log(fol); 
+ 
             if (err) throw err;
 
             //if folder is not present, insert folder. else just insert bookmarks
             if (fol.length == 0) {
               var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
-              
-              console.log(insertFolderQuery); 
 
               db.query(insertFolderQuery, function(err, row){
                 if (err) throw err;
-                console.log('inside of inserFolderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-                console.log(row); 
                // console.log(folder.bookmarks); 
                 insertBookmarks(folder.bookmarks, row.insertId);
               });
             }
             else
             {
-              console.log('elseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'); 
               insertBookmarks(folder.bookmarks, fol[0].id); 
             }
           });
@@ -183,21 +173,23 @@ app.post('/upload',function(request, response) {
 
 function insertBookmarks(bookmarks, folderId)
 {
-  console.log("folder Id");
-  console.log(folderId); 
 
   bookmarks.forEach(function(bookmark) {
 
-    var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
+
+    var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;   
+
+    db.query(bookmarkInTable, function(err, row){
+      if(row.length == 0)
+      {
+        var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
             bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
-    
-    console.log('last bookmark'); 
-    console.log(insertBookmark);
 
-    db.query(insertBookmark, function(err){
-      if (err) throw err;
-    });
-
+        db.query(insertBookmark, function(err){
+          if (err) throw err;
+        });
+      }
+    }); 
   });
 }
 
