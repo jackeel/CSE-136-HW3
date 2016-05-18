@@ -6,5 +6,6 @@ module.exports = {
   PORT: 3000,
   USERNAME: 'kevingu',
   PASSWORD: 'test',
-  SECRET: 'ArmandoKeepsAGoodSecret'
+  SECRET: 'ArmandoKeepsAGoodSecret',
+  ENVIRONMENT: 'development'
 };

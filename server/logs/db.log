@@ -8,3 +8,6 @@
 {"timestamp":"2016-05-17T23:04:22.311Z","user":"'user1'","ip":"::1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T23:05:15.363Z","user":"'user1'","ip":"::1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-17T23:06:19.951Z","user":"'user1'","ip":"::1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-18T03:01:21.783Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-18T03:02:14.887Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-18T03:14:18.020Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
