@@ -1,5 +1,10 @@
 #CSE-136-HW3#
 
+## LOG IN !IMPORTANT##
+to log into a account with prefilled data, use this accound: 
+Username: user1
+Passsword: a
+
 ##Testing##
 Dummy data was preset in the database for testing.
 Please note that the data is reset every time the application is reset (dropped if exist in schemas).
