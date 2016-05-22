@@ -133,6 +133,7 @@ module.exports.delete = function(req, res) {
   db.query('DELETE from bookmarks where id = ' + id, function(err){
     if (err) throw err;
     res.redirect('back');
+    //res.json({"bookmark_id": req.params.bookmark_id});
   });
 };
 
@@ -178,7 +179,6 @@ module.exports.insert = function(req, res){
     //req.sanitizeBody('url').escape();
     req.checkBody(validate_insert);
     var errors = req.validationErrors();
-
     if (errors) {
         req.flash('error_messages', errors);
         res.redirect('/list');  // flash error to the add modal
@@ -189,7 +189,7 @@ module.exports.insert = function(req, res){
         var folder_id = db.escape(req.body.folder_id);
 
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
-        db.query(queryString, function(err){
+        db.query(queryString, function(err, result){
       	    if (err) {
                 errors = [{msg: 'A bookmark with the same title already exists in the selected folder'}]
                 req.flash('error_messages', errors);
@@ -198,6 +198,11 @@ module.exports.insert = function(req, res){
             }
 
             res.redirect('back');
+            //res.json({"bookmark_id": result.insertId,
+            //          "title": req.body.title,
+            //          "url": req.body.url,
+            //          "folder_id": req.body.folder_id});
+            
         });
     }
 };
@@ -281,6 +286,7 @@ module.exports.star = function(req, res) {
   db.query(queryString, function(err){
     if (err) throw err;
     res.redirect('back');
+    //res.json({"bookmark_id": req.params.bookmark_id});
   });
 };
 
@@ -294,6 +300,7 @@ module.exports.unstar = function(req, res) {
   db.query(queryString, function(err){
     if (err) throw err;
     res.redirect('back');
+    //res.json({"bookmark_id": req.params.bookmark_id});
   });
 };
 //

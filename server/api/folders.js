@@ -16,8 +16,6 @@ module.exports.insert = function(req, res) {
     };
 
     req.checkBody(validate_insert);
-    //req.sanitizeBody('title').escape();
-    //req.sanitizeBody('url').escape();
     var errors = req.validationErrors();
 
     if (errors) {
@@ -28,7 +26,7 @@ module.exports.insert = function(req, res) {
         var user_id = db.escape(req.session.userId);
 
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
-        db.query(queryString, function(err) {
+        db.query(queryString, function(err, result) {
             if (err) {
                 errors = [{msg: 'A folder with the same name already exists'}];
                 req.flash('error_messages', errors);
@@ -37,6 +35,8 @@ module.exports.insert = function(req, res) {
             }
             
             res.redirect('/list');
+            //res.json({"folder_id": result.insertId,
+            //          "folder_name": req.body.name});
         });
     }
 };
@@ -50,5 +50,6 @@ module.exports.delete = function(req, res) {
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err) throw err;
         res.redirect('back');
+        //res.json({"folder_id": req.params.folder_id});
     });
 };
