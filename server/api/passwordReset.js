@@ -66,13 +66,14 @@ module.exports.passwordReset = function(req, res) {
         db.query(queryString, function(err, rows) {
             if(err) throw err;
             if(rows.length == 1) {
-                var salt = rows[0].salt;
+                var salt = crypto.randomBytes(32).toString('base64');
                 var hash = crypto
                       .createHmac('SHA256', salt)
-                      .update(req.body.password)
+                      .update(password)
                       .digest('base64');
 
-                var updateQueryString = 'UPDATE users SET password = ' + password + ' WHERE username = ' + username;
+                var updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE username = ' + username;
+                console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
                     if (err) throw err;
                 
