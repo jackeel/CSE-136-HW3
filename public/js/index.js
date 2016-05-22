@@ -1,6 +1,7 @@
 window.onload = function() {
     /*************************** AJAX **********************************/
-    /* Create new bookmark */
+    // Create new bookmark
+    /*
     $("#addBookmarkForm").on("submit", function(event) {
     	event.preventDefault();
 
@@ -43,7 +44,7 @@ window.onload = function() {
         return false;
     });
 
-    /* Star/unstar bookmark */
+    // Star/unstar bookmark
     $("#right-content").on("click", ".card__action-bar a:nth-of-type(1)", function(event) {
         event.preventDefault();
 
@@ -73,7 +74,7 @@ window.onload = function() {
         });
     });
 
-    /* Delete bookmark */
+    // Delete bookmark
     $("#right-content").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
         event.preventDefault();
 
@@ -94,7 +95,7 @@ window.onload = function() {
         });
     });
 
-    /* Create new folder */
+    // Create new folder
     $("#addFolderForm").on("submit", function(event) {
     	event.preventDefault();
 
@@ -134,7 +135,7 @@ window.onload = function() {
         return false;
     });
 
-    /* Delete folder */
+    // Delete folder
     $("#folderList").on("click", ".pad-trash-icon", function(event) {
         event.preventDefault();
 
@@ -160,7 +161,7 @@ window.onload = function() {
         });
     });
 
-    /* Select folder / keyword search / sort option */
+    // Select folder / keyword search / sort option
     // TODO: add listener for keyword search / sort option
     $("#folderList").on("click", "li a:nth-of-type(1)", function(event) {
         event.preventDefault();
@@ -169,13 +170,13 @@ window.onload = function() {
         var params = {"folder_id": "", "SortBy": "", "Search": ""};
 
         // TODO: grab selected bookmarks from listBookmarks and replace the innerHTML of $("#bookmarks")
-/*
-From bookmarks.js
-var folder_id = req.params.folder_id;
-var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
-var search = req.query['Search'] ? req.query['Search'] : '';
-*/
+
+//From bookmarks.js
+//var folder_id = req.params.folder_id;
+//var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+//var search = req.query['Search'] ? req.query['Search'] : '';
     });
+    */
     /*******************************************************************/
 
 
