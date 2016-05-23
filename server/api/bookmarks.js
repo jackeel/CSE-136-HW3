@@ -28,13 +28,23 @@ module.exports.list = function(req, res) {
         });
     }
 }
+/**
+ * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
+ */
+module.exports.getCount = function(req, res) {
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(200).json({
+            status: Constants.status.SUCCESS,
+            data: {count:req.bookmarks.length}
+        })
+    }
+}
 
 /**
  * Query all bookmarks and put in req, use next().
  */
 
 module.exports.listBookmarks = function(req, res, next) {
-    console.log(req.query);
   var folder_id = req.params.folder_id;
   var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
   var offset = req.query['offset'];
@@ -69,6 +79,7 @@ module.exports.listBookmarks = function(req, res, next) {
     if(offset){
         queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
     }
+    console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -220,11 +231,12 @@ module.exports.insert = function(req, res){
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
+        var description = db.escape(req.body.description?req.body.description:"");
 
-        var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
+        var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES (' + title + ', ' + url +
+            ', ' + folder_id + ', '+description+')';
         db.query(queryString, function(err){
       	if (err) throw err;
-            console.log(req.get(CONTENT_TYPE_KEY));
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.json({
                     status: Constants.status.SUCCESS,
@@ -275,7 +287,7 @@ module.exports.update = function(req, res){
                 options: [{min: 1, max:11}],
                 errorMessage: 'Invalid folder id'
             }
-        }
+        },
     };
 
     req.checkBody(validate_update);
@@ -297,8 +309,9 @@ module.exports.update = function(req, res){
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
+        var description = db.escape(req.body.description?req.body.description:"");
         var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
-                          ' WHERE id = ' + db.escape(bookmark_id);
+                          ', description = '+description +' WHERE id = ' + db.escape(bookmark_id);
 
         db.query(queryString, function(err){
             if (err) throw err;
