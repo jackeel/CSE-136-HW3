@@ -4,33 +4,46 @@
 
 var db = require('../config/db');
 var fs = require('fs');
+var CONTENT_TYPE_KEY = 'Content-Type';
+var JSON_CONTENT_TYPE = 'application/json';
+var Constants = require('../config/Constants');
 
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
 module.exports.list = function(req, res) {
-    res.render('index', {
-        bookmarks: req.bookmarks,
-        folders: req.folders,
-        current_folder_id: req.current_folder_id,
-        order_by: req.order_by,
-        search: req.search,        
-        errors: res.locals.error_messages
-    });
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(200).json({
+            status: Constants.status.SUCCESS,
+            data: req.bookmarks
+        })
+    } else{
+        res.render('index', {
+            bookmarks: req.bookmarks,
+            folders: req.folders,
+            current_folder_id: req.current_folder_id,
+            order_by: req.order_by,
+            search: req.search,
+            errors: res.locals.error_messages
+        });
+    }
 }
 
 /**
  * Query all bookmarks and put in req, use next().
  */
+
 module.exports.listBookmarks = function(req, res, next) {
+    console.log(req.query);
   var folder_id = req.params.folder_id;
   var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+  var offset = req.query['offset'];
   var search = req.query['Search'] ? req.query['Search'] : '';
   req.search = search;
   req.current_folder_id = folder_id;
   req.order_by = order_by;
   search = db.escape('%' + search + '%');
-
+  var queryString = "";
   if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
       (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
       (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
@@ -43,11 +56,6 @@ module.exports.listBookmarks = function(req, res, next) {
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
                   'WHERE title like ' + search + ' or description like ' + search +
                   ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
-    db.query(queryString, function(err, bookmarks) {
-        if (err) throw err;
-        req.bookmarks = bookmarks;
-        return next();
-    });
   }
   else {
     folder_id = db.escape(folder_id);
@@ -57,12 +65,15 @@ module.exports.listBookmarks = function(req, res, next) {
                    ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
                    'WHERE title like ' +search + ' or description like ' + search +
                    ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
+  }
+    if(offset){
+        queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
+    }
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
         return next();
     });
-  }
 };
 
 /**
@@ -98,11 +109,20 @@ module.exports.listStarred = function(req, res) {
     if(err) throw err;
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
       if(err) throw err;
-        res.render('index', {bookmarks: bookmarks,
-                             folders: folders,
-                             current_folder_id: "starred",
-                             order_by: req.order_by,
-                             search: req.search });
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(200).json({
+                status: Constants.status.SUCCESS,
+                data: bookmarks
+            })
+        }else {
+            res.render('index', {
+                bookmarks: bookmarks,
+                folders: folders,
+                current_folder_id: "starred",
+                order_by: req.order_by,
+                search: req.search
+            });
+        }
     });
   });
 };
@@ -131,8 +151,15 @@ module.exports.delete = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
 
   db.query('DELETE from bookmarks where id = ' + id, function(err){
-    if (err) throw err;
-    res.redirect('/list');
+      if (err) throw err;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+          res.status(200).json({
+              status: Constants.status.failed,
+              msg: Constants.successMessages.OK
+          })
+      }else {
+          res.redirect('/list');
+      }
   });
 };
 
@@ -180,8 +207,15 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors(); 
 
     if (errors) {
-        req.flash('error_messages', errors);
-        res.redirect('/list#addModal');  // flash error to the add modal
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(400).json({
+                status: Constants.status.failed,
+                msg: errors
+            })
+        }else {
+            req.flash('error_messages', errors);
+            res.redirect('/list#addModal');  // flash error to the add modal
+        }
     } else {
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
@@ -190,7 +224,15 @@ module.exports.insert = function(req, res){
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id) VALUES (' + title + ', ' + url + ', ' + folder_id + ')';
         db.query(queryString, function(err){
       	if (err) throw err;
-          res.redirect('/list');
+            console.log(req.get(CONTENT_TYPE_KEY));
+            if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                res.json({
+                    status: Constants.status.SUCCESS,
+                    msg: Constants.successMessages.OK
+                })
+            }else {
+                res.redirect('/list');
+            }
         });
     }
 };
@@ -242,8 +284,15 @@ module.exports.update = function(req, res){
     var errors = req.validationErrors();
 
     if (errors) {
-        req.flash('error_messages', errors);
-        res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(400).json({
+                status: Constants.status.failed,
+                msg: errors
+            })
+        }else {
+            req.flash('error_messages', errors);
+            res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
+        }
     } else {
         id = db.escape(id);
         var title = db.escape(req.body.title);
@@ -254,11 +303,18 @@ module.exports.update = function(req, res){
                           ' WHERE id = ' + id;
         db.query(queryString, function(err){
             if (err) throw err;
-            res.redirect('/list');
+            if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                res.status(200).json({
+                    status: Constants.status.SUCCESS,
+                    msg: Constants.successMessages.OK
+                })
+            }else {
+                res.redirect('/list');
+            }
         });
     }
 };
-
+//
 /**
  * Star a bookmark
  * Redirect to the list page
@@ -267,8 +323,15 @@ module.exports.star = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
   var queryString = 'UPDATE bookmarks SET star = 1 WHERE id = ' + id;
   db.query(queryString, function(err){
-    if (err) throw err;
-    res.redirect('/list');
+      if (err) throw err;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+          res.status(200).json({
+              status: Constants.status.SUCCESS,
+              msg: Constants.successMessages.OK
+          })
+      }else {
+          res.redirect('/list');
+      }
   });
 };
 
@@ -280,8 +343,15 @@ module.exports.unstar = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
   var queryString = 'UPDATE bookmarks SET star = 0 WHERE id = ' + id;
   db.query(queryString, function(err){
-    if (err) throw err;
-    res.redirect('/list');
+      if (err) throw err;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+          res.status(200).json({
+              status: Constants.status.SUCCESS,
+              msg: Constants.successMessages.OK
+          })
+      }else {
+          res.redirect('/list');
+      }
   });
 };
 //

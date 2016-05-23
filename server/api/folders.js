@@ -1,10 +1,15 @@
 var db = require('../config/db');
+var CONTENT_TYPE_KEY = 'Content-Type';
+var JSON_CONTENT_TYPE = 'application/json';
+var Constants = require('../config/Constants');
 
 /**
  * Adds a new folder to the database
  * Does a redirect to the list page
  */
+//
 module.exports.insert = function(req, res){
+    console.log("insert folders");
     var validate_insert = {
         'name': {
             optional: true,
@@ -22,7 +27,15 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
 
     if (errors) {
-        req.flash('error_messages', errors);
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(400).json({
+                status: Constants.status.failed,
+                msg: errors
+            });
+        }else {
+            req.flash('error_messages', errors);
+            res.redirect('/list#addFolder');  // flash error to the add modal
+        }
         // TODO: send request to right error page for adding folder
     } else {
         var name = db.escape(req.body.name);
@@ -33,7 +46,14 @@ module.exports.insert = function(req, res){
             if (err) throw err;
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
                 if (err) throw err;
-                res.redirect('/list');
+                if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                    res.status(200).json({
+                        status: Constants.status.SUCCESS,
+                        msg: Constants.successMessages.OK
+                    })
+                }else {
+                    res.redirect('/list');
+                }
             });
         });
     }
@@ -45,9 +65,15 @@ module.exports.insert = function(req, res){
  */
 module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);
-    console.log("Delete: "+id);
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err) throw err;
-        res.redirect('/list');
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(200).json({
+                status: Constants.status.SUCCESS,
+                msg: Constants.successMessages.OK
+            })
+        }else {
+            res.redirect('/list');
+        }
     });
 };

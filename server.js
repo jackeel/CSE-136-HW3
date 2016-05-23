@@ -71,6 +71,8 @@ else
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
@@ -91,7 +93,6 @@ app.use(function(req, res, next) {
 //global middleware to refresh session
 
 app.use(function(req, res, next) {
-
   if(req.session && req.session.userId) {
 
     var queryString = 'SELECT id FROM users WHERE id = "' + req.session.userId + '"';
@@ -160,8 +161,8 @@ app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
 app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 app.get('/bookmarks/download', bookmarks.listBookmarks, bookmarks.download);
 
-app.post('/folders', folders.insert);
-app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
+app.post('/folders', requireLogin, folders.insert);
+app.get('/folders/delete/:folder_id(\\d+)', requireLogin, folders.delete);
 
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
