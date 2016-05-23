@@ -22,9 +22,9 @@
 				<a href="#openSidebar" class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
 			</li>
 	  		<li class="navbar-left search full-width">
-	  			<form method="get" name="search">
+	  			<form method="get" name="search" id="searchForm">
 	  				<% if(search == '') { %>
-	  					<input class = "min-input" name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
 	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
@@ -38,7 +38,7 @@
 		  		<li class="navbar-right min-sort-size">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
-				<form method="get" name="orderBy">
+				<form method="get" name="orderBy" id="orderByForm">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
 					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
@@ -149,11 +149,12 @@
 	</nav>
 	<div id="openSidebar" class="showSidebar">
 		<div id="sidebar">
+		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 	      <ul id="folderList">
-	            <li class="pinned"><a href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
-	            <li class="pinned"><a href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg"></i> All</a></li>
+	            <li class="pinned"><a href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg" id="folder-starred"></i> Starred</a></li>
+	            <li class="pinned"><a href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg" id="folder-all"></i> All</a></li>
 	            <% folders.forEach(function(folder) { %>
-	            	<li><a href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
+	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 	                </li>
 
@@ -191,7 +192,7 @@
       				<h1>BookMarx</h1>
       			</div>
       		</div>
-      		<div id="bookmarks">
+      		<div class="bookmarks">
 			<% bookmarks.forEach(function(bookmark) { %>
 	      	<div class="col-1-3 mobile-col-1-3 card-min-width">
 				<div class="content">

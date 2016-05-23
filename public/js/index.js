@@ -50,7 +50,7 @@ window.onload = function() {
 
         var url = $(this).attr("href");
         var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
-        
+
         $.ajax({
         	type: 'GET',
         	url: url,
@@ -100,7 +100,6 @@ window.onload = function() {
     	event.preventDefault();
 
         var url = $("#addFolderForm").attr("action");
-        console.log(url);
         var params = new Array();
         var form_elements = document.getElementById("addFolderForm").elements;
         for(var i = 0; i < form_elements.length; i ++){
@@ -151,7 +150,9 @@ window.onload = function() {
                 // Remove folder from side list
                 $("#delete-folder-" + result.folder_id).closest("li").remove();
                 
-                // TODO: Remove necessary bookmarks from the list
+                // TODO: Remove necessary bookmarks from the list + redirect to all if it's selected
+                if(current_folder == result.folder_id) {
+                }
 
                 // Remove folder from the addBookmark modal
                 $('.ListFieldWrapper option[value=' + result.folder_id + ']').remove();
@@ -161,20 +162,59 @@ window.onload = function() {
         });
     });
 
-    // Select folder / keyword search / sort option
+    // Select folder (list bookmarks from that folder)
     // TODO: add listener for keyword search / sort option
     $("#folderList").on("click", "li a:nth-of-type(1)", function(event) {
         event.preventDefault();
 
         var url = $(this).attr("href");
-        var params = {"folder_id": "", "SortBy": "", "Search": ""};
+        var selected_folder_id = $(this).attr("id").split("-")[1];
+        var deselected_folder_id = $("#currentFolder").val().split("-")[1];
+        var params = {"folder_id": selected_folder_id};
 
-        // TODO: grab selected bookmarks from listBookmarks and replace the innerHTML of $("#bookmarks")
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            data: params,
+            success: function(result) {
+                console.log(selected_folder_id);
+                console.log(deselected_folder_id);
+                // Highlight selected folder, un-highlight de-selected folder
+                $('#folder-' + selected_folder_id).css('color', '#FF9EAE');
+                $('#folder-' + deselected_folder_id).css('color', '#CACACA');
 
-//From bookmarks.js
-//var folder_id = req.params.folder_id;
-//var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
-//var search = req.query['Search'] ? req.query['Search'] : '';
+                // Update current folder hidden input field
+                $('#currentFolder').val('folder-' + selected_folder_id);
+
+                // Show bookmarks that belong to the selected folder
+                var new_bookmark_list = '';
+                
+                for(var i = 0; i < result.length; i++) {
+                    new_bookmark_list += '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
+                        '    <div class="content">\n' +
+                        '        <div class="card card--small">\n' +
+                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
+                        '            <a href="' + result.url + '"><h2 class="card__title">' + result.title + '</h2></a>\n' +
+                        '            <div class="card__action-bar">\n' +
+                        '                <a class="card__button" href="/bookmarks/' + result.bookmark_id + '/star" id="star-bookmark-' + result.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/edit/' + result.bookmark_id + '" id="edit-bookmark-' + result.bookmark_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/delete/' + result.bookmark_id + '" id="delete-bookmark-' + result.bookmark_id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+                        '            </div>\n' +
+                        '         </div>\n' +
+                        '     </div>'
+                    );
+                }
+                $('bookmarks').html(new_bookmark_list);
+                
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+    // Keyword search (in current folder)
+
+    // Sort Option (in current folder)
     });
     */
     /*******************************************************************/
