@@ -25,15 +25,15 @@
 	  		<li class="navbar-left search full-width">
 	  			<form method="get" name="search" id="searchForm">
 	  				<% if(search == '') { %>
-	  					<input class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input id="searchInput" class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
-	  					<input name="Search" type="text" value="<%= search%>"/>
+	  					<input id="searchInput" name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
 	  				<!-- DO NOT remove these two inputs. They indicate the current folder and order status.
       				These will be used to assist the search function. In final version, will set them hidden.-->
-      				<!--input name="CurrentFolderId" style="display: none;" type="text" value="<%= current_folder_id%>"/-->
-      				<input name="SortBy" style="display: none;" type="text" value="<%= order_by%>"/>
-	  				<button><i class="fa fa-search fa-lg"></i></button>
+      				<input name="CurrentFolderId" type="hidden" value="<%= current_folder_id%>"/>
+      				<input name="SortBy" type="hidden" value="<%= order_by%>"/>
+	  				<button id ="searchButton"><i class="fa fa-search fa-lg"></i></button>
 	  			</form>
 	  		</li>
 		  		<li class="navbar-right min-sort-size">
