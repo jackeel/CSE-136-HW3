@@ -2,7 +2,7 @@
 # Sequel Pro SQL dump
 # Version 3408
 #
-# http://www.sequelpro.com/
+# http://http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
 # Host: 127.0.0.1 (MySQL 5.1.63)
@@ -31,10 +31,11 @@ CREATE TABLE `bookmarks` (
   `url` varchar(2083) DEFAULT '',
   `description` text,
   `star` boolean DEFAULT 0,
-  `create_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `last_visit_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `create_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `last_visit_date` TIMESTAMP DEFAULT 0,
   `folder_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `bookmark_duplicate` (`title`, `folder_id`),
   INDEX(`folder_id`),
   FOREIGN KEY(`folder_id`)
     REFERENCES `folders`(`id`)
@@ -49,26 +50,26 @@ LOCK TABLES `bookmarks` WRITE;
 /* Bookmarks inserted into user1 and user 2 accounts */
 INSERT INTO `bookmarks` (`id`, `title`, `url`, `folder_id`, `description`)
 VALUES
-	(1, 'Google', 'www.google.com', 1, 'description1'),
-	(2, 'Yahoo', 'www.yahoo.com', 1, 'description2'),
-	(3, 'UCSD', 'www.ucsd.edu', 2, 'description3'),
-	(4, 'Facebook', 'www.facebook.com', 2, 'description4'),
-	(5, 'Reddit', 'www.reddit.com', 3, 'description5'),
-  (6, 'CSE136 Slack', 'www.cse136.slack.com', 3, 'description6'),
-  (7, 'Piazza', 'www.piazza.com', 4, 'description7'),
-  (8, 'Github', 'www.github.com', 4, 'description8'),
-  (9, 'Bing', 'www.bing.com', 5, 'description9'),
-  (10, 'Amazon', 'www.amazon.com', 5, 'description10'),
-  (11, 'Google', 'www.google.com', 6, 'description1'),
-  (12, 'Yahoo', 'www.yahoo.com', 6, 'description2'),
-  (13, 'UCSD', 'www.ucsd.edu', 7, 'description3'),
-  (14, 'Facebook', 'www.facebook.com', 7, 'description4'),
-  (15, 'Reddit', 'www.reddit.com', 8, 'description5'),
-  (16, 'CSE136 Slack', 'www.cse136.slack.com', 8, 'description6'),
-  (17, 'Piazza', 'www.piazza.com', 9, 'description7'),
-  (18, 'Github', 'www.github.com', 9, 'description8'),
-  (19, 'Bing', 'www.bing.com', 10, 'description9'),
-  (20, 'Amazon', 'www.amazon.com', 10, 'description10');
+	(1, 'Google', 'http://www.google.com', 1, 'description1'),
+	(2, 'Yahoo', 'http://www.yahoo.com', 1, 'description2'),
+	(3, 'UCSD', 'http://www.ucsd.edu', 2, 'description3'),
+	(4, 'Facebook', 'http://www.facebook.com', 2, 'description4'),
+	(5, 'Reddit', 'http://www.reddit.com', 3, 'description5'),
+  (6, 'CSE136 Slack', 'http://www.cse136.slack.com', 3, 'description6'),
+  (7, 'Piazza', 'http://www.piazza.com', 4, 'description7'),
+  (8, 'Github', 'http://www.github.com', 4, 'description8'),
+  (9, 'Bing', 'http://www.bing.com', 5, 'description9'),
+  (10, 'Amazon', 'http://www.amazon.com', 5, 'description10'),
+  (11, 'Google', 'http://www.google.com', 6, 'description1'),
+  (12, 'Yahoo', 'http://www.yahoo.com', 6, 'description2'),
+  (13, 'UCSD', 'http://www.ucsd.edu', 7, 'description3'),
+  (14, 'Facebook', 'http://www.facebook.com', 7, 'description4'),
+  (15, 'Reddit', 'http://www.reddit.com', 8, 'description5'),
+  (16, 'CSE136 Slack', 'http://www.cse136.slack.com', 8, 'description6'),
+  (17, 'Piazza', 'http://www.piazza.com', 9, 'description7'),
+  (18, 'Github', 'http://www.github.com', 9, 'description8'),
+  (19, 'Bing', 'http://www.bing.com', 10, 'description9'),
+  (20, 'Amazon', 'http://www.amazon.com', 10, 'description10');
 /*!40000 ALTER TABLE `bookmarks` ENABLE KEYS */;
 UNLOCK TABLES;
 

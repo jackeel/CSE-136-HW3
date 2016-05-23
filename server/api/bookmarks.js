@@ -132,7 +132,7 @@ module.exports.listStarred = function(req, res) {
  * renders the edit confirmation page with the edit.ejs template
  */
 module.exports.edit = function(req, res) {
-  var id = db.escape(req.params.bookmark_id);
+   var id = db.escape(req.params.bookmark_id);
 
   db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
     if (err) throw err;
@@ -145,7 +145,7 @@ module.exports.edit = function(req, res) {
 
 /**
  * Deletes the passed in bookmark from the database.
- * Does a redirect to the list page
+ * Does a redirect to the current page
  */
 module.exports.delete = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
@@ -168,24 +168,26 @@ module.exports.delete = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.insert = function(req, res){
+    req.sanitizeBody('title').trim();
+    req.sanitizeBody('url').trim();
     var validate_insert = {
         'title': {
-            optional: true,
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Title must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Bookmark title must be 1-25 characters long'
             },
         },
         'url': {
-            optional: {
-                options: [{checkFalsy: true}]
-            },
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'URL must be 0-64 characters'
+                options: [{min: 1, max: 2083}],
+                errorMessage: 'Bookmark URL must be 1-2083 characters long'
             },
             isURL: {
                 errorMessage: 'Invalid URL'
+            },
+            matches: {
+                options: ['^https?://', 'i'],
+                errorMessage: 'URL must start with http:// or https://'
             }
         },
         'folder_id': {
@@ -199,13 +201,10 @@ module.exports.insert = function(req, res){
         }
     };
 
-    req.checkBody(validate_insert);
-    req.sanitizeBody('title').trim();
     //req.sanitizeBody('title').escape();
-    req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
-    var errors = req.validationErrors(); 
-
+    req.checkBody(validate_insert);
+    var errors = req.validationErrors();
     if (errors) {
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
@@ -217,6 +216,7 @@ module.exports.insert = function(req, res){
             res.redirect('/list#addModal');  // flash error to the add modal
         }
     } else {
+        var user_id = req.session.userId;
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
@@ -242,26 +242,29 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
-    var id = req.params.bookmark_id;
+    var bookmark_id = req.params.bookmark_id;
+
+    req.sanitizeBody('title').trim();
+    req.sanitizeBody('url').trim();
 
     var validate_update = {
         'title': {
-            optional: true,
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Title must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Bookmark title must be 1-25 characters'
             },
         },
         'url': {
-            optional: {
-                options: [{checkFalsy: true}]
-            },
             isLength: {
-                options: [{min: 0, max: 64}],
-                errorMessage: 'URL must be 0-64 characters'
+                options: [{min: 1, max: 2083}],
+                errorMessage: 'Bookmark URL must be 1-2083 characters'
             },
             isURL: {
                 errorMessage: 'Invalid URL'
+            },
+            matches: {
+                options: ['^https?://', 'i'],
+                errorMessage: 'URL must start with http:// or https://'
             }
         },
         'folder_id': {
@@ -276,11 +279,8 @@ module.exports.update = function(req, res){
     };
 
     req.checkBody(validate_update);
-    req.sanitizeBody('title').trim();
     //req.sanitizeBody('title').escape();
-    req.sanitizeBody('url').trim();
     //req.sanitizeBody('url').escape();
-
     var errors = req.validationErrors();
 
     if (errors) {
@@ -294,13 +294,12 @@ module.exports.update = function(req, res){
             res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
         }
     } else {
-        id = db.escape(id);
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
-
         var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
-                          ' WHERE id = ' + id;
+                          ' WHERE id = ' + db.escape(bookmark_id);
+
         db.query(queryString, function(err){
             if (err) throw err;
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -317,7 +316,7 @@ module.exports.update = function(req, res){
 //
 /**
  * Star a bookmark
- * Redirect to the list page
+ * Redirect to the current page
  */
 module.exports.star = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
@@ -337,7 +336,7 @@ module.exports.star = function(req, res) {
 
 /**
  * Unstar a bookmark
- * Redirect to the list page
+ * Redirect to the current page
  */
 module.exports.unstar = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
@@ -356,7 +355,52 @@ module.exports.unstar = function(req, res) {
 };
 //
 module.exports.download = function(req, res){
-    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(req.bookmarks), function(err) {
+    //console.log(req.bookmarks);
+    //var listFolder = [];
+    var folderMap = {}
+    req.bookmarks.forEach(function(bookmark) {
+      var bookmark_id = bookmark["id"];
+      var user_id = bookmark["user_id"];
+      var folder_name = bookmark["name"];
+      var title = bookmark["title"];
+      var url = bookmark["url"];
+      var desc = bookmark["description"];
+      var star = bookmark["star"];
+      var folder_id = bookmark["folder_id"];
+      var session_id = req.session.userId;
+      // Not existing folder, set up the folder information.
+      // Key by folder_name.
+      if (!folderMap[folder_name]) {
+        folderItem = {};
+        folderItem['name'] = folder_name;
+        folderItem['folder_id'] =  folder_id;
+        folderItem['user_id'] = user_id;
+        list_bookmark = [];
+        folderItem['bookmarks'] = list_bookmark;
+        folderMap[folder_name] = folderItem;
+      }
+
+      // Folder item already exist in the map, just need to get it
+      else {
+        folderItem = folderMap[folder_name];
+      }
+
+      // Add the bookmark item
+      bookmark_item = {};
+      bookmark_item['title'] = title;
+      bookmark_item['url'] = url;
+      bookmark_item['description'] = desc;
+      bookmark_item['star'] = star;
+      folderItem['bookmarks'].push(bookmark_item);
+    });
+    //console.log(folderMap);
+    array_json_bookmark = [];
+    
+    for (var key in folderMap) {
+      array_json_bookmark.push(folderMap[key]);
+    }
+    //console.log(JSON.stringify(array_json_bookmark));
+    fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
             throw err;
         }

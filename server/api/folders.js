@@ -9,21 +9,17 @@ var Constants = require('../config/Constants');
  */
 //
 module.exports.insert = function(req, res){
-    console.log("insert folders");
+    req.sanitizeBody('name').trim();
     var validate_insert = {
         'name': {
-            optional: true,
             isLength: {
-                options: [{min: 0, max: 25}],
-                errorMessage: 'Title must be 0-25 characters'
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Folder name must be 1-25 characters'
             },
         },
     };
 
     req.checkBody(validate_insert);
-    req.sanitizeBody('name').trim();
-    //req.sanitizeBody('title').escape();
-    //req.sanitizeBody('url').escape();
     var errors = req.validationErrors();
 
     if (errors) {
@@ -60,8 +56,8 @@ module.exports.insert = function(req, res){
 };
 
 /**
- * Deletes the passed in bookmark from the database.
- * Does a redirect to the list page
+ * Deletes the passed in folder from the database.
+ * Does a redirect to the current page
  */
 module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);

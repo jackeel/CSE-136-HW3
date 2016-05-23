@@ -12,6 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
@@ -66,23 +67,12 @@
 						<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 						  </ul>
 						</div>
-						<!-- Error messages -->
-			            <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-					      <div id="insertupdate-errors" class="insertupdate-errors">
-					        <ul>
-				            <% for(var i=0; i < errors.length; i++) { %>
-				                <li><%= errors[i].msg %></li>
-				            <% } %>
-					        </ul>
-					      </div>
-					    <% } %>
-						<!-- -->
-							  <form method='post' action='/insert'>
+							  <form method='post' action='/insert' id="addBookmarkForm">
 							        <div class="form" id="add-bookmark-form">
-									    <input type="text" name="title" placeholder="Title">
+									    <input type="text" name="title" value="" placeholder="Title" required>
 
 									    <div class="textFieldWrapper">
-									      <input type="url" name="url" placeholder="URL">
+									      <input type="text" name="url" value="" placeholder="http://www.example.com" required>
 									    </div>
 
 											<div class="ListFieldWrapper">
@@ -100,16 +90,20 @@
 								  </form>
 							 </div>
 						<div class="form" id="import-bookmark-form">
+							<form method="post" action="/upload" enctype="multipart/form-data">
 							<div class="textFieldWrapper">
-						      <input type="url" name="url" placeholder="File Path">
+						      <input type="file" name="bookmark-import" placeholder="File Path">
 						    </div>
 						    <div class="buttonWrapper">
-							      	<div><i class="fa fa-folder-open fa-lg"></i> Browse</div>
+						    		<div><input type='submit' value="Upload"></div>
+							      	<!--div><i class="fa fa-folder-open fa-lg" type="submit"></i> Submit</div-->
 							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
 							</div>
+						</form>
 						</div>
 					</div>
 				</div>
+
 				<div id="importBookmark" class="modalDialog">
                         <div class="grid grid-pad">
                             <a href="#close" title="Close" class="close x-button">x</a>
@@ -118,24 +112,16 @@
                                     <li id="add-bookmark1" class="is-active"><a>Import Bookmarks!</a></li>
                                 </ul>
                             </div>
-                            <form method='post' action='folders'>
+                            <form method="post" action="/upload" enctype="multipart/form-data">
                                 <div class="form" id="add-bookmark-form1">
-                                    <input type="file" name="file" placeholder="Select JSON File">
+                                     <input type="file" name="bookmark-import" placeholder="File Path">
 
                                     <div class="buttonWrapper">
-                                        <div><input type='submit' value="Import"></div>
+                                        <div><input type='submit' value="Upload"></div>
                                     </div>
                             </form>
                         </div>
-                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors1" class="insertupdate-errors">
-                            <ul>
-                                <% for(var i=0; i < errors.length; i++) { %>
-                                <li><%= errors[i].msg %></li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <% } %>
+
                     </div>
                 </div>
 
@@ -148,58 +134,64 @@
                                     <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
-                            <form method='post' action='folders'>
+                            <form method='post' action='folders' id="addFolderForm">
                                 <div class="form" id="add-bookmark-form1">
-                                    <input type="text" name="name" placeholder="Name">
+                                    <input type="text" name="name" placeholder="Name" required>
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Save"></div>
                                     </div>
                             </form>
                         </div>
-                        <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-                        <div id="insertupdate-errors1" class="insertupdate-errors">
-                            <ul>
-                                <% for(var i=0; i < errors.length; i++) { %>
-                                <li><%= errors[i].msg %></li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <% } %>
                     </div>
-
-
 	  		</li>
 		</ul>
 	</nav>
-	<div id="sidebar">
-      <ul>
-            <li class="pinned"><a href="/list/starred"><i class="fa fa-star fa-lg"></i> Starred</a></li>
-            <li class="pinned"><a href="/list"><i class="fa fa-th fa-lg"></i> All</a></li>
-            <% folders.forEach(function(folder) { %>
-            	<li><a href="/list/<%= folder.id%>"><%= folder.name%></a>
-                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
-                </li>
+	<div id="openSidebar" class="showSidebar">
+		<div id="sidebar">
+	      <ul id="folderList">
+	            <li class="pinned"><a href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
+	            <li class="pinned"><a href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg"></i> All</a></li>
+	            <% folders.forEach(function(folder) { %>
+	            	<li><a href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
+	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+	                </li>
 
-            <% }); %>
-      </ul>
-      <div class="buttonWrapper">
-
-
-      	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
+	            <% }); %>
+	      </ul>
+	      <div class="buttonWrapper">
 
 
-        <a href="/bookmarks/download" ><div><i class="fa fa-upload fa-lg"></i> Export</div></a>
-      	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
-	  </div>
+	      	<a href="#addFolder" ><div><i class="fa fa-plus-circle fa-lg"></i> Folder</div></a>
+
+
+	        <a href="/bookmarks/download" ><div><i class="fa fa-upload fa-lg"></i> Export</div></a>
+	        <noscript>
+	        	<a class="hideClose" href="#" ><div><i class="fa fa-times fa-lg"></i>Close</div></a>
+	        </noscript>
+	      	<a href="/logout" ><div><i class="fa fa-sign-out fa-lg"></i> Logout</div></a>
+		  </div>
+	    </div>
     </div>
     <div id="right">
-      <div class="main grid grid-pad">
+      <div id="right-content" class="main grid grid-pad">
+          <!-- Display server-side error messages -->
+          <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
+            <div class="insertupdate-errors">
+                <ul>
+                    <% for(var i=0; i < errors.length; i++) { %>
+                          <li><%= errors[i].msg %></li>
+                    <% } %>
+                </ul>
+            </div>
+          <% } %>
+          <!-- -->
       		<div id="title" class="col-1-1">
       			<div class="content">
-      				<h1>BookMarks</h1>
+      				<h1>BookMarx</h1>
       			</div>
       		</div>
+      		<div id="bookmarks">
 			<% bookmarks.forEach(function(bookmark) { %>
 	      	<div class="col-1-3 mobile-col-1-3 card-min-width">
 				<div class="content">
@@ -208,18 +200,19 @@
 						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
-  								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
+  								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
 							<% } else { %>
-								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar"><i class="fa fa-star fa-lg"></i></a>
+								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>
 
-							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
-							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
 			</div>
 			<% }); %>
+			</div>
       </div>
     </div>
 		<br>

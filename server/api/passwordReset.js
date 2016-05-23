@@ -33,16 +33,14 @@ module.exports.passwordReset = function(req, res) {
         'username': {
             isLength: {
                 options: [{min: 0, max: 25}],
-                errorMessage: 'Username must be 0-25 characters'
+                errorMessage: 'Username must be 1-25 characters'
             },
-            errorMessage: 'Invalid username'
         },
         'password': {
             isLength: {
                 options: [{min: 0, max: 64}],
-                errorMessage: 'Password must be 0-64 characters'
+                errorMessage: 'Password must be 1-64 characters'
             },
-            errorMessage: 'Invalid password'
         },
         'confirm_password': {
             equals: {
@@ -68,42 +66,30 @@ module.exports.passwordReset = function(req, res) {
         db.query(queryString, function(err, rows) {
             if(err) throw err;
             if(rows.length == 1) {
-                var salt = rows[0].salt;
+                var salt = crypto.randomBytes(32).toString('base64');
                 var hash = crypto
                       .createHmac('SHA256', salt)
-                      .update(req.body.password)
+                      .update(password)
                       .digest('base64');
 
-                var updateQueryString = 'UPDATE users SET password = ' + password + ' WHERE username = ' + username;
+                var updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE username = ' + username;
+                console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
                     if (err) throw err;
-                    /* Uncomment after figuring out async
-                    setMailOptions(mailOptions, rows[0].username, rows[0].email);
+                
+                    setMailOptions(mailOptions, username, rows[0].email);
                     //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
 
                     smtpTransport.sendMail(mailOptions, function(error, info) {
                         if(error) {
                             // throw error;
                             console.log(error);
-                        } // else {
-                            var successes = [{msg: 'Confirmation email sent'}];
-                            res.render('passwordReset', {successes: successes});
-                        //}
-                    });
-                    */
-                });
-                /* Remove block after figuring out async */
-                setMailOptions(mailOptions, username, rows[0].email);
-                //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
+                            return;
+                        }
 
-                smtpTransport.sendMail(mailOptions, function(error, info) {
-                    if(error) {
-                        // throw error;
-                        console.log(error);
-                    } // else {
                         var successes = [{msg: 'Confirmation email sent'}];
                         res.render('passwordReset', {successes: successes});
-                    //}
+                    });
                 });
                 /**************************/
             } else {
