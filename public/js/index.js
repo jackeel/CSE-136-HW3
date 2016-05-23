@@ -240,7 +240,7 @@ window.onload = function() {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function(result) {
-                // TODO: Un-highlight prev folder, highlight curr folder
+                // Un-highlight prev folder, highlight curr folder
                 $('#folder-' + prev_folder).addClass('inactive-folder').removeClass('active-folder');
                 $('#folder-' + curr_folder).addClass('active-folder').removeClass('inactive-folder');
 
