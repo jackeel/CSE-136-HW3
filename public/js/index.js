@@ -267,4 +267,13 @@ window.onload = function() {
 		addBookmark.className = "is-active";
 	}
 	/**************************************************************************/
+
+    // error modal 
+    function showErrorModal(header,message)
+    {
+        window.location.hash = 'warningModal';
+        $("#warningTitle:first").text(header); 
+        $("#warningMessage").text(message); 
+    }
+
 }

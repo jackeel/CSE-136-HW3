@@ -1385,3 +1385,16 @@ input.edit-button, a.edit-button {
   padding-right: 14px;
   padding-left: 14px;
 }
+
+.pink-error-text
+{
+  border-bottom-color: #FF9EAE;
+  color: #FF9EAE;
+  text-align: center;
+  font-size: x-large;
+}
+
+.remove-default-padding
+{
+  padding-left: 0px; 
+}
