@@ -10,7 +10,7 @@ var successMessages={};
 successMessages.OK = "OK";
 
 var failedMessages = {};
-
+failedMessages.FAIL = "FAIL";
 
 exports.status = status;
 exports.failedMessages = failedMessages;
