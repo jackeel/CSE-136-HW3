@@ -362,6 +362,7 @@ h1 {
   left: 0;
   right: 0;
   width: 18%;
+  min-width: 160px;
   border-top: 2px solid #fff;
   background-color: #474448;
 }
@@ -1397,4 +1398,9 @@ input.edit-button, a.edit-button {
 .remove-default-padding
 {
   padding-left: 0px; 
+}
+
+#folderList
+{
+  overflow-y: auto;
 }

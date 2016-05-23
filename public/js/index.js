@@ -276,4 +276,13 @@ window.onload = function() {
         $("#warningMessage").text(message); 
     }
 
+    function setMaxHeightFolders()
+    {
+        $('#folderList').css('height', '100%');
+        var height = $('#folderList').height() - $('#sidebar div:first').height();
+        $('#folderList').css('max-height', height+'px'); 
+    }
+
+    setMaxHeightFolders(); 
+
 }
