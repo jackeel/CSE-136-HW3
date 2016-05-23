@@ -2,10 +2,21 @@ var config = require('../config/config');
 var db = require('../config/db');
 var nodemailer = require('nodemailer');
 var crypto = require('crypto');
+var CONTENT_TYPE_KEY = 'Content-Type';
+var JSON_CONTENT_TYPE = 'application/json';
+var Constants = require('../config/Constants');
 
 
 module.exports.passwordresetForm = function(req, res){
+  if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(200).json({
+        status: Constants.status.SUCCESS,
+        successMessages: successMessages.OK
+      })
+  }
+  else {
     res.render('passwordReset');
+  }
 };
 
 var smtpTransport = nodemailer.createTransport('smtps://BookmarxBot%40gmail.com:b00kmarx@smtp.gmail.com');
@@ -52,8 +63,16 @@ module.exports.passwordReset = function(req, res) {
     req.checkBody(validate_passwordReset);
     var errors = req.validationErrors();
     if (errors) {
-        res.render('passwordReset', {errors: errors});
-        return;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(400).json({
+            status: Constants.status.failed,
+            failedMessages: failedMessages.FAIL
+        })
+      }
+        else {
+          res.render('passwordReset', {errors: errors});
+          return;
+        }
     } else {
         // Uncomment once email is added
         // var email = db.escape(req.body.email);
@@ -65,6 +84,13 @@ module.exports.passwordReset = function(req, res) {
         var queryString = 'SELECT * FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
             if(err) throw err;
+
+            if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                   res.status(400).json({
+                   status: Constants.status.failed,
+                   failedMessages: failedMessages.FAIL
+            })
+          }
             if(rows.length == 1) {
                 var salt = crypto.randomBytes(32).toString('base64');
                 var hash = crypto
@@ -76,7 +102,12 @@ module.exports.passwordReset = function(req, res) {
                 console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
                     if (err) throw err;
-                
+                    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                          res.status(200).json({
+                          status: Constants.status.SUCCESS,
+                          successMessages: successMessages.OK
+                        })
+
                     setMailOptions(mailOptions, username, rows[0].email);
                     //setMailOptions(mailOptions, rows[0].username, rows[0].email, generatedLink);
 
@@ -86,13 +117,18 @@ module.exports.passwordReset = function(req, res) {
                             console.log(error);
                             return;
                         }
-
+                      });
+                    }
+                      else {
                         var successes = [{msg: 'Confirmation email sent'}];
                         res.render('passwordReset', {successes: successes});
-                    });
+                      }
+
                 });
                 /**************************/
-            } else {
+              }
+
+            else {
                 errors = [{msg: 'Provided user does not exist'}];
                 res.render('passwordReset', {errors: errors});
             }
