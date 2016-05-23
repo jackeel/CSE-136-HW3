@@ -174,10 +174,6 @@
 		<div id="sidebar">
 		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 	      <ul id="folderList">
-	      <!--
-	            <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
-	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg"></i> All</a></li>
-	      -->
 	      	    <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
 	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
                 <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
@@ -185,11 +181,6 @@
                     <li>Click add folder below to create a folder.</li>
                 </div>
 	            <% folders.forEach(function(folder) { %>
-	            <!--
-	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
-	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
-	                </li>
-	            -->
 	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "class='active-folder'" : "class='inactive-folder'" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 	                </li>
