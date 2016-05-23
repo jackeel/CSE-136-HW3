@@ -38,14 +38,18 @@ module.exports.insert = function(req, res){
         var user_id = db.escape(req.session.userId);
 
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
-        db.query(queryString, function(err){
+        db.query(queryString, function(err, result){
             if (err) throw err;
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
                 if (err) throw err;
                 if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                     res.status(200).json({
                         status: Constants.status.SUCCESS,
-                        msg: Constants.successMessages.OK
+                        msg: Constants.successMessages.OK,
+                        data: {
+                            "folder_name": req.body.name,
+                            "folder_id": result.insertId
+                        }
                     })
                 }else {
                     res.redirect('/list');
@@ -66,7 +70,10 @@ module.exports.delete = function(req, res) {
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(200).json({
                 status: Constants.status.SUCCESS,
-                msg: Constants.successMessages.OK
+                msg: Constants.successMessages.OK,
+                data: {
+                    "folder_id": req.params.folder_id
+                }
             })
         }else {
             res.redirect('/list');
