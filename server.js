@@ -11,7 +11,9 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
 var multer = require('multer');
-var compression = require('compression')
+var compression = require('compression');
+var cors = require('cors');
+
 var oneWeek = 3600000 * 24 * 7; 
 var mySession = session({
   secret: config.SECRET,
@@ -72,12 +74,15 @@ else
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(validator());
 app.use(flash());
 app.use(logErrors);
 app.use(clientErrorHandler);
 app.use(errorHandler);
+app.use(cors());
 
 /* Give all views access to any flashed success or error messages */
 app.use(function(req, res, next) {
@@ -92,7 +97,6 @@ app.use(function(req, res, next) {
 //global middleware to refresh session
 
 app.use(function(req, res, next) {
-
   if(req.session && req.session.userId) {
 
     var queryString = 'SELECT id FROM users WHERE id = "' + req.session.userId + '"';
@@ -239,8 +243,8 @@ app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
 app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 app.get('/bookmarks/download', bookmarks.listBookmarks, bookmarks.download);
 
-app.post('/folders', folders.insert);
-app.get('/folders/delete/:folder_id(\\d+)',folders.delete);
+app.post('/folders', requireLogin, folders.insert);
+app.get('/folders/delete/:folder_id(\\d+)', requireLogin, folders.delete);
 
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
