@@ -166,7 +166,10 @@ module.exports.delete = function(req, res) {
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
               status: Constants.status.failed,
-              msg: Constants.successMessages.OK
+              msg: Constants.successMessages.OK,
+              data: {
+                  "bookmark_id": req.params.bookmark_id
+              }
           })
       }else {
           res.redirect('/list');
@@ -240,7 +243,13 @@ module.exports.insert = function(req, res){
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.json({
                     status: Constants.status.SUCCESS,
-                    msg: Constants.successMessages.OK
+                    msg: Constants.successMessages.OK,
+                    data: {
+                        "title": req.body.title,
+                        "url": req.body.url,
+                        "folder_id": req.body.folder_id,
+                        "bookmark_id": result.insertId
+                    }
                 })
             }else {
                 res.redirect('/list');
@@ -339,7 +348,10 @@ module.exports.star = function(req, res) {
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
               status: Constants.status.SUCCESS,
-              msg: Constants.successMessages.OK
+              msg: Constants.successMessages.OK,
+              data: {
+                  "bookmark_id": req.params.bookmark_id
+              }
           })
       }else {
           res.redirect('/list');
@@ -359,7 +371,10 @@ module.exports.unstar = function(req, res) {
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
               status: Constants.status.SUCCESS,
-              msg: Constants.successMessages.OK
+              msg: Constants.successMessages.OK,
+              data: {
+                  "bookmark_id": req.params.bookmark_id
+              }
           })
       }else {
           res.redirect('/list');
