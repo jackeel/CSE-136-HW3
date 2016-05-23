@@ -205,7 +205,8 @@
 								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>
 
-							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+						<!--	<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>-->
+							<a href="#editBookmark" class="button" id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
@@ -213,6 +214,42 @@
 			</div>
 			<% }); %>
 			</div>
+			<div id="editBookmark" class="modalDialog">
+
+			<div class="grid grid-pad">
+				<a href="#close" title="Close" class="close x-button">x</a>
+				<div class="tabs is-centered">
+				<ul>
+					<li id="edit-bookmark" class="is-active"><a>Edit Bookmark</a></li>
+			<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
+				</ul>
+			</div>
+		<!--	<form method='post' action='/insert' id="addBookmarkForm"> -->
+			<form action="/bookmarks/update/" id="editForm" method="post">
+					<!--  Use CSS to be modern -->
+					<table class="edit-table">
+							<tr><td>Title: </td><td><input type="text" name="title"  value="<%= bookmarks.title %>" maxlength="25" autofocus required></td></tr>
+							<tr><td>URL: </td><td><input type="url" name="url" value="<%= bookmarks.url %>" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>Folder: </td><td>
+									<select class="edit-select-content" name="folder_id">
+											<% folders.forEach(function(folder) { %>
+													<option value="<%= folder.id%>" <%=bookmarks.folder_id == folder.id ? "selected" : ""%>><%= folder.name %></option>
+											<% }); %>
+									</select>
+							</td>
+							</tr>
+							<tr>
+									<td colspan="2">
+											<input class="edit-button" type='submit' value="Save">
+											&nbsp;
+											<!-- Could also pass to the server as a submit and determine redirect action there -->
+											<a href='/list' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a>
+									</td>
+							</tr>
+					</table>
+			</form>
+				 </div>
+		</div>
       </div>
     </div>
 		<br>

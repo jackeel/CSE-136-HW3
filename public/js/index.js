@@ -50,7 +50,7 @@ window.onload = function() {
 
         var url = $(this).attr("href");
         var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
-        
+
         $.ajax({
         	type: 'GET',
         	url: url,
@@ -150,7 +150,7 @@ window.onload = function() {
             success: function(result) {
                 // Remove folder from side list
                 $("#delete-folder-" + result.folder_id).closest("li").remove();
-                
+
                 // TODO: Remove necessary bookmarks from the list
 
                 // Remove folder from the addBookmark modal
@@ -176,7 +176,43 @@ window.onload = function() {
 //var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
 //var search = req.query['Search'] ? req.query['Search'] : '';
     });
-    */
+*/
+
+	$("#right-content").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
+			//event.preventDefault();
+			debugger;
+	    var bookmark_id = $(this).attr("id").split("-")[2];
+			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
+			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
+      console.log(title);
+	    // open the modal with above fields appended into the value
+
+			var actionurl = $('#editForm').attr('action');
+			$('#editForm')[0].setAttribute('action', actionurl + bookmark_id);
+	    $('#editForm input[name="title"]').val(title);
+			$('#editForm input[name="url"]').val(url);
+		//	$('input[name="folder_id"]').val()="<%= %>";
+
+		//	$("editForm") ... stuff
+			// append stuff to the editmodal
+
+		/*  $("#editForm").on("submit", function(event) {
+				$.ajax({
+					type: 'GET',
+					url: url,
+					dataType: 'json',
+					data: params,
+					success: function(result) {
+						// Remove bookmark from list
+					},
+					error: function(xhr, status, error) {
+					}
+				});
+
+			});
+			*/
+		});
+
     /*******************************************************************/
 
 
