@@ -62,11 +62,16 @@ module.exports.listBookmarks = function(req, res, next) {
   }
   if (!folder_id) {
     //search = db.escape(search);
+    var desc = false;
+    // Star and last visited should be ordered in descending, to be more intuitive.
+    if ((order_by == "bookmarks.star") || (order_by == "bookmarks.last_visit_date")) {
+      desc = true;
+    }
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
                   'WHERE title like ' + search + ' or description like ' + search +
-                  ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
+                  ' ORDER BY ' + (desc == true ? order_by + " DESC" : order_by);
   }
   else {
     folder_id = db.escape(folder_id);
