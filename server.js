@@ -202,8 +202,8 @@ app.get('/', requireLogout, users.loginForm);
 app.get('/login', requireLogout, users.loginForm);
 app.post('/login', requireLogout, users.login);
 app.get('/logout', requireLogin, users.logout);
-app.get('/signup', requireLogout, users.signupForm);
-app.post('/signup', requireLogout, users.signup);
+app.get('/signup', users.signupForm);
+app.post('/signup', users.signup);
 app.get('/passwordReset', reset.passwordresetForm);
 app.post('/passwordReset', reset.passwordReset);
 

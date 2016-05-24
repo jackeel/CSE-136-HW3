@@ -2,6 +2,9 @@ var config = require('../config/config');
 var db = require('../config/db');
 var crypto = require('crypto');
 var winston = require('winston');
+var CONTENT_TYPE_KEY = 'Content-Type';
+var JSON_CONTENT_TYPE = 'application/json';
+var Constants = require('../config/Constants');
 
 var logger = new winston.Logger({
     transports: [
@@ -27,10 +30,10 @@ function handleError(err, action, req, res)
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(500).json({ status: Constants.status.error, data: action });
-        return false; 
+        return false;
     }
     //non ajax requests
-    return true; 
+    return true;
 }
 
 
@@ -85,7 +88,7 @@ module.exports.login = function(req, res) {
                     errors = [{msg: 'Salt doesn\'t exist for user'}];
                     res.render('login', {errors: errors});
                 }
-                return; 
+                return;
             }
             if(rows.length == 1) {
                 var salt = rows[0].salt;
@@ -104,7 +107,7 @@ module.exports.login = function(req, res) {
                             errors = [{msg: 'id doesn\'t exist for user/salt'}];
                             res.render('login', {errors: errors});
                         }
-                        return; 
+                        return;
                     }
 
                     if (rows.length == 1) {
@@ -159,8 +162,18 @@ module.exports.signup = function(req, res) {
     var errors = req.validationErrors();
 
     if (errors) {
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        console.log("400 calling");
+            res.status(400).json({
+            status: Constants.status.failed,
+            failedMessages: Constants.failedMessages.FAIL
+        });
+        return;
+      }
+      else {
         res.render('signup', {errors: errors});
         return;
+      }
     } else {
         // Fields are valid. Continue signup
         var username = db.escape(req.body.username);
@@ -177,15 +190,30 @@ module.exports.signup = function(req, res) {
 
         var queryString = 'INSERT INTO users (username, password, email, salt) VALUES ' +
                           '(' + username + ', "' +  hash + '", ' + email + ', "' + salt + '")';
-
+        console.log(queryString);
         db.query(queryString, function(err, rows) {
-            //if (err) throw err;
             if (err) {
+              if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                res.status(400).json({
+                status: Constants.status.SUCCESS,
+                successMessages: Constants.successMessages.OK
+              });
+              return;
+              }
+              else {
                 errors = [{msg: 'Email/username already taken'}];
                 res.render('signup', {errors: errors});
                 return;
+              }
             }
+            if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                  res.status(200).json({
+                  status: Constants.status.SUCCESS,
+                  successMessages: Constants.successMessages.OK
+                });
+                return;
 
+            }
             var successes = [{msg: 'You have signed up'}];
             req.flash("success_messages", successes);
             res.redirect('/login');
