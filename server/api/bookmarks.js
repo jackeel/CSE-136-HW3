@@ -238,7 +238,7 @@ module.exports.insert = function(req, res){
 
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES (' + title + ', ' + url +
             ', ' + folder_id + ', '+description+')';
-        db.query(queryString, function(err){
+        db.query(queryString, function(err, result){
       	if (err) throw err;
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.json({
@@ -257,7 +257,7 @@ module.exports.insert = function(req, res){
         });
     }
 };
-
+//
 /**
  * Updates a bookmark in the database
  * Does a redirect to the list page
