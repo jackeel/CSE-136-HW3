@@ -91,6 +91,7 @@ module.exports.getTotalBookmarks = function(req, res, next) {
     var folder_id = req.params.folder_id;
     var search = req.query['Search'] ? req.query['Search'] : '';
     var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+    var star = req.query['star']
     req.search = search;
     req.current_folder_id = folder_id;
     req.order_by = order_by;
@@ -101,7 +102,7 @@ module.exports.getTotalBookmarks = function(req, res, next) {
         queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
             req.session.userId +
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
-            'WHERE title like ' + search + ' or description like '+ search;
+            'WHERE (title like ' + search + ' or description like '+ search+')';
     }
     else {
         folder_id = db.escape(folder_id);
@@ -109,8 +110,13 @@ module.exports.getTotalBookmarks = function(req, res, next) {
             req.session.userId +
             ' and id = ' + folder_id +
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
-            'WHERE title like ' +search + ' or description like ' + search;
+            'WHERE (title like ' +search + ' or description like ' + search+')';
     }
+    console.log("star: "+star);
+    if(star){
+        queryString+=' and bookmarks.star=1';
+    }
+    console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.numBookmarks = bookmarks.length;

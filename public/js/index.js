@@ -291,14 +291,20 @@ window.onload = function() {
         toggleLoadGIF();
         var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
         console.log("folder_id: "+curr_folder);
-        var url = "/bookmarks/getCount/"+curr_folder;
+        var url = "/bookmarks/getCount"+(!isNaN(curr_folder) ? "/"+curr_folder:"");
+        console.log(url);
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var offset_index = $(this).text();
         var params = {
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
+            "offset": 1
+        };
+
+        if(curr_folder=='starred'){
+            params.star=1;
+        }
+
         console.log(params);
         $.ajax({
             type: 'GET',
@@ -307,6 +313,7 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function (result) {
+                console.log(result.data.count);
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);

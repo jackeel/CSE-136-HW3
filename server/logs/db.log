@@ -38,3 +38,37 @@
 {"timestamp":"2016-05-24T06:18:32.669Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-24T06:20:01.988Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-24T06:20:33.834Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:21:58.186Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:28:36.883Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:30:59.179Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:31:50.102Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:37:19.804Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:37:40.304Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:40:29.147Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:40:48.239Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:43:42.810Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:44:08.381Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:45:08.166Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:45:11.682Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:46:42.420Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:46:50.435Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:46:51.424Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:46:52.479Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:47:18.200Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:48:22.540Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:51:25.708Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:51:32.691Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:53:48.616Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:54:02.893Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:54:44.822Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:54:47.185Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:55:53.581Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:56:20.979Z","userId":1,"ip":"127.0.0.1","erro":"ER_SP_UNDECLARED_VAR","level":"debug","message":"bookmark-actions: list bookmarks"}
+{"timestamp":"2016-05-24T06:57:11.316Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:58:08.469Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:58:40.347Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T06:59:29.294Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T07:00:21.457Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T07:04:40.626Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T07:05:40.650Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T07:07:21.369Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
