@@ -9,6 +9,31 @@ function toggleLoadGIF() {
 
 window.onload = function() {
     /*************************** AJAX **********************************/
+   //Change Password
+	 $("#resetPassword").on("submit", function (event) {
+		 event.preventDefault();
+		 window.location.hash = "";
+		 var url = '/passwordReset';
+		 var params = JSON.stringify({
+			 "password" : document.getElementById("password").value,
+			 "confirm_password" : document.getElementById("confirm_password").value
+		 });
+		 console.log(params);
+		 $.ajax({
+			 cache: false,
+			 type: 'POST',
+			 url: url,
+			 contentType: 'application/json',
+			 dataType: 'json',
+			 data: params,
+			 success: function(result) {
+			 },
+			 error: function(xhr, status, error) {
+        }
+         });
+     });
+
+
     // Create new bookmark
     $("#addBookmarkForm").on("submit", function(event) {
     	event.preventDefault();
@@ -17,9 +42,10 @@ window.onload = function() {
 
         var url = $("#addBookmarkForm").attr("action");
         var params = {
-            "title": $("#addBookmarkTitle").val().trim(),
-            "url" : $("#addBookmarkUrl").val().trim(),
-            "folder_id": $("#addBookmarkFolderId").val().trim()
+            "title": $("#addBookmarkForm input[name='title']").val().trim(),
+            "url" : $("#addBookmarkForm input[name='url']").val().trim(),
+            "description": $("#addBookmarkForm input[name='description']").val().trim(),
+            "folder_id": $("#addBookmarkForm select[name='folder_id']").val().trim()
         };
 
         $.ajax({
@@ -43,10 +69,10 @@ window.onload = function() {
                     	'    <div class="content">\n' +
     					'        <div class="card card--small">\n' +
     					'	         <div style="background-color:#DE2924" class="card__image"></div>\n' +
-    					'	         <a href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
+    					'	         <a class="bookmark-link" id=bookmark-"' + data.bookmark_id + '" href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
     					'		     <div class="card__action-bar">\n' +
       					'			     <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
-    					'                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '-' + data.title + '-' + data.url +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+    					'                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '-' + data.title + '-' + data.url + '-' + data.description + '-' + data.folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
     					'		         <a class="card__button" href="/bookmarks/delete/' + data.bookmark_id + '" id="delete-bookmark-' + data.bookmark_id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
     					'	         </div>\n' +
     					'         </div>\n' +
@@ -161,8 +187,11 @@ window.onload = function() {
 	                '</li>'
 				);
 
-                // Add folder into the addBookmark modal's folder selection
-                $('.ListFieldWrapper > select').append(
+                // Add folder into the addBookmark and editBookmark modals' folder selection
+                $('#addBookmarkForm select[name="folder_id"]').append(
+                    '<option value="' + data.folder_id + '">' + data.folder_name + '</option>'
+                );
+                $('#editBookmarkForm select[name="folder_id"]').append(
                     '<option value="' + data.folder_id + '">' + data.folder_name + '</option>'
                 );
         	},
@@ -211,8 +240,9 @@ window.onload = function() {
                     $("#bookmarks").html('');
                 }
 
-                // Remove folder from the addBookmark modal
-                $('.ListFieldWrapper option[value=' + data.folder_id + ']').remove();
+                // Remove folder from the addBookmark and editBookmark modals
+                $('#addBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
+                $('#editBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
             },
             error: function(xhr, status, error) {
             }
@@ -240,7 +270,7 @@ window.onload = function() {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function(result) {
-                // TODO: Un-highlight prev folder, highlight curr folder
+                // Un-highlight prev folder, highlight curr folder
                 $('#folder-' + prev_folder).addClass('inactive-folder').removeClass('active-folder');
                 $('#folder-' + curr_folder).addClass('active-folder').removeClass('inactive-folder');
 
@@ -256,7 +286,7 @@ window.onload = function() {
                         '    <div class="content">\n' +
                         '        <div class="card card--small">\n' +
                         '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <a class="bookmark-link" id="bookmark-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
                         '            <div class="card__action-bar">\n';
                         if(bookmarks[i].star == 1) {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
@@ -264,7 +294,7 @@ window.onload = function() {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
                         }
                         bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
                         '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
                         '            </div>\n' +
                         '         </div>\n' +
@@ -290,19 +320,23 @@ window.onload = function() {
 	    var bookmark_id = $(this).attr("id").split("-")[2];
 			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
 			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
+            var description = $(this).attr("id").split("-")[5]; // get description
+            var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
       console.log(title);
 	    // open the modal with above fields appended into the value
 
-			var actionurl = $('#editForm').attr('action');
-			$('#editForm')[0].setAttribute('action', actionurl + bookmark_id);
-	    $('#editForm input[name="title"]').val(title);
-			$('#editForm input[name="url"]').val(url);
+			var actionurl = $('#editBookmarkForm').attr('action');
+			$('#editBookmarkForm')[0].setAttribute('action', actionurl + bookmark_id);
+	    $('#editBookmarkForm input[name="title"]').val(title);
+			$('#editBookmarkForm input[name="url"]').val(url);
+            $('#editBookmarkForm input[name="description"]').val(description);
+            $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
 		//	$('input[name="folder_id"]').val()="<%= %>";
 
-		//	$("editForm") ... stuff
+		//	$("editBookmarkForm") ... stuff
 			// append stuff to the editmodal
 
-		/*  $("#editForm").on("submit", function(event) {
+		/*  $("#editBookmarkForm").on("submit", function(event) {
 				$.ajax({
 					type: 'GET',
 					url: url,
@@ -319,6 +353,33 @@ window.onload = function() {
 			*/
 		});
 
+    // For last visit update.
+    // When click a bookmark, will send a request to update the last visit time.
+    $("#bookmarks").on("click", ".bookmark-link", function(event) {
+        event.preventDefault();
+        //alert("Hey");
+        toggleLoadGIF();
+
+        var url = "/bookmarks/last_visit";
+        var params = {"bookmark_id" : $(this).attr("id").split("-")[1]};
+        var bookmark_url = $(this).attr("href");
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                var data = result.data;
+                window.location.replace(bookmark_url);
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+        toggleLoadGIF();
+    });
     /*******************************************************************/
 
 

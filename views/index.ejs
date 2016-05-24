@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
@@ -71,14 +71,16 @@
 						</div>
 							  <form method='post' action='/insert' id="addBookmarkForm">
 							        <div class="form" id="add-bookmark-form">
-									    <input type="text" id="addBookmarkTitle" name="title" value="" placeholder="Title" required>
+									    <input type="text" name="title" value="" placeholder="Title" required>
 
 									    <div class="textFieldWrapper">
-									      <input type="text" id="addBookmarkUrl" name="url" value="" placeholder="http://www.example.com" required>
+									      <input type="text" name="url" value="" placeholder="http://www.example.com" required>
 									    </div>
 
+									    <input type="text" name="description" value="" placeholder="Description">
+
 											<div class="ListFieldWrapper">
-											<select class="select-dropdown-content" id="addBookmarkFolderId" name="folder_id">
+											<select class="select-dropdown-content" name="folder_id">
 												<% folders.forEach(function(folder) { %>
 													<option value="<%= folder.id%>" <%=current_folder_id == folder.id ? "selected" : ""%> ><%= folder.name %></option>
 												<% }); %>
@@ -115,7 +117,7 @@
                                     <li id="" class="is-active"><a>Change Password</a></li>
                                 </ul>
                             </div>
-                            <form method="post" action="" enctype="multipart/form-data">
+                            <form id="resetPassword" method="post" action="/passwordReset" >
                                 <div class="form" id="">
 																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
 																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
@@ -225,7 +227,7 @@
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
@@ -234,13 +236,22 @@
 							<% } %>
 
 						<!--	<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>-->
-							<a href="#editBookmark" class="card__button" id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>"><i class="fa fa-info-circle fa-lg"></i></a>
+							<a href="#editBookmark" class="card__button" id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>-<%= bookmark.description%>-<%=bookmark.folder_id%>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
 			</div>
 			<% }); %>
+                <div id="container">
+                    <div class="pagination">
+                        <p>without gradient</p>
+                        <a href="#" class="page">first</a><a href="#" class=
+                        "page">2</a><a href="#" class="page">3</a><span
+                                class="page active">4</span><a href="#" class=
+                        "page">5</a><a href="#" class="page">6</a><a href="#"
+                                                                     class="page">last</a>
+                    </div>
 			</div>
 			<div id="editBookmark" class="modalDialog">
 
@@ -249,15 +260,13 @@
 				<div class="tabs is-centered">
 				<ul>
 					<li id="edit-bookmark" class="is-active"><a>Edit Bookmark</a></li>
-			<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 				</ul>
 			</div>
-		<!--	<form method='post' action='/insert' id="addBookmarkForm"> -->
-			<form action="/bookmarks/update/" id="editForm" method="post">
-					<!--  Use CSS to be modern -->
+			<form action="/bookmarks/update/" id="editBookmarkForm" method="post">
 					<table class="edit-table">
-							<tr><td>Title: </td><td><input type="text" name="title"  value="<%= bookmarks.title %>" maxlength="25" autofocus required></td></tr>
-							<tr><td>URL: </td><td><input type="url" name="url" value="<%= bookmarks.url %>" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>Title: </td><td><input class="edit-modal-input" type="text" name="title"  value="" maxlength="25" autofocus required></td></tr>
+							<tr><td>URL: </td><td><input class="edit-modal-input" type="url" name="url" value="" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>Description:</td><td><input class="edit-modal-input" type="text" name="description" value=""></td></td></tr>
 							<tr><td>Folder: </td><td>
 									<select class="edit-select-content" name="folder_id">
 											<% folders.forEach(function(folder) { %>

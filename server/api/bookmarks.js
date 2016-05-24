@@ -7,11 +7,14 @@ var fs = require('fs');
 var CONTENT_TYPE_KEY = 'Content-Type';
 var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
+var dateFormat = require('dateformat');
+var MAX_BOOKMARKS = 9;
 
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
 module.exports.list = function(req, res) {
+    console.log(req.numBookmarks);
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
             status: Constants.status.SUCCESS,
@@ -24,20 +27,58 @@ module.exports.list = function(req, res) {
             current_folder_id: req.current_folder_id,
             order_by: req.order_by,
             search: req.search,
-            errors: res.locals.error_messages
+            errors: res.locals.error_messages,
+            num_pagination: req.numBookmarks/MAX_BOOKMARKS
         });
     }
 }
+
+module.exports.getCount = function(req, res) {
+    if(req.numBookmarks){
+        res.status(200).json({
+            status: Constants.status.SUCCESS,
+            data: {
+                count:  req.numBookmarks
+            }
+        })
+    }else{
+        res.status(400).json({
+            status: Constants.status.failed,
+            msg: Constants.failedMessages.MISSING_PARAMETERS
+        })
+    }
+}
+
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
-module.exports.getCount = function(req, res) {
-    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-        res.status(200).json({
-            status: Constants.status.SUCCESS,
-            data: {count:req.bookmarks.length}
-        })
+module.exports.getAllFolderBookmarks = function(req, res, next) {
+    var folder_id = req.params.folder_id;
+    var search = req.query['Search'] ? req.query['Search'] : '';
+    req.search = search;
+    req.current_folder_id = folder_id;
+    search = db.escape('%' + search + '%');
+    var queryString = "";
+    if (!folder_id) {
+        //search = db.escape(search);
+        queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+            req.session.userId +
+            ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
+            'WHERE title like ' + search + ' or description like '+ search;
     }
+    else {
+        folder_id = db.escape(folder_id);
+        queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
+            req.session.userId +
+            ' and id = ' + folder_id +
+            ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
+            'WHERE title like ' +search + ' or description like ' + search;
+    }
+    db.query(queryString, function(err, bookmarks) {
+        if (err) throw err;
+        req.numBookmarks = bookmarks.length;
+        return next();
+    });
 }
 
 /**
@@ -79,7 +120,7 @@ module.exports.listBookmarks = function(req, res, next) {
     if(offset){
         queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
     }
-    console.log(queryString);
+    //console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -238,7 +279,7 @@ module.exports.insert = function(req, res){
 
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES (' + title + ', ' + url +
             ', ' + folder_id + ', '+description+')';
-        db.query(queryString, function(err){
+        db.query(queryString, function(err, result){
       	if (err) throw err;
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.json({
@@ -248,7 +289,8 @@ module.exports.insert = function(req, res){
                         "title": req.body.title,
                         "url": req.body.url,
                         "folder_id": req.body.folder_id,
-                        "bookmark_id": result.insertId
+                        "bookmark_id": result.insertId,
+                        "description": req.body.description?req.body.description:""
                     }
                 })
             }else {
@@ -320,14 +362,20 @@ module.exports.update = function(req, res){
         var folder_id = db.escape(req.body.folder_id);
         var description = db.escape(req.body.description?req.body.description:"");
         var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
-                          ', description = '+description +' WHERE id = ' + db.escape(bookmark_id);
+                          ', description = ' + description + ' WHERE id = ' + db.escape(bookmark_id);
 
         db.query(queryString, function(err){
             if (err) throw err;
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.status(200).json({
                     status: Constants.status.SUCCESS,
-                    msg: Constants.successMessages.OK
+                    msg: Constants.successMessages.OK,
+                    data: {
+                        title: req.body.title,
+                        url: req.body.url,
+                        folder_id: req.body.folder_id,
+                        description: req.body.description?req.body.description:""
+                    }
                 })
             }else {
                 res.redirect('/list');
@@ -436,3 +484,30 @@ module.exports.download = function(req, res){
         res.download(file); // Set disposition and send it.
     });
 }
+
+/**
+ * Update the last visit time
+ * When we click on a bookmark, will call this function
+ */
+module.exports.lastVisit = function(req, res) {
+  var id = req.body.bookmark_id || '';
+  var id = db.escape(id);
+  // Get current time in format 'yyyy-mm-dd hh:MM:ss'
+  var now = new Date();
+  var timestamp = db.escape(dateFormat(now, "yyyy-mm-dd hh:MM:ss"));
+  var queryString = 'UPDATE bookmarks SET last_visit_date = '+ timestamp + 'WHERE id = ' + id;
+  db.query(queryString, function(err){
+      if (err) throw err;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+          res.status(200).json({
+              status: Constants.status.SUCCESS,
+              msg: Constants.successMessages.OK,
+              data: {
+                  "bookmark_id": req.body.bookmark_id
+              }
+          })
+      }else {
+          res.redirect('/list');
+      }
+  });
+};
