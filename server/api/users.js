@@ -20,6 +20,20 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
+function handleError(err, action, req, res)
+{
+    logger.log('debug', "user-actions: "+ action,
+              {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
+            );
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(500).json({ status: Constants.status.error, data: action });
+        return false; 
+    }
+    //non ajax requests
+    return true; 
+}
+
+
 /**
  * Render forms
  */
@@ -64,7 +78,15 @@ module.exports.login = function(req, res) {
         // Find user with provided username/password
         var queryString = 'SELECT salt FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
-            if (err) throw err;
+            if (err)
+            {
+                if(handleError(err, 'select salt', req, res))
+                {
+                    errors = [{msg: 'Salt doesn\'t exist for user'}];
+                    res.render('login', {errors: errors});
+                }
+                return; 
+            }
             if(rows.length == 1) {
                 var salt = rows[0].salt;
                 var hash = crypto
@@ -75,11 +97,19 @@ module.exports.login = function(req, res) {
                 var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
                 db.query(queryString, function(err, rows) {
-                    if (err) throw err;
+                    if (err)
+                    {
+                        if(handleError(err, 'select salt', req, res))
+                        {
+                            errors = [{msg: 'id doesn\'t exist for user/salt'}];
+                            res.render('login', {errors: errors});
+                        }
+                        return; 
+                    }
 
                     if (rows.length == 1) {
                         req.session.userId = rows[0].id;
-                        res.redirect('/list');
+                        res.redirect('/list?offset=1');
                         logger.log('debug', "user-actions: login",
                             {timestamp: Date.now(), user:username, ip: req.ip}
                         );

@@ -362,6 +362,7 @@ h1 {
   left: 0;
   right: 0;
   width: 18%;
+  min-width: 160px;
   border-top: 2px solid #fff;
   background-color: #474448;
 }
@@ -395,6 +396,11 @@ h1 {
   border-top: none;
 }
 
+#folder-placeholder li{
+  border: none;
+  color: #CACACA;
+}
+
 #sidebar a {
   text-decoration: none;
   color: #CACACA;
@@ -424,11 +430,20 @@ h1 {
   content: "\f005";
 }
 
+#sidebar li a.inactive-folder {
+  color: #CACACA;
+}
+
 #sidebar li.pinned a {
   color: #FFF;
 }
 
 #sidebar li.pinned:hover a{
+  color: #FF9EAE;
+}
+
+
+#sidebar li a.active-folder {
   color: #FF9EAE;
 }
 
@@ -451,6 +466,10 @@ input {
     width: 50%;
     color: #fff;
     font-size: 15px;
+}
+
+input.edit-modal-input {
+    width: 100%;
 }
 
 input:focus {
@@ -583,6 +602,8 @@ li.navbar-left {
   width: 18%;
   text-align: center;
 }
+
+
 
 /*** CARD ***/
 .card {
@@ -865,7 +886,7 @@ select.select-dropdown-content option {
 #import-bookmark-form {
   display: none;
 }
-/***hide sidebar csss ***/ 
+/***hide sidebar css ***/ 
 .showSidebar:target #sidebar
 {
   display: block; 
@@ -1171,7 +1192,7 @@ a.card__button {
    color: #CACACA;
 }
 
-/*GOOOGLE FONT*/
+/*GOOGLE FONT*/
 /* latin */
 @font-face {
   font-family: 'Montserrat';
@@ -1384,4 +1405,37 @@ input.edit-button, a.edit-button {
   float: right;
   padding-right: 14px;
   padding-left: 14px;
+}
+
+.pink-error-text
+{
+  border-bottom-color: #FF9EAE;
+  color: #FF9EAE;
+  text-align: center;
+  font-size: x-large;
+}
+
+.remove-default-padding
+{
+  padding-left: 0px; 
+}
+
+#folderList
+{
+  overflow-y: auto;
+}
+
+#load-gif
+{
+  display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('../img/ajax-loader.gif') 
+                50% 50% 
+                no-repeat;
 }

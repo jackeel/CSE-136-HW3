@@ -12,19 +12,20 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
+	<div id="load-gif"></div>
 	<nav class="navbar">
 		<ul>
 			<li class="navbar-left menu-button full-width">
 				<a href="#openSidebar" class="button" id="menu"><i id="menu-icon" class="fa fa-bookmark-o fa-lg"></i> Bookmarx</a>
 			</li>
 	  		<li class="navbar-left search full-width">
-	  			<form method="get" name="search">
+	  			<form method="get" name="search" id="searchForm">
 	  				<% if(search == '') { %>
-	  					<input class = "min-input" name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
 	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
@@ -38,7 +39,7 @@
 		  		<li class="navbar-right min-sort-size">
 					<!-- need to add  this div class func so css works with it 	<div class="dropdown">
 						<div class="dropdown-content"> -->
-				<form method="get" name="orderBy">
+				<form method="get" name="orderBy" id="orderByForm">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
 					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
@@ -56,6 +57,7 @@
 	  			<li class="navbar-right">
 	  				<a href="#addBookmark" class="button"><i class="fa fa-plus fa-lg"></i></a>
 	  				<a href="#importBookmark" class="button">import&nbsp;&nbsp;&nbsp;<i class="fa fa-download fa-lg"></i></a>
+						<a href="#changePassword" class="button"><i class="fa fa-cog fa-lg"></i></a>
 
 	  				<div id="addBookmark" class="modalDialog">
 
@@ -74,6 +76,8 @@
 									    <div class="textFieldWrapper">
 									      <input type="text" name="url" value="" placeholder="http://www.example.com" required>
 									    </div>
+
+									    <input type="text" name="description" value="" placeholder="Description">
 
 											<div class="ListFieldWrapper">
 											<select class="select-dropdown-content" name="folder_id">
@@ -103,6 +107,27 @@
 						</div>
 					</div>
 				</div>
+
+
+				<div id="changePassword" class="modalDialog">
+                        <div class="grid grid-pad">
+                            <a href="#close" title="Close" class="close x-button">x</a>
+                            <div class="tabs is-centered">
+                                <ul>
+                                    <li id="" class="is-active"><a>Change Password</a></li>
+                                </ul>
+                            </div>
+                            <form id="resetPassword" method="post" action="/passwordReset" >
+                                <div class="form" id="">
+																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
+																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
+                                    <div class="buttonWrapper">
+                                        <div><input type='submit' value="Change Password"></div>
+                                    </div>
+                            </form>
+                        </div>
+					            </div>
+										</div>
 
 				<div id="importBookmark" class="modalDialog">
                         <div class="grid grid-pad">
@@ -136,7 +161,7 @@
                             </div>
                             <form method='post' action='folders' id="addFolderForm">
                                 <div class="form" id="add-bookmark-form1">
-                                    <input type="text" name="name" placeholder="Name" required>
+                                    <input type="text" id="addFolderName" name="name" placeholder="Name" required>
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Save"></div>
@@ -149,11 +174,16 @@
 	</nav>
 	<div id="openSidebar" class="showSidebar">
 		<div id="sidebar">
+		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 	      <ul id="folderList">
-	            <li class="pinned"><a href="/list/starred" <%- current_folder_id == "starred" ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
-	            <li class="pinned"><a href="/list" <%- (!current_folder_id) ? "style='color: #FF9EAE;'" : "" %>><i class="fa fa-th fa-lg"></i> All</a></li>
+	      	    <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
+	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
+                <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
+                    <li>You have no folders.</li>
+                    <li>Click add folder below to create a folder.</li>
+                </div>
 	            <% folders.forEach(function(folder) { %>
-	            	<li><a href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "style='color: #FF9EAE;'" : "" %>><%= folder.name%></a>
+	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "class='active-folder'" : "class='inactive-folder'" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 	                </li>
 
@@ -197,7 +227,7 @@
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a class="url-bookmark-now" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%=bookmark.id%>" class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
@@ -206,9 +236,9 @@
 							<% } %>
 
 							<!-- <a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a> -->
-					    <a class="card__button" href="#editBookmark"  id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>-<%= bookmark.folder_id %>"><i class="fa fa-info-circle fa-lg"></i></a>
-						<!-- 	<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a> -->
+							<a href="#editBookmark" class="card__button" id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>-<%= bookmark.description%>-<%=bookmark.folder_id%>"><i class="fa fa-info-circle fa-lg"></i></a>
 							<a class="card__button" href="#confirmDelete" id="delete-bookmark-<%=bookmark.id%>-<%= bookmark.title %>"><i class="fa fa-trash-o fa-lg"></i></a>
+						<!--	<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a> -->
 						</div>
 					</div>
 				</div>
@@ -222,15 +252,13 @@
 				<div class="tabs is-centered">
 				<ul>
 					<li id="edit-bookmark" class="is-active"><a>Edit Bookmark</a></li>
-			<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 				</ul>
 			</div>
-		<!--	<form method='post' action='/insert' id="addBookmarkForm"> -->
-			<form action="/bookmarks/update/" id="editForm" method="post">
-					<!--  Use CSS to be modern -->
+			<form action="/bookmarks/update/" id="editBookmarkForm" method="post">
 					<table class="edit-table">
-							<tr><td>Title: </td><td><input type="text" name="title"  value="<%= bookmarks.title %>" maxlength="25" autofocus required></td></tr>
-							<tr><td>URL: </td><td><input type="url" name="url" value="<%= bookmarks.url %>" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>Title: </td><td><input class="edit-modal-input" type="text" name="title"  value="" maxlength="25" autofocus required></td></tr>
+							<tr><td>URL: </td><td><input class="edit-modal-input" type="url" name="url" value="" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>Description:</td><td><input class="edit-modal-input" type="text" name="description" value=""></td></td></tr>
 							<tr><td>Folder: </td><td>
 									<select class="edit-select-content" name="folder_id">
 											<% folders.forEach(function(folder) { %>
@@ -244,7 +272,7 @@
 											<input class="edit-button" type='submit' value="Save">
 											&nbsp;
 											<!-- Could also pass to the server as a submit and determine redirect action there -->
-											<a href='/list' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a>
+											<a href='#close' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a>
 									</td>
 							</tr>
 					</table>
@@ -273,6 +301,19 @@
 		 </div>
 
 
+			<div id="warningModal" class="modalDialog">
+                <div class="grid grid-pad">
+                    <a href="#close" title="Close" class="close x-button">x</a>
+                    <div class="tabs is-centered">
+                        <ul class="remove-default-padding">
+                            <li id="warningTitle" class="is-active"><a>Error</a></li>
+                        </ul>
+                    </div>
+                    <p id="warningMessage" class="pink-error-text">
+                    	An error has occurred.
+                    </p>
+                </div>
+            </div>
       </div>
     </div>
 		<br>
