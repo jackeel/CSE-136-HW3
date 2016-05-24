@@ -272,7 +272,6 @@ window.onload = function() {
                 // Hide folder-placeholder
                 $('#folder-placeholder').css('display', 'none');
 
-<<<<<<< HEAD
         		// Append folder to sidebar
         		$('#folderList').append(
 	            	'<li><a id="folder-' + data.folder_id + '" href="/list/' + data.folder_id + '">' + data.folder_name + '</a>\n' +
