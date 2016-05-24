@@ -189,6 +189,8 @@ window.onload = function() {
         });
     });
 
+
+
     // // Delete bookmark
     // $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
     //     event.preventDefault();
@@ -283,16 +285,47 @@ window.onload = function() {
 
         return false;
     });
+    /*
+    $("#sidebar").on("click", ".pad-trash-icon", function(event) {
+        event.preventDefault();
+        //makes error modal show
+        window.location.hash = 'confirmDelete';
+        var folder_id = $(this).attr("id").split("-")[2];
+        console.log(folder_id);
+        $("#confirmDeleteForm").on("submit", function(event) {
+           event.preventDefault();
+           toggleLoadGIF();
+
+           $.ajax({
+            type: 'GET',
+            url: "/folders/delete/" + folder_id,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(result) {
+               // Remove bookmark from list
+                 var data = result.data;
+                 window.location.hash = "#close";
+               $("#folder-" + data.folder_id).remove();
+               toggleLoadGIF();
+            },
+            error: function(xhr, status, error) {
+                toggleLoadGIF();
+            }
+           });
+       });
+    });*/
 
     // Delete folder
     $("#folderList").on("click", ".pad-trash-icon", function(event) {
         event.preventDefault();
+        window.location.hash = 'confirmDelete';
 
         toggleLoadGIF();
 
         var url = $(this).attr("href");
         var params = {"folder_id" : $(this).attr("id").split("-")[2]};
 
+        $("#confirmDeleteForm").on("submit", function(event) {
         $.ajax({
             type: 'GET',
             url: url,
@@ -300,6 +333,7 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function(result) {
+                window.location.hash = "#close";
                 var data = result.data;
                 var current_folder = $("#currentFolder").val();
 
@@ -336,7 +370,7 @@ window.onload = function() {
                 toggleLoadGIF();
             }
         });
-
+ });
         toggleLoadGIF();
     });
 
@@ -605,6 +639,7 @@ window.onload = function() {
             }
         });
     });
+
     /*******************************************************************/
 
 
