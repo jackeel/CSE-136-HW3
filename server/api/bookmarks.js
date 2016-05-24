@@ -56,6 +56,7 @@ module.exports.list = function(req, res) {
             data: req.bookmarks
         })
     } else{
+        console.log(Math.ceil(req.numBookmarks/MAX_BOOKMARKS));
         res.render('index', {
             bookmarks: req.bookmarks,
             folders: req.folders,
@@ -63,7 +64,8 @@ module.exports.list = function(req, res) {
             order_by: req.order_by,
             search: req.search,
             errors: res.locals.error_messages,
-            num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS)
+            num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
+            star: 0
         });
     }
 }
@@ -237,7 +239,8 @@ module.exports.listStarred = function(req, res) {
                 current_folder_id: "starred",
                 order_by: req.order_by,
                 search: req.search,
-                num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS)
+                num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
+                star: 1
             });
         }
     });
