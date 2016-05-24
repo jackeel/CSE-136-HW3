@@ -125,33 +125,63 @@ window.onload = function() {
         toggleLoadGIF();
     });
 
-    // Delete bookmark
+    //modal warning delete
     $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
         event.preventDefault();
+        //makes error modal show
+        window.location.hash = 'confirmDelete';
+        var bookmark_id = $(this).attr("id").split("-")[2];
 
-        toggleLoadGIF();
-
-        var url = $(this).attr("href");
-        var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
-
-        $.ajax({
-        	type: 'GET',
-        	url: url,
-            contentType: 'application/json',
+        $("#confirmDeleteForm").on("submit", function(event) {
+           event.preventDefault();
+           toggleLoadGIF();
+           
+           $.ajax({
+            type: 'GET',
+            url: "/bookmarks/delete/" + bookmark_id,
             dataType: 'json',
-            data: params,
+            contentType: 'application/json',
             success: function(result) {
-                var data = result.data;
-
-        		// Remove bookmark from list
-        		$("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-        	},
-        	error: function(xhr, status, error) {
-        	}
-        });
-
-        toggleLoadGIF();
+               // Remove bookmark from list
+                 var data = result.data;
+                 window.location.hash = "#close";
+               $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+               toggleLoadGIF();
+            },
+            error: function(xhr, status, error) {
+                toggleLoadGIF();
+            }
+           });
+       }); 
     });
+
+    // // Delete bookmark
+    // $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
+    //     event.preventDefault();
+
+    //     toggleLoadGIF();
+
+    //     var url = $(this).attr("href");
+    //     var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
+
+    //     $.ajax({
+    //     	type: 'GET',
+    //     	url: url,
+    //         contentType: 'application/json',
+    //         dataType: 'json',
+    //         data: params,
+    //         success: function(result) {
+    //             var data = result.data;
+
+    //     		// Remove bookmark from list
+    //     		$("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+    //     	},
+    //     	error: function(xhr, status, error) {
+    //     	}
+    //     });
+
+    //     toggleLoadGIF();
+    // });
 
     // Create new folder
     $("#addFolderForm").on("submit", function(event) {
