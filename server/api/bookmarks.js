@@ -359,7 +359,7 @@ module.exports.insert = function(req, res){
         db.query(queryString, function(err, result){
       	if (err)
         {
-          handleError(err, 'insert bookmark', req, res);
+          handleError(err, 'Bookmark name already exists in specified folder', req, res);
           return;
         }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {

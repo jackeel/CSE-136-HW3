@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 
 </head>
@@ -30,8 +30,7 @@
 	  				<% } else { %>
 	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
-	  				<!-- DO NOT remove these two inputs. They indicate the current folder and order status.
-      				These will be used to assist the search function. In final version, will set them hidden.-->
+
       				<input name="CurrentFolderId" type="hidden" value="<%= current_folder_id%>"/>
       				<input name="SortBy" type="hidden" value="<%= order_by%>"/>
 	  				<button id ="searchButton"><i class="fa fa-search fa-lg"></i></button>
@@ -181,7 +180,6 @@
 	      <ul id="folderList">
 	      	    <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
 	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
-
                 <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
                     <li>You have no folders.</li>
                     <li>Click add folder below to create a folder.</li>
@@ -301,12 +299,10 @@
             </p>
             <br>
 			<form class ="pink-error-text" id="confirmDeleteForm">
-					<!--<strong>Are you sure you wish to delete"<%= bookmarks.title %>"?</strong><br>-->
 					<input id="confirmDeleteTitle" name="title" type="submit" value="Confirm Delete">
 					<br>
-					<!-- Could also pass to the server as a submit and determine redirect action there -->
-					<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value='Cancel'></a>
-
+					<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value="Cancel" ></a>
+			</form>
 		</div>
 
 			 </div>
@@ -326,6 +322,8 @@
                     </p>
                 </div>
             </div>
+
+
       </div>
     </div>
 
