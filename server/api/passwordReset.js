@@ -46,7 +46,7 @@ module.exports.passwordresetForm = function(req, res){
       })
   }
   else {
-    res.render('passwordReset');
+    res.redirect('/list');
   }
 };
 
@@ -112,7 +112,8 @@ module.exports.passwordReset = function(req, res) {
         })
       }
         else {
-          res.render('passwordReset', {errors: errors});
+          res.redirect('/list');
+          //res.render('list', {errors: errors});
           return;
         }
     } else {
@@ -178,7 +179,8 @@ module.exports.passwordReset = function(req, res) {
                     }
                       else {
                         var successes = [{msg: 'Confirmation email sent'}];
-                        res.render('passwordReset', {successes: successes});
+                        res.redirect('/list');
+                        //res.render('list', {successes: successes});
                       }
 
                 });
@@ -187,7 +189,8 @@ module.exports.passwordReset = function(req, res) {
 
             else {
                 errors = [{msg: 'Provided user does not exist'}];
-                res.render('passwordReset', {errors: errors});
+                res.redirect('/list')
+                //res.render('list', {errors: errors});
             }
         });
     }

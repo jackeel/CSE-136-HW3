@@ -18,7 +18,6 @@ window.onload = function() {
 			 "password" : document.getElementById("password").value,
 			 "confirm_password" : document.getElementById("confirm_password").value
 		 });
-		 console.log(params);
 		 $.ajax({
 			 cache: false,
 			 type: 'POST',
@@ -526,7 +525,6 @@ window.onload = function() {
 	}
 	*/
 	/**************************************************************************/
-
 
     // error modal
     function showErrorModal(header,message)
