@@ -1,4 +1,33 @@
-// TODO: ajax instead 
+// TODO: ajax instead
+window.onload = function() {
+  /*************************** AJAX **********************************/
+  //signup new user
+  //$("#signup_form").on("submit", function (event) {
+//     console.log("inside the ajax part of signup");
+//     event.preventDefault();
+//     window.location.hash = "";
+//     var url = '/signup';
+//     var params = JSON.stringify({
+//       "email" : document.getElementById("email").value,
+//       "username" : document.getElementById("username").value,
+//       "password" : document.getElementById("password").value,
+//       "confirm_password" : document.getElementById("confirm_password").value
+//     });
+// console.log('ajax call');
+//     $.ajax({
+//       cache: false,
+//       type: 'POST',
+//       url: url,
+//       contentType: 'application/json',
+//       dataType: 'json',
+//       data: params,
+//       success: function(result) {
+//       },
+//       error: function(xhr, status, error) {
+//        }
+//         });
+//     });
+//}
 window.addEventListener('load', function() {
     var signupForm = document.getElementById("signup_form");
     signupForm.addEventListener("submit", function (event) {
@@ -32,6 +61,34 @@ window.addEventListener('load', function() {
         	confirm_pass.style.border = "none";
         }
 
-		if(!error) signupForm.submit();
+		if(!error)
+    {
+      console.log("inside the ajax part of signup");
+      event.preventDefault();
+      window.location.hash = "";
+      var url = '/signup';
+      var params = JSON.stringify({
+        "email" : document.getElementById("email").value,
+        "username" : document.getElementById("username").value,
+        "password" : document.getElementById("password").value,
+        "confirm_password" : document.getElementById("confirm_password").value
+      });
+  console.log('ajax call');
+      $.ajax({
+        cache: false,
+        type: 'POST',
+        url: url,
+        contentType: 'application/json',
+        dataType: 'json',
+        data: params,
+        success: function(result) {
+        },
+        error: function(xhr, status, error) {
+         }
+          });
+      });
+
+    }
+    //signupForm.submit();
     });
 });
