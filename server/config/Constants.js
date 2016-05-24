@@ -11,6 +11,8 @@ successMessages.OK = "OK";
 
 var failedMessages = {};
 failedMessages.FAIL = "FAIL";
+failedMessages.MISSING_PARAMETERS = "Missing parameters!";
+
 
 exports.status = status;
 exports.failedMessages = failedMessages;

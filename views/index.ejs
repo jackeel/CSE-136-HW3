@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
@@ -117,7 +117,7 @@
                                     <li id="" class="is-active"><a>Change Password</a></li>
                                 </ul>
                             </div>
-                            <form method="post" action="" enctype="multipart/form-data">
+                            <form id="resetPassword" method="post" action="/passwordReset" >
                                 <div class="form" id="">
 																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
 																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
@@ -227,7 +227,7 @@
 				<div class="content">
 					<div class="card card--small">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
@@ -243,7 +243,14 @@
 				</div>
 			</div>
 			<% }); %>
-			</div>
+		</div>
+
+		<div id="pagination">
+			<% for(i=1; i <= num_pagination; i++) { %>
+			    <a href=<%="/list"+(current_folder_id == undefined ? "": current_folder_id)+"?Search="+search+"&SortBy="+order_by+"&offset="+i%>><%= i %></a>
+			<% }%>
+	  	</div>
+
 			<div id="editBookmark" class="modalDialog">
 
 			<div class="grid grid-pad">
@@ -293,7 +300,6 @@
             </div>
       </div>
     </div>
-		<br>
 
 </body>
 </html>

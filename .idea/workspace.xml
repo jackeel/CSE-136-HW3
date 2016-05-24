@@ -2,7 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c505de-06e5-44bc-9b54-82d71ca42ff0" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+=======
+<<<<<<< HEAD
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+=======
+      <change type="DELETED" beforePath="$PROJECT_DIR$/server/config/config.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/style.css" afterPath="$PROJECT_DIR$/public/css/style.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/index.js" afterPath="$PROJECT_DIR$/public/js/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/bookmarks.js" afterPath="$PROJECT_DIR$/server/api/bookmarks.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/folders.js" afterPath="$PROJECT_DIR$/server/api/folders.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/users.js" afterPath="$PROJECT_DIR$/server/api/users.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/logs/db.log" afterPath="$PROJECT_DIR$/server/logs/db.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/bookmarks/edit.ejs" afterPath="$PROJECT_DIR$/views/bookmarks/edit.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.ejs" afterPath="$PROJECT_DIR$/views/index.ejs" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
+>>>>>>> 292d1227123e0fd4f295d2e36f60b2d68f5e8bbb
     </list>
     <ignored path="CSE-136-HW3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,8 +43,13 @@
       <file leaf-file-name="bookmarks.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/api/bookmarks.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state vertical-scroll-proportion="-10.222222">
+              <caret line="433" column="9" selection-start-line="433" selection-start-column="9" selection-end-line="433" selection-end-column="9" />
+=======
             <state vertical-scroll-proportion="-10.777778">
               <caret line="440" column="9" selection-start-line="440" selection-start-column="9" selection-end-line="440" selection-end-column="9" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -35,6 +57,13 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/public/css/style.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.9411764">
+              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+=======
       <file leaf-file-name="config.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server/config/config.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -52,11 +81,20 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-2.9411764">
               <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
+      <file leaf-file-name="users.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/api/users.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.2651515">
+              <caret line="81" column="56" selection-start-line="81" selection-start-column="56" selection-end-line="81" selection-end-column="56" />
+              <folding />
+=======
       <file leaf-file-name="users.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/api/users.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -68,6 +106,7 @@
                 <marker date="1464048984000" expanded="true" signature="2820:3528" placeholder="{...}" />
                 <marker date="1464048984000" expanded="true" signature="2820:3536" placeholder="{...}" />
               </folding>
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
             </state>
           </provider>
         </entry>
@@ -76,11 +115,19 @@
         <entry file="file://$PROJECT_DIR$/public/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
+              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding>
+                <marker date="1464049554000" expanded="true" signature="245:314" placeholder="/**...*/" />
+                <marker date="1464049554000" expanded="true" signature="397:570" placeholder="{...}" />
+                <marker date="1464049554000" expanded="true" signature="11917:12194" placeholder="{...}" />
+=======
               <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding>
                 <marker date="1464048984000" expanded="true" signature="245:314" placeholder="/**...*/" />
                 <marker date="1464048984000" expanded="true" signature="397:570" placeholder="{...}" />
                 <marker date="1464048984000" expanded="true" signature="12907:13184" placeholder="{...}" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
               </folding>
             </state>
           </provider>
@@ -100,11 +147,19 @@
         <entry file="file://$PROJECT_DIR$/server/api/folders.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
+              <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
+              <folding>
+                <marker date="1464049554000" expanded="true" signature="2632:2646" placeholder="{...}" />
+                <marker date="1464049554000" expanded="true" signature="2632:2657" placeholder="{...}" />
+                <marker date="1464049554000" expanded="true" signature="2632:2714" placeholder="{...}" />
+=======
               <caret line="36" column="1" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
               <folding>
                 <marker date="1464048984000" expanded="true" signature="3898:3912" placeholder="{...}" />
                 <marker date="1464048984000" expanded="true" signature="3898:3923" placeholder="{...}" />
                 <marker date="1464048984000" expanded="true" signature="3898:3980" placeholder="{...}" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
               </folding>
             </state>
           </provider>
@@ -167,9 +222,15 @@
         <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/server/logs/db.log" />
         <option value="$PROJECT_DIR$/public/css/style.css" />
+<<<<<<< HEAD
+        <option value="$PROJECT_DIR$/server/config/config.js" />
+        <option value="$PROJECT_DIR$/server/api/bookmarks.js" />
+        <option value="$PROJECT_DIR$/server/api/users.js" />
+=======
         <option value="$PROJECT_DIR$/server/api/users.js" />
         <option value="$PROJECT_DIR$/server/api/bookmarks.js" />
         <option value="$PROJECT_DIR$/server/config/config.js" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
       </list>
     </option>
   </component>
@@ -423,7 +484,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-10" y="23" width="1280" height="729" extended-state="6" />
+<<<<<<< HEAD
     <editor active="false" />
+=======
+<<<<<<< HEAD
+    <editor active="false" />
+=======
+    <editor active="true" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
+>>>>>>> 292d1227123e0fd4f295d2e36f60b2d68f5e8bbb
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -587,6 +656,22 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/api/folders.js">
+<<<<<<< HEAD
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
+          <folding>
+            <marker date="1464049554000" expanded="true" signature="2632:2646" placeholder="{...}" />
+            <marker date="1464049554000" expanded="true" signature="2632:2657" placeholder="{...}" />
+            <marker date="1464049554000" expanded="true" signature="2632:2714" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+=======
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="1" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
@@ -601,6 +686,7 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
@@ -609,7 +695,15 @@
     <entry file="file://$PROJECT_DIR$/server/logs/db.log">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+=======
+<<<<<<< HEAD
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+=======
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
+>>>>>>> 292d1227123e0fd4f295d2e36f60b2d68f5e8bbb
           <folding />
         </state>
       </provider>
@@ -617,11 +711,19 @@
     <entry file="file://$PROJECT_DIR$/public/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+<<<<<<< HEAD
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <marker date="1464049554000" expanded="true" signature="245:314" placeholder="/**...*/" />
+            <marker date="1464049554000" expanded="true" signature="397:570" placeholder="{...}" />
+            <marker date="1464049554000" expanded="true" signature="11917:12194" placeholder="{...}" />
+=======
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
             <marker date="1464048984000" expanded="true" signature="245:314" placeholder="/**...*/" />
             <marker date="1464048984000" expanded="true" signature="397:570" placeholder="{...}" />
             <marker date="1464048984000" expanded="true" signature="12907:13184" placeholder="{...}" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
           </folding>
         </state>
       </provider>
@@ -645,7 +747,29 @@
     <entry file="file://$PROJECT_DIR$/public/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.9411764">
+<<<<<<< HEAD
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/api/bookmarks.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.222222">
+          <caret line="433" column="9" selection-start-line="433" selection-start-column="9" selection-end-line="433" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/api/users.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2651515">
+          <caret line="81" column="56" selection-start-line="81" selection-start-column="56" selection-end-line="81" selection-end-column="56" />
+=======
           <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+>>>>>>> 83dc595c39980bc3df9cf46b4d4a44f5a25e6952
           <folding />
         </state>
       </provider>
