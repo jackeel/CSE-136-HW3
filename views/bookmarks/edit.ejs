@@ -26,6 +26,7 @@
             <table class="edit-table">
                 <tr><td>Title: </td><td><input type="text" name="title"  value="<%= bookmark.title %>" maxlength="25" autofocus required></td></tr>
                 <tr><td>URL: </td><td><input type="url" name="url" value="<%= bookmark.url %>" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+                <tr><td>Description:</td><td><input type="text" name="description" value="<%= bookmark.description"></td></td></tr>
                 <tr><td>Folder: </td><td>
                     <select class="edit-select-content" name="folder_id">
                         <% folders.forEach(function(folder) { %>
