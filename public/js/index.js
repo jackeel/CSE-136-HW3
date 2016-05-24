@@ -272,7 +272,7 @@ window.onload = function() {
 
         		// Append folder to sidebar
         		$('#folderList').append(
-	            	'<li><a href="/list/' + data.folder_id + '">' + data.folder_name + '</a>\n' +
+	            	'<li><a id="folder-' + data.folder_id + '" href="/list/' + data.folder_id + '">' + data.folder_name + '</a>\n' +
 	                '    <a class="pad-trash-icon" href="/folders/delete/' + data.folder_id + '" id="delete-folder-' + data.folder_id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
 	                '</li>'
 				);
@@ -344,6 +344,8 @@ window.onload = function() {
         var params = {"folder_id" : $(this).attr("id").split("-")[2]};
 
         $("#confirmDeleteForm").on("submit", function(event) {
+            event.preventDefault();
+
             // Close folder modal
             window.location.hash="#close";
             toggleLoadGIF();
@@ -395,7 +397,9 @@ window.onload = function() {
                 toggleLoadGIF();
             }
         });
- });
+
+        return false;
+        });
     });
 
     // Select folder (list bookmarks from that folder)
