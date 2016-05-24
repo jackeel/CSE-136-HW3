@@ -257,7 +257,7 @@ module.exports.insert = function(req, res){
         });
     }
 };
-//
+
 /**
  * Updates a bookmark in the database
  * Does a redirect to the list page
