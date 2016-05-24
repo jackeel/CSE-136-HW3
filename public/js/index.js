@@ -65,18 +65,19 @@ window.onload = function() {
                 // Add bookmark to list if it belongs to currently selected folder or all-list
                 if(current_folder == data.folder_id || current_folder == '') {
             		$('#bookmarks').append(
-            	        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
-                    	'    <div class="content">\n' +
-    					'        <div class="card card--small">\n' +
-    					'	         <div style="background-color:#DE2924" class="card__image"></div>\n' +
-    					'	         <a class="bookmark-link" id=bookmark-"' + data.bookmark_id + '" href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
-    					'		     <div class="card__action-bar">\n' +
-      					'			     <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
-    					'                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '-' + data.title + '-' + data.url + '-' + data.description + '-' + data.folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-    					'		         <a class="card__button" href="/bookmarks/delete/' + data.bookmark_id + '" id="delete-bookmark-' + data.bookmark_id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
-    					'	         </div>\n' +
-    					'         </div>\n' +
-    				    '     </div>'
+                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
+                        '    <div class="content">\n' +
+                        '        <div class="card card--small" id="bookmark-card-' + data.bookmark_id + '">\n' +
+                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
+                        '            <a class="bookmark-link" id="bookmark-url-' + data.bookmark_id +'" href="' + data.url + '"><h2 id="title-bookmark-' + data.bookmark_id + '" class="card__title">' + data.title + '</h2></a>\n' +
+                        '            <div class="card__action-bar">\n' +
+                        '                <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/delete/' + data.bookmark_id + '" id="delete-bookmark-' + data.bookmark_id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+                        '            </div>\n' +
+                        '         </div>\n' +
+                        '     </div>\n' +
+                        '</div>\n'
     				);
                 }
         	},
@@ -322,9 +323,9 @@ window.onload = function() {
                     bookmark_list +=
                         '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
                         '    <div class="content">\n' +
-                        '        <div class="card card--small">\n' +
+                        '        <div class="card card--small" id="bookmark-card-' + bookmarks[i].id + '">\n' +
                         '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a class="bookmark-link" id="bookmark-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <a class="bookmark-link" id="bookmark-url-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 id="title-bookmark-' + bookmarks[i].id + '" class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
                         '            <div class="card__action-bar">\n';
                         if(bookmarks[i].star == 1) {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
@@ -332,8 +333,8 @@ window.onload = function() {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
                         }
                         bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
                         '            </div>\n' +
                         '         </div>\n' +
                         '     </div>\n' +
@@ -382,9 +383,9 @@ window.onload = function() {
                     bookmark_list +=
                         '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
                         '    <div class="content">\n' +
-                        '        <div class="card card--small">\n' +
+                        '        <div class="card card--small" id="bookmark-card-' + bookmarks[i].id + '">\n' +
                         '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <a class="bookmark-link" id="bookmark-url-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 id="title-bookmark-' + bookmarks[i].id + '" class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
                         '            <div class="card__action-bar">\n';
                         if(bookmarks[i].star == 1) {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
@@ -392,8 +393,8 @@ window.onload = function() {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
                         }
                         bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
                         '            </div>\n' +
                         '         </div>\n' +
                         '     </div>\n' +
@@ -415,11 +416,11 @@ window.onload = function() {
     $('#orderByForm select[name="SortBy"]').on("change", sortOrSearchFunction);
 
 
-    // Dynamically populate editBookmark modal
+    // Dynamically populate editBookmark modal when clicked
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-console.log(current_bookmarks);
-debugger;
         for(var i = 0; i < current_bookmarks.length; i++) {
+            event.preventDefault();
+
             var bookmark_id = $(this).attr('id').split('-')[2];
             if(bookmark_id == current_bookmarks[i].id) {
                 $('#editBookmarkForm').attr('action', '/bookmarks/update/' + current_bookmarks[i].id);
@@ -427,8 +428,10 @@ debugger;
                 $('#editBookmarkForm input[name="url"]').val(current_bookmarks[i].url);
                 $('#editBookmarkForm input[name="description"]').val(current_bookmarks[i].description);
                 $('#editBookmarkForm select[name="folder_id"]').val(current_bookmarks[i].folder_id);
+                window.location.hash = "#editBookmark";
                 return;
             }
+
         }
     });
 
@@ -460,14 +463,23 @@ debugger;
                     // Close edit bookmark modal
                     window.location.hash = "#close";
 
-                    // Update bookmark dynamically
+                    // Update local bookmark
                     var data = result.data;
 
-                    console.log($('h2#title-bookmark-' + data.bookmark_id).text());
-                    $('h2#title-bookmark-' + data.bookmark_id).text(data.title);
-                    $('a.bookmark-link').attr('href', data.url);
+                    for(var i = 0; i < current_bookmarks.length; i++) {
+                        if(data.bookmark_id == current_bookmarks[i].id) {
+                            current_bookmarks[i].title = data.title;
+                            current_bookmarks[i].url = data.url;
+                            current_bookmarks[i].description = data.description;
+                            current_bookmarks[i].folder_id = data.folder_id;
+                console.log("updated bookmark_id : " + data.bookmark_id);
+                            break;
+                        }
+                    }
 
-                    // TODO: update bookmark id
+                    // Update bookmark dynamically
+                    $('#title-bookmark-' + data.bookmark_id).text(data.title);
+                    $('#bookmark-url-' + data.bookmark_id).attr('href', data.url);
                 },
                 error: function(xhr, status, error) {
                 }

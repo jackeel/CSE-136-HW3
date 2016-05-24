@@ -230,7 +230,7 @@
 				<div class="content">
 					<div class="card card--small" id="bookmark-card-<%=bookmark.id%>">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id%>" class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-url-<%=bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id %>" class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
