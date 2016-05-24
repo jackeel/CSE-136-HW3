@@ -28,10 +28,18 @@ window.onload = function() {
                 current_bookmarks = result.data;
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
-
-        toggleLoadGIF();
     })();
 
     // Create new bookmark
@@ -82,10 +90,19 @@ window.onload = function() {
                 }
         	},
         	error: function(xhr, status, error) {
-        	}
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+        	},
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
         });
 
-        toggleLoadGIF();
         return false;
     });
 
@@ -119,11 +136,19 @@ window.onload = function() {
                     star.attr("href", "/bookmarks/" + data.bookmark_id + "/unstar");
         	    }
         	},
-        	error: function(xhr, status, error) {
-        	}
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
         });
-
-        toggleLoadGIF();
     });
 
     //modal warning delete
@@ -137,23 +162,31 @@ window.onload = function() {
            event.preventDefault();
            toggleLoadGIF();
 
-           $.ajax({
-            type: 'GET',
-            url: "/bookmarks/delete/" + bookmark_id,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function(result) {
-               // Remove bookmark from list
-                 var data = result.data;
-                 window.location.hash = "#close";
-               $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-               toggleLoadGIF();
-            },
-            error: function(xhr, status, error) {
-                toggleLoadGIF();
-            }
-           });
-       });
+            $.ajax({
+                type: 'GET',
+                url: "/bookmarks/delete/" + bookmark_id,
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(result) {
+                   // Remove bookmark from list
+                     var data = result.data;
+                     window.location.hash = "#close";
+                   $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+                },
+                error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    var err_msg = '';
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
+                },
+                complete: function(xhr, status) {
+                    toggleLoadGIF();
+                }
+            });
+        });
     });
 
     // // Delete bookmark
@@ -177,11 +210,19 @@ window.onload = function() {
     //     		// Remove bookmark from list
     //     		$("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
     //     	},
-    //     	error: function(xhr, status, error) {
-    //     	}
-    //     });
-
-    //     toggleLoadGIF();
+    //      error: function(xhr, status, error) {
+    //          var err = JSON.parse(xhr.responseText);
+    //          var err_msg = '';
+    //          for(var i = 0; i < err.msg.length; i++) {
+    //              // Combine all error messages to display in one modal
+    //              err_msg += err.msg[i].msg += '\n';
+    //          }
+    //          showErrorModal("Error", err_msg);
+    //      },
+    //      complete: function(xhr, status) {
+    //          toggleLoadGIF();
+    //      }
+    //  });
     // });
 
     // Create new folder
@@ -226,12 +267,19 @@ window.onload = function() {
                     '<option value="' + data.folder_id + '">' + data.folder_name + '</option>'
                 );
         	},
-        	error: function(xhr, status, error) {
-        	}
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
         });
-
-
-        toggleLoadGIF();
 
         return false;
     });
@@ -276,6 +324,16 @@ window.onload = function() {
                 $('#editBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
 
@@ -343,10 +401,18 @@ window.onload = function() {
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
-
-        toggleLoadGIF();
     });
 
     // Callback function for keyword search and/or sort (in current folder)
@@ -403,10 +469,18 @@ window.onload = function() {
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
-
-        toggleLoadGIF();
 
         return false;
     };
@@ -472,7 +546,6 @@ window.onload = function() {
                             current_bookmarks[i].url = data.url;
                             current_bookmarks[i].description = data.description;
                             current_bookmarks[i].folder_id = data.folder_id;
-                console.log("updated bookmark_id : " + data.bookmark_id);
                             break;
                         }
                     }
@@ -482,10 +555,19 @@ window.onload = function() {
                     $('#bookmark-url-' + data.bookmark_id).attr('href', data.url);
                 },
                 error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    var err_msg = '';
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
+                },
+                complete: function(xhr, status) {
+                    toggleLoadGIF();
                 }
             });
 
-            toggleLoadGIF();
             return false;
     });
 
@@ -493,7 +575,6 @@ window.onload = function() {
     // When click a bookmark, will send a request to update the last visit time.
     $("#bookmarks").on("click", ".bookmark-link", function(event) {
         event.preventDefault();
-        //alert("Hey");
         toggleLoadGIF();
 
         var url = "/bookmarks/last_visit";
@@ -511,10 +592,18 @@ window.onload = function() {
                 window.location.href = bookmark_url;
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                var err_msg = '';
+                for(var i = 0; i < err.msg.length; i++) {
+                    // Combine all error messages to display in one modal
+                    err_msg += err.msg[i].msg += '\n';
+                }
+                showErrorModal("Error", err_msg);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
-
-        toggleLoadGIF();
     });
     /*******************************************************************/
 
