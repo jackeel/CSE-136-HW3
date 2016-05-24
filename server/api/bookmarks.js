@@ -14,7 +14,7 @@ var MAX_BOOKMARKS = 9;
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
 module.exports.list = function(req, res) {
-    console.log(req.numBookmarks);
+    console.log("number bookmarks: "+req.numBookmarks);
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
             status: Constants.status.SUCCESS,
@@ -34,7 +34,7 @@ module.exports.list = function(req, res) {
 }
 
 module.exports.getCount = function(req, res) {
-    if(req.numBookmarks){
+    if(req.hasOwnProperty("numBookmarks")){
         res.status(200).json({
             status: Constants.status.SUCCESS,
             data: {
@@ -52,11 +52,13 @@ module.exports.getCount = function(req, res) {
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
  */
-module.exports.getAllFolderBookmarks = function(req, res, next) {
+module.exports.getTotalBookmarks = function(req, res, next) {
     var folder_id = req.params.folder_id;
     var search = req.query['Search'] ? req.query['Search'] : '';
+    var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
     req.search = search;
     req.current_folder_id = folder_id;
+    req.order_by = order_by;
     search = db.escape('%' + search + '%');
     var queryString = "";
     if (!folder_id) {

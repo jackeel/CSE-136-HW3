@@ -231,8 +231,8 @@ function requireLogout(req, res, next) {
 };
 
 
-app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.getAllFolderBookmarks, bookmarks.list);
-app.get('/bookmarks/getCount',requireLogin, bookmarks.getAllFolderBookmarks, bookmarks.getCount);
+app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.getTotalBookmarks, bookmarks.list);
+app.get('/bookmarks/getCount',requireLogin, bookmarks.getTotalBookmarks, bookmarks.getCount);
 app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
 app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
