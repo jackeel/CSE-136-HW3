@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Book Confirmation</title>
+</head>
+<body>
+<form action="/books/delete/<%= book.id %>">
+    <strong>Are you sure you wish to delete '<%= book.title %>'?</strong><br>
+    <input type="submit" value="Confirm Delete">&nbsp;
+    <!-- Could also pass to the server as a submit and determine redirect action there -->
+    <a href='/books/' style="text-decoration: none;"><input type="button" value='Cancel Delete'></a>
+</form>

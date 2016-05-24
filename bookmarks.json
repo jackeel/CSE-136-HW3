@@ -1,0 +1,31 @@
+[
+    {
+        "name":"user1_folder1",
+        "folder_id":"1",
+        "user_id":"1",
+        "bookmarks":[
+            {
+                "title":"folder1_google",
+                "url": "http://www.google.com",
+                "description": "description1"
+            },
+            {
+                "title":"folder1_google2",
+                "url": "http://www.google2.com",
+                "description": "description2"
+            }
+        ]
+    },
+    {
+        "name": "user1_folder2",
+        "folder_id":"2",
+        "user_id":"1",
+        "bookmarks":[
+            {
+                "title":"folder2_google",
+                "url": "http://www.google.com",
+                "description": "description1"
+            }
+        ]
+    }
+]

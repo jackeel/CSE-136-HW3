@@ -1,0 +1,38 @@
+{
+  "name": "ejs",
+  "version": "1.0.0",
+  "description": "Express CRUD using EJS",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "compression": "^1.6.2",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "express-validator": "^2.20.4",
+    "install": "^0.7.3",
+    "multer": "^1.1.0",
+    "mysql": "^2.10.2",
+    "nodemailer": "^2.4.1",
+    "npm": "^3.8.8",
+    "winston": "^2.2.0",
+    "xoauth2": "^1.1.0",
+    "cors": "2.5.3",
+    "dateformat": "1.0.12"
+  },
+  "devDependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp-ejsmin": "0.0.1",
+    "gulp-htmlmin": "^2.0.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Team-3",
+  "license": "MIT"
+}
