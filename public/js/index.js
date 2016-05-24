@@ -7,6 +7,9 @@ function toggleLoadGIF() {
     }
 };
 
+// Local bookmarks
+var current_bookmarks = {};
+
 window.onload = function() {
     /*************************** AJAX **********************************/
     // Create new bookmark
@@ -258,6 +261,10 @@ window.onload = function() {
 
                 // Show bookmarks of the selected folder
                 var bookmarks = result.data;
+
+                // Store current bookmarks
+                current_bookmarks = bookmarks;
+
                 var bookmark_list = '';
                 for(var i = 0; i < bookmarks.length; i++) {
                     bookmark_list +=
@@ -310,9 +317,14 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function(result) {
-                console.log(url);
+
                 // Show bookmarks of the selected folder
                 var bookmarks = result.data;
+
+                // Store current bookmarks
+                current_bookmarks = bookmarks;
+
+                // Update 
                 var bookmark_list = '';
                 for(var i = 0; i < bookmarks.length; i++) {
                     bookmark_list +=
@@ -351,56 +363,66 @@ window.onload = function() {
     $('#orderByForm select[name="SortBy"]').on("change", sortOrSearchFunction);
 
 
-    // Edit bookmark
+    // Dynamically populate editBookmark modal
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
 	    var bookmark_id = $(this).attr("id").split("-")[2];
-			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
-			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
-			var description = $(this).attr("id").split("-")[5]; // get description
-			var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
-	    // open the modal with above fields appended into the value
+		var title = $(this).attr("id").split("-")[3];
+		var bookmark_url = $(this).attr("id").split("-")[4];
+		var description = $(this).attr("id").split("-")[5];
+		var folder_id = $(this).attr("id").split("-")[6];
 
-			var actionurl = $('#editBookmarkForm').attr('action');
-			$('#editBookmarkForm')[0].setAttribute('action', actionurl + bookmark_id);
+		var url = $('#editBookmarkForm').attr('action');
+		$('#editBookmarkForm')[0].setAttribute('action', url + bookmark_id);
 	    $('#editBookmarkForm input[name="title"]').val(title);
-			$('#editBookmarkForm input[name="url"]').val(url);
-      $('#editBookmarkForm input[name="description"]').val(description);
-      $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+		$('#editBookmarkForm input[name="url"]').val(bookmark_url);
+        $('#editBookmarkForm input[name="description"]').val(description);
+        $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+    });
 
+    // Edit bookmark
+    $("#editBookmarkForm").on("submit", function(event) {
+            event.preventDefault();
+            toggleLoadGIF();
 
-		  $("#editBookmarkForm").on("submit", function(event) {
-				event.preventDefault();
-      //  toggleLoadGIF();
+            var bookmark_id = $('#editBookmarkForm').attr('action').split('/')[3];
+            var newTitle = $('#editBookmarkForm input[name="title"]').val();
+            var newUrl = $('#editBookmarkForm input[name="url"]').val();
+            var newDescription = $('#editBookmarkForm input[name="description"]').val();
+            var newFolderId = $('#editBookmarkForm select[name="folder_id"]').val();
+            var params = {
+                bookmark_id: bookmark_id,
+                title: newTitle,
+                url: newUrl,
+                description: newDescription,
+                folder_id: newFolderId
+            };
 
-				var newTitle = $('#editBookmarkForm input[name="title"]').val();
-				var newUrl = $('#editBookmarkForm input[name="url"]').val();
-				var newFolderid = $('#editBookmarkForm select[name="folder_id"]').val();
-        var newDescription = $('#editBookmarkForm input[name="description"]').val();
-				var dataa = JSON.stringify({title: newTitle, url: newUrl, description: newDescription, folder_id: newFolderid});
+            $.ajax({
+                type: 'POST',
+                url: "/bookmarks/update/" + bookmark_id,
+                data: JSON.stringify(params),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(result) {
+                    // Close edit bookmark modal
+                    window.location.hash = "#close";
 
-				$.ajax({
-					type: 'POST',
-					url: "/bookmarks/update/" + bookmark_id,
-					data: dataa,
-					dataType: 'json',
-					contentType: 'application/json',
-					success: function(result) {
-						// Remove bookmark from list
-							var data = result.data;
-							console.log(data);
-							console.log(data.url);
-							window.location.hash = "#close";
-							// TODO: append to correct folder only
-						$('#title-bookmark-' + data.bookmark_id).html(data.title);
-						$("a.bookmark-link").attr("href", data.url);
-						},
-						error: function(xhr, status, error) {
-						}
-				});
-    //    toggleLoadGIF();
+                    // Update bookmark dynamically
+                    var data = result.data;
 
-			});
-});
+                    console.log($('h2#title-bookmark-' + data.bookmark_id).text());
+                    $('h2#title-bookmark-' + data.bookmark_id).text(data.title);
+                    $('a.bookmark-link').attr('href', data.url);
+
+                    // TODO: update bookmark id
+                },
+                error: function(xhr, status, error) {
+                }
+            });
+        
+            toggleLoadGIF();
+            return false;
+    });
 
     // For last visit update.
     // When click a bookmark, will send a request to update the last visit time.

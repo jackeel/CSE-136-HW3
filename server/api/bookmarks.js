@@ -253,6 +253,7 @@ module.exports.delete = function(req, res) {
 module.exports.insert = function(req, res){
     req.sanitizeBody('title').trim();
     req.sanitizeBody('url').trim();
+    req.sanitizeBody('description').trim();
     var validate_insert = {
         'title': {
             isLength: {
@@ -337,11 +338,11 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
-    console.log("im in heree!");
     var bookmark_id = req.params.bookmark_id;
 
     req.sanitizeBody('title').trim();
     req.sanitizeBody('url').trim();
+    req.sanitizeBody('description').trim();
 
     var validate_update = {
         'title': {
@@ -379,11 +380,7 @@ module.exports.update = function(req, res){
     //req.sanitizeBody('url').escape();
     var errors = req.validationErrors();
 
-   console.log(req.get(CONTENT_TYPE_KEY));
-   console.log(JSON_CONTENT_TYPE);
     if (errors) {
-      console.log("error stmt");
-      console.log(errors);
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
                 status: Constants.status.failed,
@@ -394,7 +391,6 @@ module.exports.update = function(req, res){
             res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
         }
     } else {
-      console.log("else");
 
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
@@ -406,6 +402,7 @@ module.exports.update = function(req, res){
         db.query(queryString, function(err){
             if (err)
             {
+              console.log(err);
               handleError(err, 'update bookmark', req, res);
               return;
             }
@@ -417,8 +414,8 @@ module.exports.update = function(req, res){
                         bookmark_id: bookmark_id,
                         title: req.body.title,
                         url: req.body.url,
-                        folder_id: req.body.folder_id,
-                        description: req.body.description?req.body.description:""
+                        description: req.body.description?req.body.description:"",
+                        folder_id: req.body.folder_id
                     }
                 })
             }else {
