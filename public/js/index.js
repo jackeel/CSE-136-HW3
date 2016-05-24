@@ -380,6 +380,68 @@ window.onload = function() {
 
         toggleLoadGIF();
     });
+
+    // For pagination
+    $("#pagination").on("click", "a", function(event) {
+        event.preventDefault();
+        toggleLoadGIF();
+
+        var curr_folder = $("#currentFolder").val();
+        var url = "/list/" + curr_folder;
+        var search_text = $('#searchForm input[name="Search"]').val();
+        var sort_option = $('#orderByForm select[name="SortBy"]').val();
+        var offset_index = $(this).text();
+        var params = {
+            "folder_id": curr_folder,
+            "Search": search_text,
+            "SortBy": sort_option,
+            "offset": offset_index };
+        console.log(params);
+        $.ajax({
+            type: 'GET',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: params,
+            success: function(result) {
+                                // Show bookmarks of the selected folder
+                var bookmarks = result.data;
+
+                // Store current bookmarks
+                current_bookmarks = bookmarks;
+
+                // Update 
+                var bookmark_list = '';
+                for(var i = 0; i < bookmarks.length; i++) {
+                    bookmark_list +=
+                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
+                        '    <div class="content">\n' +
+                        '        <div class="card card--small">\n' +
+                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
+                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <div class="card__action-bar">\n';
+                        if(bookmarks[i].star == 1) {
+                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
+                        } else {
+                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
+                        }
+                        bookmark_list +=
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+                        '            </div>\n' +
+                        '         </div>\n' +
+                        '     </div>\n' +
+                        '</div>\n';
+                }
+                $('#bookmarks').html(bookmark_list);
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+        toggleLoadGIF();
+    });
+
     /*******************************************************************/
 
 

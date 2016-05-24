@@ -1439,3 +1439,8 @@ input.edit-button, a.edit-button {
                 50% 50% 
                 no-repeat;
 }
+
+#pagination
+{
+  clear: both;
+}

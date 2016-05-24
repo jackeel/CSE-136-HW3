@@ -21,6 +21,8 @@ module.exports.list = function(req, res) {
             data: req.bookmarks
         })
     } else{
+        console.log(req.numBookmarks/MAX_BOOKMARKS);
+        console.log(Math.ceil(req.numBookmarks/MAX_BOOKMARKS));
         res.render('index', {
             bookmarks: req.bookmarks,
             folders: req.folders,
@@ -28,7 +30,7 @@ module.exports.list = function(req, res) {
             order_by: req.order_by,
             search: req.search,
             errors: res.locals.error_messages,
-            num_pagination: req.numBookmarks/MAX_BOOKMARKS
+            num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS)
         });
     }
 }
@@ -90,7 +92,7 @@ module.exports.getTotalBookmarks = function(req, res, next) {
 module.exports.listBookmarks = function(req, res, next) {
   var folder_id = req.params.folder_id;
   var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
-  var offset = req.query['offset'];
+  var offset = req.query['offset'] || 1;
   var search = req.query['Search'] ? req.query['Search'] : '';
   req.search = search;
   req.current_folder_id = folder_id;
