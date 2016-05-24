@@ -37,7 +37,7 @@ var MySQL = function() {
                     if(err){
                         console.log('error: ', err);
                     }
-                });//
+                });
             });
         },
         query: function(querystring, callback){
