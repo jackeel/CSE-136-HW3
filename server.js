@@ -14,7 +14,7 @@ var multer = require('multer');
 var compression = require('compression');
 var cors = require('cors');
 
-var oneWeek = 3600000 * 24 * 7; 
+var oneWeek = 3600000 * 24 * 7;
 var mySession = session({
   secret: config.SECRET,
   resave: true,
@@ -151,7 +151,7 @@ app.post('/upload',function(request, response) {
         //same user
           var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
           db.query(checkFolder, function(err, fol){
- 
+
             if (err) throw err;
 
             //if folder is not present, insert folder. else just insert bookmarks
@@ -160,13 +160,13 @@ app.post('/upload',function(request, response) {
 
               db.query(insertFolderQuery, function(err, row){
                 if (err) throw err;
-               // console.log(folder.bookmarks); 
+               // console.log(folder.bookmarks);
                 insertBookmarks(folder.bookmarks, row.insertId);
               });
             }
             else
             {
-              insertBookmarks(folder.bookmarks, fol[0].id); 
+              insertBookmarks(folder.bookmarks, fol[0].id);
             }
           });
       });
@@ -181,19 +181,19 @@ function insertBookmarks(bookmarks, folderId)
   bookmarks.forEach(function(bookmark) {
 
 
-    var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;   
+    var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;
 
     db.query(bookmarkInTable, function(err, row){
       if(row.length == 0)
       {
-        var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' + 
+        var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' +
             bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
 
         db.query(insertBookmark, function(err){
           if (err) throw err;
         });
       }
-    }); 
+    });
   });
 }
 
@@ -204,8 +204,8 @@ app.post('/login', requireLogout, users.login);
 app.get('/logout', requireLogin, users.logout);
 app.get('/signup', requireLogout, users.signupForm);
 app.post('/signup', requireLogout, users.signup);
-app.get('/passwordReset', requireLogout, reset.passwordresetForm);
-app.post('/passwordReset', requireLogout, reset.passwordReset);
+app.get('/passwordReset', reset.passwordresetForm);
+app.post('/passwordReset', reset.passwordReset);
 
 /*  This must go between the users routes and the books routes */
 //app.use(users.auth);
