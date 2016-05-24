@@ -50,7 +50,7 @@ window.onload = function() {
 
     // Create new bookmark
     $("#addBookmarkForm").on("submit", function(event) {
-    	event.preventDefault();
+        event.preventDefault();
 
         toggleLoadGIF();
 
@@ -63,13 +63,13 @@ window.onload = function() {
         };
 
         $.ajax({
-        	cache: false,
-        	type: 'POST',
-        	url: url,
-        	contentType: 'application/json',
-        	dataType: 'json',
-        	data: JSON.stringify(params),
-        	success: function(result) {
+            cache: false,
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
                 // Close addBookmark modal
                 window.location.hash = "#close";
 
@@ -78,7 +78,7 @@ window.onload = function() {
 
                 // Add bookmark to list if it belongs to currently selected folder or all-list
                 if(current_folder == data.folder_id || current_folder == '') {
-            		$('#bookmarks').append(
+                    $('#bookmarks').append(
                         '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
                         '    <div class="content">\n' +
                         '        <div class="card card--small" id="bookmark-card-' + data.bookmark_id + '">\n' +
@@ -92,9 +92,9 @@ window.onload = function() {
                         '         </div>\n' +
                         '     </div>\n' +
                         '</div>\n'
-    				);
+                    );
                 }
-        	},
+            },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
@@ -126,26 +126,26 @@ window.onload = function() {
         var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
 
         $.ajax({
-        	type: 'GET',
-        	url: url,
+            type: 'GET',
+            url: url,
             contentType: 'application/json',
-        	dataType: 'json',
-        	data: params,
-        	success: function(result) {
+            dataType: 'json',
+            data: params,
+            success: function(result) {
                 var data = result.data;
 
-        		// Style the star
-        		var star = $("#star-bookmark-" + data.bookmark_id);
-        		var child_i = $("#star-bookmark-" + data.bookmark_id + " > i");
-        		child_i.toggleClass("fa-star-inactive");
+                // Style the star
+                var star = $("#star-bookmark-" + data.bookmark_id);
+                var child_i = $("#star-bookmark-" + data.bookmark_id + " > i");
+                child_i.toggleClass("fa-star-inactive");
 
                 // Update star anchor href
                 if(child_i.hasClass("fa-star-inactive")) {
-        		    star.attr("href", "/bookmarks/" + data.bookmark_id + "/star");
-        	    } else {
+                    star.attr("href", "/bookmarks/" + data.bookmark_id + "/star");
+                } else {
                     star.attr("href", "/bookmarks/" + data.bookmark_id + "/unstar");
-        	    }
-        	},
+                }
+            },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
@@ -219,17 +219,17 @@ window.onload = function() {
     //     var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
 
     //     $.ajax({
-    //     	type: 'GET',
-    //     	url: url,
+    //      type: 'GET',
+    //      url: url,
     //         contentType: 'application/json',
     //         dataType: 'json',
     //         data: params,
     //         success: function(result) {
     //             var data = result.data;
 
-    //     		// Remove bookmark from list
-    //     		$("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-    //     	},
+    //          // Remove bookmark from list
+    //          $("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+    //      },
     //      error: function(xhr, status, error) {
     //          var err = JSON.parse(xhr.responseText);
     //          var err_msg = '';
@@ -247,7 +247,7 @@ window.onload = function() {
 
     // Create new folder
     $("#addFolderForm").on("submit", function(event) {
-    	event.preventDefault();
+        event.preventDefault();
 
         toggleLoadGIF();
 
@@ -257,13 +257,13 @@ window.onload = function() {
         };
 
         $.ajax({
-        	cache: false,
-        	type: 'POST',
-        	url: url,
+            cache: false,
+            type: 'POST',
+            url: url,
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify(params),
-        	success: function(result) {
+            success: function(result) {
                 // Close addFolder modal
                 window.location.hash = "#close";
 
@@ -274,7 +274,7 @@ window.onload = function() {
 
         		// Append folder to sidebar
         		$('#folderList').append(
-	            	'<li><a href="/list/' + data.folder_id + '">' + data.folder_name + '</a>\n' +
+	            	'<li><a id="folder-' + data.folder_id + '" href="/list/' + data.folder_id + '">' + data.folder_name + '</a>\n' +
 	                '    <a class="pad-trash-icon" href="/folders/delete/' + data.folder_id + '" id="delete-folder-' + data.folder_id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
 	                '</li>'
 				);
@@ -286,7 +286,7 @@ window.onload = function() {
                 $('#editBookmarkForm select[name="folder_id"]').append(
                     '<option value="' + data.folder_id + '">' + data.folder_name + '</option>'
                 );
-        	},
+            },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
@@ -346,6 +346,8 @@ window.onload = function() {
         var params = {"folder_id" : $(this).attr("id").split("-")[2]};
 
         $("#confirmDeleteForm").on("submit", function(event) {
+            event.preventDefault();
+
             // Close folder modal
             window.location.hash="#close";
             toggleLoadGIF();
@@ -397,7 +399,9 @@ window.onload = function() {
                 toggleLoadGIF();
             }
         });
- });
+
+        return false;
+        });
     });
 
     // Select folder (list bookmarks from that folder)
@@ -621,7 +625,7 @@ window.onload = function() {
 
 
     // Dynamically populate editBookmark modal when clicked
-	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
+    $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
         for(var i = 0; i < current_bookmarks.length; i++) {
             event.preventDefault();
 
@@ -809,58 +813,58 @@ window.onload = function() {
 
 
     /*************************** For styling ********************************/
-	var menuButton = document.getElementById("menu");
-	var sidebar = document.getElementById("sidebar");
-	var menuIcon = document.getElementById("menu-icon");
+    var menuButton = document.getElementById("menu");
+    var sidebar = document.getElementById("sidebar");
+    var menuIcon = document.getElementById("menu-icon");
 
-	menuButton.onclick = function() {
-		var right = document.getElementById("right");
-		if(sidebar.style.display !== 'none'){
-			sidebar.style.display = 'none';
-			right.style.width = '100%';
-			menuButton.style.color = "#FFF";
-		}
-		else {
-			sidebar.style.display = 'block';
-			right.style.width = '82%';
-			menuButton.style.color = "#FF9EAE";
-		}
-	};
+    menuButton.onclick = function() {
+        var right = document.getElementById("right");
+        if(sidebar.style.display !== 'none'){
+            sidebar.style.display = 'none';
+            right.style.width = '100%';
+            menuButton.style.color = "#FFF";
+        }
+        else {
+            sidebar.style.display = 'block';
+            right.style.width = '82%';
+            menuButton.style.color = "#FF9EAE";
+        }
+    };
 
-	var addBookmark = document.getElementById("add-bookmark");
-	var addBookmark1 = document.getElementById("add-bookmark1");
+    var addBookmark = document.getElementById("add-bookmark");
+    var addBookmark1 = document.getElementById("add-bookmark1");
   var addBookmark2 = document.getElementById("add-bookmark2");
-	var importBookmark = document.getElementById("import-bookmark");
-	var addBookmarkForm = document.getElementById("add-bookmark-form");
-	var addBookmarkForm1 = document.getElementById("add-bookmark-form1");
+    var importBookmark = document.getElementById("import-bookmark");
+    var addBookmarkForm = document.getElementById("add-bookmark-form");
+    var addBookmarkForm1 = document.getElementById("add-bookmark-form1");
   var addBookmarkForm2 = document.getElementById("add-bookmark-form2");
-	var importBookmarkForm = document.getElementById("import-bookmark-form");
+    var importBookmarkForm = document.getElementById("import-bookmark-form");
 
-	addBookmark.onclick = function() {
-		console.log(addBookmark);
-		importBookmarkForm.style.display = 'none';
-		addBookmarkForm.style.display = 'block';
-		addBookmarkForm1.style.display = 'block';
+    addBookmark.onclick = function() {
+        console.log(addBookmark);
+        importBookmarkForm.style.display = 'none';
+        addBookmarkForm.style.display = 'block';
+        addBookmarkForm1.style.display = 'block';
     addBookmarkForm2.style.display = 'block';
 
-		importBookmark.className = "";
+        importBookmark.className = "";
 
-		addBookmark.className = "";
-		addBookmark.className = "is-active";
+        addBookmark.className = "";
+        addBookmark.className = "is-active";
 
-	}
+    }
 
-	addBookmark1.onclick = function() {
-		importBookmarkForm.style.display = 'none';
-		addBookmarkForm.style.display = 'block';
-		addBookmarkForm1.style.display = 'block';
+    addBookmark1.onclick = function() {
+        importBookmarkForm.style.display = 'none';
+        addBookmarkForm.style.display = 'block';
+        addBookmarkForm1.style.display = 'block';
     addBookmarkForm2.style.display = 'block';
 
-		importBookmark.className = "";
+        importBookmark.className = "";
 
-		addBookmark.className = "";
-		addBookmark.className = "is-active";
-	}
+        addBookmark.className = "";
+        addBookmark.className = "is-active";
+    }
 
   addBookmark2.onclick = function() {
     importBookmarkForm.style.display = 'none';
@@ -877,23 +881,23 @@ window.onload = function() {
 
 
 /*
-	$('#confirmButton').click(function() {
-		 var id = $(this).attr('id');
-		 alert(id);
-	 });
+    $('#confirmButton').click(function() {
+         var id = $(this).attr('id');
+         alert(id);
+     });
 
 
-	function deleteBookmark(id) {
-			$.ajax({
-					url: '/folders/delete/' + id,
-					type: 'GET',
-					success: function(res) {
-							loadList();
-					}
-			});
-	}
-	*/
-	/**************************************************************************/
+    function deleteBookmark(id) {
+            $.ajax({
+                    url: '/folders/delete/' + id,
+                    type: 'GET',
+                    success: function(res) {
+                            loadList();
+                    }
+            });
+    }
+    */
+    /**************************************************************************/
 
     // error modal
     function showErrorModal(header,message)
