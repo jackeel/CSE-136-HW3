@@ -286,18 +286,21 @@
 		<div class="grid grid-pad">
 			<a href="#close" title="Close" class="close x-button">x</a>
 			<div class="tabs is-centered">
-			<ul>
+			<ul class="remove-default-padding">
 				<li id="confirmdelete-bookmark" class="is-active"><a>Confirm Delete</a></li>
 			</ul>
-
-								<form id="confirmdelete">
-										<strong>Are you sure you wish to delete"<%= bookmarks.title %>"?</strong><br>
-										<input id="confirmdelete" name="title" type="button" value="Confirm Delete" onclick="deleteBookmark(<%= bookmarks.id %>)">&nbsp;
-										<!-- Could also pass to the server as a submit and determine redirect action there -->
-										<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value='Cancel'></a>
-
-								</form>
-							</div>
+			<p id="confirmdelete" class="pink-error-text">
+            	Are you sure you wish to delete?
+            </p>
+            <br>
+			<form class ="pink-error-text" id="confirmdelete">
+					<!--<strong>Are you sure you wish to delete"<%= bookmarks.title %>"?</strong><br>-->
+					<input id="confirmdelete" name="title" type="button" value="Confirm Delete" onclick="deleteBookmark(<%= bookmarks.id %>)">
+					<br>
+					<!-- Could also pass to the server as a submit and determine redirect action there -->
+					<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value='Cancel'></a>
+			</form>
+		</div>
 
 			 </div>
 		 </div>
