@@ -381,7 +381,7 @@ window.onload = function() {
             data: JSON.stringify(params),
             success: function(result) {
                 var data = result.data;
-                window.location.replace(bookmark_url);
+                window.location.href = bookmark_url;
             },
             error: function(xhr, status, error) {
             }
