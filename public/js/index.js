@@ -618,6 +618,8 @@ window.onload = function() {
         $('#folderList').css('max-height', height+'px');
     }
 
-    setMaxHeightFolders();
+    // $( window ).resize(function() {
+    //   setMaxHeightFolders();
+    // });
 
 }
