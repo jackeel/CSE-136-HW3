@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300|Montserrat:400,700' rel='stylesheet' type='text/css'>-->
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 </head>
 <body>
@@ -114,7 +114,7 @@
                                     <li id="" class="is-active"><a>Change Password</a></li>
                                 </ul>
                             </div>
-                            <form method="post" action="" enctype="multipart/form-data">
+                            <form id="resetPassword" method="post" action="/passwordReset" >
                                 <div class="form" id="">
 																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
 																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>

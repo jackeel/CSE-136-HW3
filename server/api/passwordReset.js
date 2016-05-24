@@ -5,12 +5,16 @@ var crypto = require('crypto');
 var CONTENT_TYPE_KEY = 'Content-Type';
 var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
+//var users = require('users.js');
+var session = require('express-session');
+
 
 
 module.exports.passwordresetForm = function(req, res){
   if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
         status: Constants.status.SUCCESS,
+        //msg: Constants.successMessages.OK
         successMessages: successMessages.OK
       })
   }
@@ -33,14 +37,8 @@ var mailOptions = {
  *  Then redirect with success/error message.
  */
 module.exports.passwordReset = function(req, res) {
+   if (!req.session.userId) {
     var validate_passwordReset = {
-      /*
-        'email': {
-            isEmail: {
-                errorMessage: 'Invalid email'
-            }
-        },
-      */
         'username': {
             isLength: {
                 options: [{min: 0, max: 25}],
@@ -60,13 +58,30 @@ module.exports.passwordReset = function(req, res) {
             },
         }
     };
+  }
+  else {
+    var validate_passwordReset = {
+        'password': {
+            isLength: {
+                options: [{min: 0, max: 64}],
+                errorMessage: 'Password must be 1-64 characters'
+            },
+        },
+        'confirm_password': {
+            equals: {
+                options: [req.body.password],
+                errorMessage: 'Passwords must match'
+            },
+        }
+    };
+  }
     req.checkBody(validate_passwordReset);
     var errors = req.validationErrors();
     if (errors) {
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
             status: Constants.status.failed,
-            failedMessages: failedMessages.FAIL
+            failedMessages: Constants.failedMessages.FAIL
         })
       }
         else {
@@ -77,35 +92,42 @@ module.exports.passwordReset = function(req, res) {
         // Uncomment once email is added
         // var email = db.escape(req.body.email);
         // var queryString = 'SELECT * FROM users WHERE email = ' + email;
-        var username = db.escape(req.body.username);
+        if (!req.session.userId)
+           var username = db.escape(req.body.username);
+        else
+            var usersession = req.session.userId;
+
         var password = db.escape(req.body.password);
         var confirm_password = db.escape(req.body.confirm_password);
+        var queryString;
+        if (!req.session.userId)
+            queryString = 'SELECT * FROM users WHERE username = ' + username;
+        else
+            queryString = 'SELECT * FROM users WHERE id = ' + usersession;
 
-        var queryString = 'SELECT * FROM users WHERE username = ' + username;
         db.query(queryString, function(err, rows) {
             if(err) throw err;
 
-            if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-                   res.status(400).json({
-                   status: Constants.status.failed,
-                   failedMessages: failedMessages.FAIL
-            })
-          }
             if(rows.length == 1) {
                 var salt = crypto.randomBytes(32).toString('base64');
                 var hash = crypto
                       .createHmac('SHA256', salt)
                       .update(password)
                       .digest('base64');
+                var updateQueryString;
+                if (!req.session.userId)
+                   updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE username = ' + username;
+                else
+                   updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE id = ' + usersession;
 
-                var updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE username = ' + username;
                 console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
                     if (err) throw err;
                     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                      console.log("inside the success");
                           res.status(200).json({
                           status: Constants.status.SUCCESS,
-                          successMessages: successMessages.OK
+                          successMessages: Constants.successMessages.OK
                         })
 
                     setMailOptions(mailOptions, username, rows[0].email);
