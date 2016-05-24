@@ -340,12 +340,14 @@ window.onload = function() {
         event.preventDefault();
         window.location.hash = 'confirmDelete';
 
-        toggleLoadGIF();
-
         var url = $(this).attr("href");
         var params = {"folder_id" : $(this).attr("id").split("-")[2]};
 
         $("#confirmDeleteForm").on("submit", function(event) {
+            // Close folder modal
+            window.location.hash="#close";
+            toggleLoadGIF();
+
         $.ajax({
             type: 'GET',
             url: url,
@@ -353,7 +355,6 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function(result) {
-                window.location.hash = "#close";
                 var data = result.data;
                 var current_folder = $("#currentFolder").val();
 
