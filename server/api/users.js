@@ -20,6 +20,17 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
+function handleError(err, action, req, res)
+{
+    logger.log('debug', "user-actions: "+ action,
+              {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
+            );
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(500).json({ status: Constants.status.error, data: action });
+    }
+}
+
+
 /**
  * Render forms
  */
@@ -75,7 +86,11 @@ module.exports.login = function(req, res) {
                 var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
 
                 db.query(queryString, function(err, rows) {
-                    if (err) throw err;
+                    if (err)
+                    {
+                        handleError(err, 'salt user id', req, res);
+                        return; 
+                    }
 
                     if (rows.length == 1) {
                         req.session.userId = rows[0].id;

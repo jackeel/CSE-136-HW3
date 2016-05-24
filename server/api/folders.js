@@ -2,7 +2,40 @@ var db = require('../config/db');
 var CONTENT_TYPE_KEY = 'Content-Type';
 var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
+var winston = require('winston');
 
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.File({
+            name: 'folder-actions',
+            level: 'debug',
+            filename: './server/logs/db.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: false
+        })
+    ],
+    exitOnError: false
+});
+
+function handleError(err, action, req, res)
+{
+    logger.log('debug', "folder-actions: "+ action,
+              {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
+            );
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(500).json({ status: Constants.status.error, data: action });
+    }
+    else
+    {
+        //req.flash('error_messages', errors);
+        res.redirect('/list#warningModal');  // flash error to the add modal
+    }
+}
+ 
 /**
  * Adds a new folder to the database
  * Does a redirect to the list page
@@ -38,10 +71,19 @@ module.exports.insert = function(req, res){
         var user_id = db.escape(req.session.userId);
 
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
+
         db.query(queryString, function(err, result){
-            if (err) throw err;
+            if (err)
+            {
+                handleError(err, 'add folder', req, res);
+                return; 
+            } 
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
-                if (err) throw err;
+                if (err)
+                {
+                    handleError(err, 'show folders', req, res);
+                    return;
+                }
                 if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                     res.status(200).json({
                         status: Constants.status.SUCCESS,
@@ -66,7 +108,11 @@ module.exports.insert = function(req, res){
 module.exports.delete = function(req, res) {
     var id = db.escape(req.params.folder_id);
     db.query('DELETE from folders where id = ' + id, function(err){
-        if (err) throw err;
+        if (err)
+        {
+            handleError(err, 'delete folder', req, res);
+            return;
+        }
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(200).json({
                 status: Constants.status.SUCCESS,
