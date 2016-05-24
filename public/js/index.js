@@ -312,10 +312,10 @@ window.onload = function() {
 
 
 	$("#right-content").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-		  var bookmark_id = $(this).attr("id").split("-")[2];
+
+      var bookmark_id = $(this).attr("id").split("-")[2];
 			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
 			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
-			var folderId = $(this).attr("id").split("-")[5];
 			var description = $(this).attr("id").split("-")[5]; // get description
 			var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
 	    // open the modal with above fields appended into the value
@@ -324,18 +324,19 @@ window.onload = function() {
 			$('#editBookmarkForm')[0].setAttribute('action', actionurl + bookmark_id);
 	    $('#editBookmarkForm input[name="title"]').val(title);
 			$('#editBookmarkForm input[name="url"]').val(url);
-            $('#editBookmarkForm input[name="description"]').val(description);
-            $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+      $('#editBookmarkForm input[name="description"]').val(description);
+      $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
 
 
 		  $("#editBookmarkForm").on("submit", function(event) {
 				event.preventDefault();
-				var newTitle = $('#editForm input[name="title"]').val();
-				var newUrl = $('#editForm input[name="url"]').val();
-				var newFolderid = $('#editForm select[name="folder_id"]').val();
-				//var dataString = 'title='+ name + '&url=' + url2 + '&folder_id=' + folderId;
+      //  toggleLoadGIF();
 
-				var dataa = JSON.stringify({title : newTitle, url: newUrl, folder_id: newFolderid});
+				var newTitle = $('#editBookmarkForm input[name="title"]').val();
+				var newUrl = $('#editBookmarkForm input[name="url"]').val();
+				var newFolderid = $('#editBookmarkForm select[name="folder_id"]').val();
+        var newDescription = $('#editBookmarkForm input[name="description"]').val();
+				var dataa = JSON.stringify({title: newTitle, url: newUrl, description: newDescription, folder_id: newFolderid});
 
 				$.ajax({
 					type: 'POST',
@@ -351,11 +352,13 @@ window.onload = function() {
 							window.location.hash = "#close";
 							// TODO: append to correct folder only
 						$('#title-bookmark-' + data.bookmark_id).html(data.title);
-						$("a.url-bookmark-now").attr("href", data.url);
+						$("a.bookmark-link").attr("href", data.url);
 						},
 						error: function(xhr, status, error) {
 						}
 				});
+    //    toggleLoadGIF();
+
 			});
 });
 
