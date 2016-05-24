@@ -395,7 +395,6 @@ window.onload = function() {
             }
         });
  });
-        toggleLoadGIF();
     });
 
     // Select folder (list bookmarks from that folder)
