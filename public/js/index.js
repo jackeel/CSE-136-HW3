@@ -387,27 +387,18 @@ window.onload = function() {
 
     // Dynamically populate editBookmark modal
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
+console.log(current_bookmarks);
+debugger;
         for(var i = 0; i < current_bookmarks.length; i++) {
-            if($(this).attr('id').split('-')[2] == current_bookmarks[i]) {
-                $('#editBookmarkForm').attr('action', this.url);
-                $('#editBookmarkForm input[name="title"]').val(title);
-                $('#editBookmarkForm input[name="url"]').val(bookmark_url);
-                $('#editBookmarkForm input[name="description"]').val(description);
-                $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+            var bookmark_id = $(this).attr('id').split('-')[2];
+            if(bookmark_id == current_bookmarks[i].id) {
+                $('#editBookmarkForm').attr('action', '/bookmarks/update/' + current_bookmarks[i].id);
+                $('#editBookmarkForm input[name="title"]').val(current_bookmarks[i].title);
+                $('#editBookmarkForm input[name="url"]').val(current_bookmarks[i].url);
+                $('#editBookmarkForm input[name="description"]').val(current_bookmarks[i].description);
+                $('#editBookmarkForm select[name="folder_id"]').val(current_bookmarks[i].folder_id);
                 return;
             }
-	    var bookmark_id = $(this).attr("id").split("-")[2];
-		var title = $(this).attr("id").split("-")[3];
-		var bookmark_url = $(this).attr("id").split("-")[4];
-		var description = $(this).attr("id").split("-")[5];
-		var folder_id = $(this).attr("id").split("-")[6];
-
-		var url = $('#editBookmarkForm').attr('action');
-		$('#editBookmarkForm')[0].setAttribute('action', url + bookmark_id);
-	    $('#editBookmarkForm input[name="title"]').val(title);
-		$('#editBookmarkForm input[name="url"]').val(bookmark_url);
-        $('#editBookmarkForm input[name="description"]').val(description);
-        $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
         }
     });
 
