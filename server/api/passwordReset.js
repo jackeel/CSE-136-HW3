@@ -7,7 +7,7 @@ var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
 //var users = require('users.js');
 var session = require('express-session');
-var winston = require('winston'); 
+var winston = require('winston');
 
 var logger = new winston.Logger({
     transports: [
@@ -38,6 +38,7 @@ function handleError(err, action, req, res)
 
 
 module.exports.passwordresetForm = function(req, res){
+
   if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
         status: Constants.status.SUCCESS,
@@ -46,7 +47,10 @@ module.exports.passwordresetForm = function(req, res){
       })
   }
   else {
-    res.redirect('/list');
+    if (req.session.userId)
+      res.redirect('/list');
+    else
+      res.render('passwordReset');
   }
 };
 
@@ -112,9 +116,12 @@ module.exports.passwordReset = function(req, res) {
         })
       }
         else {
-          res.redirect('/list');
-          //res.render('list', {errors: errors});
-          return;
+          if (req.session.userId)
+            res.redirect('/list');
+          else {
+            res.render('passwordReset', {errors: errors});
+            return;
+          }
         }
     } else {
         // Uncomment once email is added
@@ -137,7 +144,7 @@ module.exports.passwordReset = function(req, res) {
             if(err)
             {
               handleError(err, 'select username', req, res);
-              return; 
+              return;
             }
 
             if(rows.length == 1) {
@@ -157,7 +164,7 @@ module.exports.passwordReset = function(req, res) {
                     if (err)
                     {
                       handleError(err, 'update user password', req, res);
-                      return; 
+                      return;
                     }
                     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                       console.log("inside the success");
@@ -179,8 +186,11 @@ module.exports.passwordReset = function(req, res) {
                     }
                       else {
                         var successes = [{msg: 'Confirmation email sent'}];
-                        res.redirect('/list');
-                        //res.render('list', {successes: successes});
+                        //res.redirect('/list');
+                        if (req.session.userId)
+                          res.redirect('/list');
+                        else
+                           res.render('passwordReset', {successes: successes});
                       }
 
                 });
@@ -189,8 +199,10 @@ module.exports.passwordReset = function(req, res) {
 
             else {
                 errors = [{msg: 'Provided user does not exist'}];
-                res.redirect('/list')
-                //res.render('list', {errors: errors});
+                if (req.session.userId)
+                  res.redirect('/list');
+                else
+                  res.render('passwordReset', {errors: errors});
             }
         });
     }
