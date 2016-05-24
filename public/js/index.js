@@ -135,7 +135,7 @@ window.onload = function() {
         $("#confirmDeleteForm").on("submit", function(event) {
            event.preventDefault();
            toggleLoadGIF();
-           
+
            $.ajax({
             type: 'GET',
             url: "/bookmarks/delete/" + bookmark_id,
@@ -152,7 +152,7 @@ window.onload = function() {
                 toggleLoadGIF();
             }
            });
-       }); 
+       });
     });
 
     // // Delete bookmark
@@ -376,7 +376,7 @@ window.onload = function() {
                 // Store current bookmarks
                 current_bookmarks = bookmarks;
 
-                // Update 
+                // Update
                 var bookmark_list = '';
                 for(var i = 0; i < bookmarks.length; i++) {
                     bookmark_list +=
@@ -481,7 +481,7 @@ window.onload = function() {
                 error: function(xhr, status, error) {
                 }
             });
-        
+
             toggleLoadGIF();
             return false;
     });
@@ -537,9 +537,11 @@ window.onload = function() {
 
 	var addBookmark = document.getElementById("add-bookmark");
 	var addBookmark1 = document.getElementById("add-bookmark1");
+  var addBookmark2 = document.getElementById("add-bookmark2");
 	var importBookmark = document.getElementById("import-bookmark");
 	var addBookmarkForm = document.getElementById("add-bookmark-form");
 	var addBookmarkForm1 = document.getElementById("add-bookmark-form1");
+  var addBookmarkForm2 = document.getElementById("add-bookmark-form2");
 	var importBookmarkForm = document.getElementById("import-bookmark-form");
 
 	addBookmark.onclick = function() {
@@ -547,6 +549,7 @@ window.onload = function() {
 		importBookmarkForm.style.display = 'none';
 		addBookmarkForm.style.display = 'block';
 		addBookmarkForm1.style.display = 'block';
+    addBookmarkForm2.style.display = 'block';
 
 		importBookmark.className = "";
 
@@ -556,16 +559,30 @@ window.onload = function() {
 	}
 
 	addBookmark1.onclick = function() {
-		console.log(addBookmark);
 		importBookmarkForm.style.display = 'none';
 		addBookmarkForm.style.display = 'block';
 		addBookmarkForm1.style.display = 'block';
+    addBookmarkForm2.style.display = 'block';
 
 		importBookmark.className = "";
 
 		addBookmark.className = "";
 		addBookmark.className = "is-active";
 	}
+
+  addBookmark2.onclick = function() {
+    importBookmarkForm.style.display = 'none';
+    addBookmarkForm.style.display = 'block';
+    addBookmarkForm1.style.display = 'block';
+    addBookmarkForm2.style.display = 'block';
+
+    importBookmark.className = "";
+
+    addBookmark.className = "";
+    addBookmark.className = "is-active";
+  }
+
+
 
 /*
 	$('#confirmButton').click(function() {
