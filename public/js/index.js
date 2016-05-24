@@ -178,42 +178,51 @@ window.onload = function() {
     });
 */
 
+
 	$("#right-content").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-			//event.preventDefault();
-			debugger;
-	    var bookmark_id = $(this).attr("id").split("-")[2];
+		  var bookmark_id = $(this).attr("id").split("-")[2];
 			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
 			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
-      console.log(title);
+			var folderId = $(this).attr("id").split("-")[5];
 	    // open the modal with above fields appended into the value
 
 			var actionurl = $('#editForm').attr('action');
 			$('#editForm')[0].setAttribute('action', actionurl + bookmark_id);
 	    $('#editForm input[name="title"]').val(title);
 			$('#editForm input[name="url"]').val(url);
-		//	$('input[name="folder_id"]').val()="<%= %>";
 
-		//	$("editForm") ... stuff
-			// append stuff to the editmodal
 
-		/*  $("#editForm").on("submit", function(event) {
+		  $("#editForm").on("submit", function(event) {
+				event.preventDefault();
+				var newTitle = $('#editForm input[name="title"]').val();
+				var newUrl = $('#editForm input[name="url"]').val();
+				var newFolderid = $('#editForm select[name="folder_id"]').val();
+				//var dataString = 'title='+ name + '&url=' + url2 + '&folder_id=' + folderId;
+
+				var dataa = JSON.stringify({title : newTitle, url: newUrl, folder_id: newFolderid});
+
 				$.ajax({
-					type: 'GET',
-					url: url,
+					type: 'POST',
+					url: "/bookmarks/update/" + bookmark_id,
+					data: dataa,
 					dataType: 'json',
-					data: params,
+					contentType: 'application/json',
 					success: function(result) {
 						// Remove bookmark from list
-					},
-					error: function(xhr, status, error) {
-					}
-				});
+						  var data = result.data;
+						  console.log(data);
+							console.log(data.url);
+							window.location.hash = "#close";
+							// TODO: append to correct folder only
+				    $('#title-bookmark-' + data.bookmark_id).html(data.title);
+						$("a.url-bookmark-now").attr("href", data.url);
+						},
+						error: function(xhr, status, error) {
+						}
+        });
+    });
 
-			});
-			*/
-		});
-
-    /*******************************************************************/
+});
 
 
     /*************************** For styling ********************************/
@@ -266,5 +275,24 @@ window.onload = function() {
 		addBookmark.className = "";
 		addBookmark.className = "is-active";
 	}
+
+/*
+	$('#confirmButton').click(function() {
+		 var id = $(this).attr('id');
+		 alert(id);
+	 });
+
+
+	function deleteBookmark(id) {
+			$.ajax({
+					url: '/folders/delete/' + id,
+					type: 'GET',
+					success: function(res) {
+							loadList();
+					}
+			});
+	}
+	*/
 	/**************************************************************************/
+
 }
