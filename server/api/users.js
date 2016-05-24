@@ -79,7 +79,7 @@ module.exports.login = function(req, res) {
 
                     if (rows.length == 1) {
                         req.session.userId = rows[0].id;
-                        res.redirect('/list');
+                        res.redirect('/list?offset=1    ');
                         logger.log('debug', "user-actions: login",
                             {timestamp: Date.now(), user:username, ip: req.ip}
                         );
