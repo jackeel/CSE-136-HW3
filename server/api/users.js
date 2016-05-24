@@ -23,7 +23,7 @@ var logger = new winston.Logger({
 function handleError(err, action, req, res)
 {
     logger.log('debug', "user-actions: "+ action,
-              {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
+              {timestamp: Date.now(), ip: req.ip, erro: err.code}
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(500).json({ status: Constants.status.error, data: action });
