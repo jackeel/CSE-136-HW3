@@ -247,7 +247,7 @@
 
 		<div id="pagination">
 			<% for(i=1; i <= num_pagination ; i++) { %>
-			    <a href=<%="/list"+(current_folder_id == undefined ? "": current_folder_id)+"?Search="+search+"&SortBy="+order_by+"&offset="+i%>><%=  i  %></a>
+			    <a href=<%="/list"+(current_folder_id == undefined ? "": current_folder_id)+"?Search="+search+"&SortBy="+order_by+"&offset="+i%>><%=i%></a>
 			<% }%>
 	  	</div>
 

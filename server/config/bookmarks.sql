@@ -23,7 +23,7 @@
 # Dump of table bookmarks
 # ------------------------------------------------------------
 
-
+DROP TABLE IF EXISTS `bookmarks`;
 
 CREATE TABLE `bookmarks` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

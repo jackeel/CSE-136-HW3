@@ -1443,4 +1443,7 @@ input.edit-button, a.edit-button {
 #pagination
 {
   clear: both;
+  font-size: 18px;
+  letter-spacing: 8px;
+
 }
