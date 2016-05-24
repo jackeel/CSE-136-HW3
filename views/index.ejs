@@ -231,7 +231,7 @@
 				<div class="content">
 					<div class="card card--small" id="bookmark-card-<%=bookmark.id%>">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id%>" class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-url-<%=bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id %>" class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
@@ -279,11 +279,9 @@
 									<td colspan="2">
 											<input class="edit-button" type='submit' value="Save">
 											&nbsp;
-											<form style="display: inline" action="#close" method="">
-										     <input class="edit-button" type="button" value='Cancel'> </input>
-									    </form>
+
 											<!-- Could also pass to the server as a submit and determine redirect action there -->
-											<!--a href='#close' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a-->
+											<a href='#close' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a>
 									</td>
 							</tr>
 					</table>
