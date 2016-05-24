@@ -55,7 +55,7 @@ module.exports.listBookmarks = function(req, res, next) {
   req.order_by = order_by;
   search = db.escape('%' + search + '%');
   var queryString = "";
-  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&
       (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
       (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
     order_by = "bookmarks.id";
@@ -111,14 +111,14 @@ module.exports.listStarred = function(req, res) {
   req.search = search;
   search = db.escape('%' + search + '%');
 
-  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") && 
+  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&
       (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
       (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
     order_by = "bookmarks.id";
   }
   queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
-                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' + 
+                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
                   'WHERE bookmarks.star = 1 ' +
                   'and (title like ' + search + ' or description like ' + search +
                   ') ORDER BY ' + order_by;
@@ -270,6 +270,7 @@ module.exports.insert = function(req, res){
  * Does a redirect to the list page
  */
 module.exports.update = function(req, res){
+    console.log("im in heree!");
     var bookmark_id = req.params.bookmark_id;
 
     req.sanitizeBody('title').trim();
@@ -311,7 +312,11 @@ module.exports.update = function(req, res){
     //req.sanitizeBody('url').escape();
     var errors = req.validationErrors();
 
+   console.log(req.get(CONTENT_TYPE_KEY));
+   console.log(JSON_CONTENT_TYPE);
     if (errors) {
+      console.log("error stmt");
+      console.log(errors);
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
                 status: Constants.status.failed,
@@ -322,6 +327,8 @@ module.exports.update = function(req, res){
             res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
         }
     } else {
+      console.log("else");
+
         var title = db.escape(req.body.title);
         var url = db.escape(req.body.url);
         var folder_id = db.escape(req.body.folder_id);
@@ -336,6 +343,7 @@ module.exports.update = function(req, res){
                     status: Constants.status.SUCCESS,
                     msg: Constants.successMessages.OK,
                     data: {
+                        bookmark_id: bookmark_id,
                         title: req.body.title,
                         url: req.body.url,
                         folder_id: req.body.folder_id,
@@ -436,7 +444,7 @@ module.exports.download = function(req, res){
     });
     //console.log(folderMap);
     array_json_bookmark = [];
-    
+
     for (var key in folderMap) {
       array_json_bookmark.push(folderMap[key]);
     }

@@ -199,7 +199,7 @@ window.onload = function() {
         	}
         });
 
-        
+
         toggleLoadGIF();
 
         return false;
@@ -310,19 +310,14 @@ window.onload = function() {
         toggleLoadGIF();
     });
 
-    // TODO: Keyword search (in current folder)
 
-    // TODO: Sort Option (in current folder)
-
-    // TODO: Edit bookmarks
-	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-			//event.preventDefault();
-	    var bookmark_id = $(this).attr("id").split("-")[2];
+	$("#right-content").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
+		  var bookmark_id = $(this).attr("id").split("-")[2];
 			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
 			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
-            var description = $(this).attr("id").split("-")[5]; // get description
-            var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
-      console.log(title);
+			var folderId = $(this).attr("id").split("-")[5];
+			var description = $(this).attr("id").split("-")[5]; // get description
+			var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
 	    // open the modal with above fields appended into the value
 
 			var actionurl = $('#editBookmarkForm').attr('action');
@@ -331,27 +326,38 @@ window.onload = function() {
 			$('#editBookmarkForm input[name="url"]').val(url);
             $('#editBookmarkForm input[name="description"]').val(description);
             $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
-		//	$('input[name="folder_id"]').val()="<%= %>";
 
-		//	$("editBookmarkForm") ... stuff
-			// append stuff to the editmodal
 
-		/*  $("#editBookmarkForm").on("submit", function(event) {
+		  $("#editBookmarkForm").on("submit", function(event) {
+				event.preventDefault();
+				var newTitle = $('#editForm input[name="title"]').val();
+				var newUrl = $('#editForm input[name="url"]').val();
+				var newFolderid = $('#editForm select[name="folder_id"]').val();
+				//var dataString = 'title='+ name + '&url=' + url2 + '&folder_id=' + folderId;
+
+				var dataa = JSON.stringify({title : newTitle, url: newUrl, folder_id: newFolderid});
+
 				$.ajax({
-					type: 'GET',
-					url: url,
+					type: 'POST',
+					url: "/bookmarks/update/" + bookmark_id,
+					data: dataa,
 					dataType: 'json',
-					data: params,
+					contentType: 'application/json',
 					success: function(result) {
 						// Remove bookmark from list
-					},
-					error: function(xhr, status, error) {
-					}
+							var data = result.data;
+							console.log(data);
+							console.log(data.url);
+							window.location.hash = "#close";
+							// TODO: append to correct folder only
+						$('#title-bookmark-' + data.bookmark_id).html(data.title);
+						$("a.url-bookmark-now").attr("href", data.url);
+						},
+						error: function(xhr, status, error) {
+						}
 				});
-
 			});
-			*/
-		});
+});
 
     // For last visit update.
     // When click a bookmark, will send a request to update the last visit time.
@@ -433,23 +439,42 @@ window.onload = function() {
 		addBookmark.className = "";
 		addBookmark.className = "is-active";
 	}
+
+/*
+	$('#confirmButton').click(function() {
+		 var id = $(this).attr('id');
+		 alert(id);
+	 });
+
+
+	function deleteBookmark(id) {
+			$.ajax({
+					url: '/folders/delete/' + id,
+					type: 'GET',
+					success: function(res) {
+							loadList();
+					}
+			});
+	}
+	*/
 	/**************************************************************************/
 
-    // error modal 
+
+    // error modal
     function showErrorModal(header,message)
     {
         window.location.hash = 'warningModal';
-        $("#warningTitle:first").text(header); 
-        $("#warningMessage").text(message); 
+        $("#warningTitle:first").text(header);
+        $("#warningMessage").text(message);
     }
 
     function setMaxHeightFolders()
     {
         $('#folderList').css('height', '100%');
         var height = $('#folderList').height() - $('#sidebar div:first').height();
-        $('#folderList').css('max-height', height+'px'); 
+        $('#folderList').css('max-height', height+'px');
     }
 
-    setMaxHeightFolders(); 
+    setMaxHeightFolders();
 
 }
