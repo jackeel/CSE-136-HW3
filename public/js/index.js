@@ -30,11 +30,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -89,15 +93,19 @@ window.onload = function() {
     				);
                 }
         	},
-        	error: function(xhr, status, error) {
+            error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
-        	},
+            },
             complete: function(xhr, status) {
                 toggleLoadGIF();
             }
@@ -139,11 +147,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -176,11 +188,15 @@ window.onload = function() {
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
                     var err_msg = '';
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
+                    if(err.msg == null) {
+                        showErrorModal("Error", err.data);
+                    } else {
+                        for(var i = 0; i < err.msg.length; i++) {
+                            // Combine all error messages to display in one modal
+                            err_msg += err.msg[i].msg += '\n';
+                        }
+                        showErrorModal("Error", err_msg);
                     }
-                    showErrorModal("Error", err_msg);
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -272,11 +288,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -360,11 +380,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -437,11 +461,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -505,11 +533,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -591,11 +623,15 @@ window.onload = function() {
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
                     var err_msg = '';
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
+                    if(err.msg == null) {
+                        showErrorModal("Error", err.data);
+                    } else {
+                        for(var i = 0; i < err.msg.length; i++) {
+                            // Combine all error messages to display in one modal
+                            err_msg += err.msg[i].msg += '\n';
+                        }
+                        showErrorModal("Error", err_msg);
                     }
-                    showErrorModal("Error", err_msg);
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -628,11 +664,15 @@ window.onload = function() {
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 var err_msg = '';
-                for(var i = 0; i < err.msg.length; i++) {
-                    // Combine all error messages to display in one modal
-                    err_msg += err.msg[i].msg += '\n';
+                if(err.msg == null) {
+                    showErrorModal("Error", err.data);
+                } else {
+                    for(var i = 0; i < err.msg.length; i++) {
+                        // Combine all error messages to display in one modal
+                        err_msg += err.msg[i].msg += '\n';
+                    }
+                    showErrorModal("Error", err_msg);
                 }
-                showErrorModal("Error", err_msg);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();

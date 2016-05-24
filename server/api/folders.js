@@ -75,7 +75,7 @@ module.exports.insert = function(req, res){
         db.query(queryString, function(err, result){
             if (err)
             {
-                handleError(err, 'add folder', req, res);
+                handleError(err, 'Duplicate folder name exists', req, res);
                 return; 
             } 
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
