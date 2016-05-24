@@ -7,7 +7,34 @@ var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
 //var users = require('users.js');
 var session = require('express-session');
+var winston = require('winston'); 
 
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.File({
+            name: 'password-reset',
+            level: 'debug',
+            filename: './server/logs/db.log',
+            prettyPrint: true,
+            handleExceptions: false,
+            json: true,
+            maxsize: 5242880, //5MB
+            maxFiles: 5,
+            colorize: false
+        })
+    ],
+    exitOnError: false
+});
+
+function handleError(err, action, req, res)
+{
+    logger.log('debug', "password-reset: "+ action,
+              {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
+            );
+    if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+        res.status(500).json({ status: Constants.status.error, data: action });
+    }
+}
 
 
 module.exports.passwordresetForm = function(req, res){
@@ -107,7 +134,11 @@ module.exports.passwordReset = function(req, res) {
             queryString = 'SELECT * FROM users WHERE id = ' + usersession;
 
         db.query(queryString, function(err, rows) {
-            if(err) throw err;
+            if(err)
+            {
+              handleError(err, 'select username', req, res);
+              return; 
+            }
 
             if(rows.length == 1) {
                 var salt = crypto.randomBytes(32).toString('base64');
@@ -123,7 +154,11 @@ module.exports.passwordReset = function(req, res) {
 
                 console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
-                    if (err) throw err;
+                    if (err)
+                    {
+                      handleError(err, 'update user password', req, res);
+                      return; 
+                    }
                     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                       console.log("inside the success");
                           res.status(200).json({
