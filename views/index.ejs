@@ -237,10 +237,8 @@
 								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/unstar" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg"></i></a>
 							<% } %>
 
-							<!-- <a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a> -->
-							<a href="#editBookmark" class="card__button" id="edit-bookmark-<%=bookmark.id%>-<%= bookmark.title %>-<%= bookmark.url %>-<%= bookmark.description%>-<%=bookmark.folder_id%>"><i class="fa fa-info-circle fa-lg"></i></a>
-							<a class="card__button" href="#confirmDelete" id="delete-bookmark-<%=bookmark.id%>-<%= bookmark.title %>"><i class="fa fa-trash-o fa-lg"></i></a>
-						<!--	<a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a> -->
+							<a class="card__button" href="/bookmarks/edit/<%= bookmark.id%>" id="edit-bookmark-<%=bookmark.id%>"><i class="fa fa-info-circle fa-lg"></i></a>
+						    <a class="card__button" href="/bookmarks/delete/<%= bookmark.id%>" id="delete-bookmark-<%=bookmark.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 						</div>
 					</div>
 				</div>

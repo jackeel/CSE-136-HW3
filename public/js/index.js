@@ -12,6 +12,28 @@ var current_bookmarks = {};
 
 window.onload = function() {
     /*************************** AJAX **********************************/
+    // Grab bookmarks from the first load using AJAX request
+    (function() {
+        toggleLoadGIF();
+
+        $.ajax({
+            cache: false,
+            type: 'GET',
+            url: '/list',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: '',
+            success: function(result) {
+                // Update local bookmarks
+                current_bookmarks = result.data;
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+        toggleLoadGIF();
+    })();
+
    //Change Password
 	 $("#resetPassword").on("submit", function (event) {
 		 event.preventDefault();
@@ -34,7 +56,6 @@ window.onload = function() {
         }
          });
      });
-
 
     // Create new bookmark
     $("#addBookmarkForm").on("submit", function(event) {
@@ -389,6 +410,15 @@ window.onload = function() {
 
     // Dynamically populate editBookmark modal
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
+        for(var i = 0; i < current_bookmarks.length; i++) {
+            if($(this).attr('id').split('-')[2] == current_bookmarks[i]) {
+                $('#editBookmarkForm').attr('action', this.url);
+                $('#editBookmarkForm input[name="title"]').val(title);
+                $('#editBookmarkForm input[name="url"]').val(bookmark_url);
+                $('#editBookmarkForm input[name="description"]').val(description);
+                $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+                return;
+            }
 	    var bookmark_id = $(this).attr("id").split("-")[2];
 		var title = $(this).attr("id").split("-")[3];
 		var bookmark_url = $(this).attr("id").split("-")[4];
@@ -401,6 +431,7 @@ window.onload = function() {
 		$('#editBookmarkForm input[name="url"]').val(bookmark_url);
         $('#editBookmarkForm input[name="description"]').val(description);
         $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
+        }
     });
 
     // Edit bookmark
