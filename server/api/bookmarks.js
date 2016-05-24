@@ -236,7 +236,8 @@ module.exports.listStarred = function(req, res) {
                 folders: folders,
                 current_folder_id: "starred",
                 order_by: req.order_by,
-                search: req.search
+                search: req.search,
+                num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS)
             });
         }
     });
