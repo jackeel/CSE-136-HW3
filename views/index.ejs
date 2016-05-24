@@ -25,9 +25,9 @@
 	  		<li class="navbar-left search full-width">
 	  			<form method="get" name="search" id="searchForm">
 	  				<% if(search == '') { %>
-	  					<input id="searchInput" class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
+	  					<input class="min-input" name="Search" type="text" placeholder="Search Bookmarks" />
 	  				<% } else { %>
-	  					<input id="searchInput" name="Search" type="text" value="<%= search%>"/>
+	  					<input name="Search" type="text" value="<%= search%>"/>
 	  				<% } %>
 	  				<!-- DO NOT remove these two inputs. They indicate the current folder and order status.
       				These will be used to assist the search function. In final version, will set them hidden.-->
@@ -42,7 +42,7 @@
 				<form method="get" name="orderBy" id="orderByForm">
 				    <input name="Search" type="hidden" value="<%= search%>"/>
 					<!--<select class="select-btn pull-right standardize-header-components" name="SortBy" onchange='this.form.submit()'>-->
-					<select class="select-dropdown-content nav-btn" name="SortBy" onchange='this.form.submit()'>
+					<select class="select-dropdown-content nav-btn" name="SortBy">
 			        	<option disabled <%=order_by == undefined ? "" : "selected"%>>Sort</option>
 			        	<option value="bookmarks.title" <%=order_by == "bookmarks.title" ? "selected" : ""%>>Title</option>
 			        	<option value="bookmarks.url" <%=order_by == "bookmarks.url" ? "selected" : ""%>>URL</option>
@@ -74,7 +74,7 @@
 									    <input type="text" name="title" value="" placeholder="Title" required>
 
 									    <div class="textFieldWrapper">
-									      <input type="text" name="url" value="" placeholder="http://www.example.com" required>
+									      <input type="url" name="url" value="" placeholder="http://www.example.com" required>
 									    </div>
 
 									    <input type="text" name="description" value="" placeholder="Description">

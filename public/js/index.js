@@ -77,7 +77,7 @@ window.onload = function() {
         	url: url,
             contentType: 'application/json',
         	dataType: 'json',
-        	data: JSON.stringify(params),
+        	data: params,
         	success: function(result) {
                 var data = result.data;
 
@@ -114,7 +114,7 @@ window.onload = function() {
         	url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(params),
+            data: params,
             success: function(result) {
                 var data = result.data;
 
@@ -194,7 +194,7 @@ window.onload = function() {
             url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(params),
+            data: params,
             success: function(result) {
                 var data = result.data;
                 var current_folder = $("#currentFolder").val();
@@ -243,7 +243,7 @@ window.onload = function() {
             url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(params),
+            data: params,
             success: function(result) {
                 // Un-highlight prev folder, highlight curr folder
                 $('#folder-' + prev_folder).addClass('inactive-folder').removeClass('active-folder');
@@ -251,6 +251,10 @@ window.onload = function() {
 
                 // Update current folder hidden input field
                 $('#currentFolder').val(curr_folder);
+
+                // Clear search and sort options
+                $('#searchForm input[name="Search"]').val('');
+                $('#orderByForm select[name="SortBy"]').val('Sort');
 
                 // Show bookmarks of the selected folder
                 var bookmarks = result.data;
@@ -285,25 +289,28 @@ window.onload = function() {
         toggleLoadGIF();
     });
 
-    // TODO: Keyword search (in current folder)
-    $("#searchButton").on("click", function(event) {
+    // Callback function for keyword search and/or sort (in current folder)
+    var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
 
         var curr_folder = $("#currentFolder").val();
         var url = "/list/" + curr_folder;
-        var search_text = $("#searchInput").val();
-        var params = {"folder_id": curr_folder,
-                      "Search": search_text};
-        alert(JSON.stringify(params));
+        var search_text = $('#searchForm input[name="Search"]').val();
+        var sort_option = $('#orderByForm select[name="SortBy"]').val();
+        var params = {
+            "folder_id": curr_folder,
+            "Search": search_text,
+            "SortBy": sort_option };
+
         $.ajax({
             type: 'GET',
             url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify(params),
+            data: params,
             success: function(result) {
-                //$('#currentSearchText').val(search_text);
+                console.log(url);
                 // Show bookmarks of the selected folder
                 var bookmarks = result.data;
                 var bookmark_list = '';
@@ -321,14 +328,13 @@ window.onload = function() {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
                         }
                         bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
                         '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
                         '            </div>\n' +
                         '         </div>\n' +
                         '     </div>\n' +
                         '</div>\n';
                 }
-                alert(bookmark_list);
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
@@ -336,11 +342,15 @@ window.onload = function() {
         });
 
         toggleLoadGIF();
-    });
 
-    // TODO: Sort Option (in current folder)
+        return false;
+    };
 
-    // TODO: Edit bookmarks
+    // Add event handlers
+    $('#searchButton').on("click", sortOrSearchFunction);
+    $('#orderByForm select[name="SortBy"]').on("change", sortOrSearchFunction);
+
+    // Edit bookmark
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
 			//event.preventDefault();
 	    var bookmark_id = $(this).attr("id").split("-")[2];
