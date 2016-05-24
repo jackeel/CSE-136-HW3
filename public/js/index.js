@@ -18,7 +18,6 @@ window.onload = function() {
 			 "password" : document.getElementById("password").value,
 			 "confirm_password" : document.getElementById("confirm_password").value
 		 });
-		 console.log(params);
 		 $.ajax({
 			 cache: false,
 			 type: 'POST',
@@ -199,7 +198,7 @@ window.onload = function() {
         	}
         });
 
-        
+
         toggleLoadGIF();
 
         return false;
@@ -408,21 +407,21 @@ window.onload = function() {
 	}
 	/**************************************************************************/
 
-    // error modal 
+    // error modal
     function showErrorModal(header,message)
     {
         window.location.hash = 'warningModal';
-        $("#warningTitle:first").text(header); 
-        $("#warningMessage").text(message); 
+        $("#warningTitle:first").text(header);
+        $("#warningMessage").text(message);
     }
 
     function setMaxHeightFolders()
     {
         $('#folderList').css('height', '100%');
         var height = $('#folderList').height() - $('#sidebar div:first').height();
-        $('#folderList').css('max-height', height+'px'); 
+        $('#folderList').css('max-height', height+'px');
     }
 
-    setMaxHeightFolders(); 
+    setMaxHeightFolders();
 
 }
