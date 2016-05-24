@@ -182,10 +182,10 @@
 	      	    <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
 	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
 
-                <span id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
+                <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
                     <li>You have no folders.</li>
                     <li>Click add folder below to create a folder.</li>
-                </span>
+                </div>
 	            <% folders.forEach(function(folder) { %>
 	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "class='active-folder'" : "class='inactive-folder'" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
@@ -300,9 +300,8 @@
 					<input id="confirmDeleteTitle" name="title" type="submit" value="Confirm Delete">
 					<br>
 					<!-- Could also pass to the server as a submit and determine redirect action there -->
-					<form style="display: inline" action="/list" method="get">
-					<input class="confirmdelete-button" type="button" value='Cancel'> </input>
-			</form>
+					<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value='Cancel'></a>
+
 		</div>
 
 			 </div>
