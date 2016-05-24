@@ -9,6 +9,31 @@ function toggleLoadGIF() {
 
 window.onload = function() {
     /*************************** AJAX **********************************/
+   //Change Password
+	 $("#resetPassword").on("submit", function (event) {
+		 event.preventDefault();
+		 window.location.hash = "";
+		 var url = '/passwordReset';
+		 var params = JSON.stringify({
+			 "password" : document.getElementById("password").value,
+			 "confirm_password" : document.getElementById("confirm_password").value
+		 });
+		 console.log(params);
+		 $.ajax({
+			 cache: false,
+			 type: 'POST',
+			 url: url,
+			 contentType: 'application/json',
+			 dataType: 'json',
+			 data: params,
+			 success: function(result) {
+			 },
+			 error: function(xhr, status, error) {
+        }
+         });
+     });
+
+
     // Create new bookmark
     $("#addBookmarkForm").on("submit", function(event) {
     	event.preventDefault();
@@ -44,7 +69,7 @@ window.onload = function() {
                     	'    <div class="content">\n' +
     					'        <div class="card card--small">\n' +
     					'	         <div style="background-color:#DE2924" class="card__image"></div>\n' +
-    					'	         <a href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
+    					'	         <a class="bookmark-link" id=bookmark-"' + data.bookmark_id + '" href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
     					'		     <div class="card__action-bar">\n' +
       					'			     <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
     					'                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '-' + data.title + '-' + data.url + '-' + data.description + '-' + data.folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
@@ -174,7 +199,7 @@ window.onload = function() {
         	}
         });
 
-        
+
         toggleLoadGIF();
 
         return false;
@@ -265,7 +290,7 @@ window.onload = function() {
                         '    <div class="content">\n' +
                         '        <div class="card card--small">\n' +
                         '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <a class="bookmark-link" id="bookmark-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
                         '            <div class="card__action-bar">\n';
                         if(bookmarks[i].star == 1) {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
@@ -346,49 +371,89 @@ window.onload = function() {
         return false;
     };
 
-    // Add event handlers
+    // Add event handlers to search and sort
     $('#searchButton').on("click", sortOrSearchFunction);
     $('#orderByForm select[name="SortBy"]').on("change", sortOrSearchFunction);
 
+
     // Edit bookmark
 	$("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-			//event.preventDefault();
 	    var bookmark_id = $(this).attr("id").split("-")[2];
 			var title = $(this).attr("id").split("-")[3]; //get the title from the bookmark
 			var url = $(this).attr("id").split("-")[4]; //get the url from the bookmark
-            var description = $(this).attr("id").split("-")[5]; // get description
-            var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
-      console.log(title);
+			var description = $(this).attr("id").split("-")[5]; // get description
+			var folder_id = $(this).attr("id").split("-")[6]; // get folder_id
 	    // open the modal with above fields appended into the value
 
 			var actionurl = $('#editBookmarkForm').attr('action');
 			$('#editBookmarkForm')[0].setAttribute('action', actionurl + bookmark_id);
 	    $('#editBookmarkForm input[name="title"]').val(title);
 			$('#editBookmarkForm input[name="url"]').val(url);
-            $('#editBookmarkForm input[name="description"]').val(description);
-            $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
-		//	$('input[name="folder_id"]').val()="<%= %>";
+      $('#editBookmarkForm input[name="description"]').val(description);
+      $('#editBookmarkForm select[name="folder_id"]').val(folder_id);
 
-		//	$("editBookmarkForm") ... stuff
-			// append stuff to the editmodal
 
-		/*  $("#editBookmarkForm").on("submit", function(event) {
+		  $("#editBookmarkForm").on("submit", function(event) {
+				event.preventDefault();
+      //  toggleLoadGIF();
+
+				var newTitle = $('#editBookmarkForm input[name="title"]').val();
+				var newUrl = $('#editBookmarkForm input[name="url"]').val();
+				var newFolderid = $('#editBookmarkForm select[name="folder_id"]').val();
+        var newDescription = $('#editBookmarkForm input[name="description"]').val();
+				var dataa = JSON.stringify({title: newTitle, url: newUrl, description: newDescription, folder_id: newFolderid});
+
 				$.ajax({
-					type: 'GET',
-					url: url,
+					type: 'POST',
+					url: "/bookmarks/update/" + bookmark_id,
+					data: dataa,
 					dataType: 'json',
-					data: params,
+					contentType: 'application/json',
 					success: function(result) {
 						// Remove bookmark from list
-					},
-					error: function(xhr, status, error) {
-					}
+							var data = result.data;
+							console.log(data);
+							console.log(data.url);
+							window.location.hash = "#close";
+							// TODO: append to correct folder only
+						$('#title-bookmark-' + data.bookmark_id).html(data.title);
+						$("a.bookmark-link").attr("href", data.url);
+						},
+						error: function(xhr, status, error) {
+						}
 				});
+    //    toggleLoadGIF();
 
 			});
-			*/
-		});
+});
 
+    // For last visit update.
+    // When click a bookmark, will send a request to update the last visit time.
+    $("#bookmarks").on("click", ".bookmark-link", function(event) {
+        event.preventDefault();
+        //alert("Hey");
+        toggleLoadGIF();
+
+        var url = "/bookmarks/last_visit";
+        var params = {"bookmark_id" : $(this).attr("id").split("-")[1]};
+        var bookmark_url = $(this).attr("href");
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                var data = result.data;
+                window.location.href = bookmark_url;
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+        toggleLoadGIF();
+    });
     /*******************************************************************/
 
 
@@ -442,23 +507,42 @@ window.onload = function() {
 		addBookmark.className = "";
 		addBookmark.className = "is-active";
 	}
+
+/*
+	$('#confirmButton').click(function() {
+		 var id = $(this).attr('id');
+		 alert(id);
+	 });
+
+
+	function deleteBookmark(id) {
+			$.ajax({
+					url: '/folders/delete/' + id,
+					type: 'GET',
+					success: function(res) {
+							loadList();
+					}
+			});
+	}
+	*/
 	/**************************************************************************/
 
-    // error modal 
+
+    // error modal
     function showErrorModal(header,message)
     {
         window.location.hash = 'warningModal';
-        $("#warningTitle:first").text(header); 
-        $("#warningMessage").text(message); 
+        $("#warningTitle:first").text(header);
+        $("#warningMessage").text(message);
     }
 
     function setMaxHeightFolders()
     {
         $('#folderList').css('height', '100%');
         var height = $('#folderList').height() - $('#sidebar div:first').height();
-        $('#folderList').css('max-height', height+'px'); 
+        $('#folderList').css('max-height', height+'px');
     }
 
-    setMaxHeightFolders(); 
+    setMaxHeightFolders();
 
 }

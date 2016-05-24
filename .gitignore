@@ -1,5 +1,5 @@
 node_modules
-.idea
+.idea/*
 server/config/config.js
 server/tmp
 server/logs/*

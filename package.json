@@ -21,6 +21,7 @@
     "cors": "2.5.3"
   },
   "devDependencies": {
+    "dateformat": "^1.0.12",
     "gulp-concat": "^2.6.0",
     "gulp-ejsmin": "0.0.1",
     "gulp-htmlmin": "^2.0.0",
