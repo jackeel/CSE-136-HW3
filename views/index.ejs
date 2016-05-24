@@ -96,7 +96,7 @@
 						<div class="form" id="import-bookmark-form">
 							<form method="post" action="/upload" enctype="multipart/form-data">
 							<div class="textFieldWrapper">
-						      <input type="file" name="bookmark-import" placeholder="File Path">
+						      <input type="file" name="bookmark-import">
 						    </div>
 						    <div class="buttonWrapper">
 						    		<div><input type='submit' value="Upload"></div>
@@ -114,11 +114,11 @@
                             <a href="#close" title="Close" class="close x-button">x</a>
                             <div class="tabs is-centered">
                                 <ul>
-                                    <li id="" class="is-active"><a>Change Password</a></li>
+                                    <li id="ac" class="is-active"><a>Change Password</a></li>
                                 </ul>
                             </div>
                             <form id="resetPassword" method="post" action="/passwordReset" >
-                                <div class="form" id="">
+                                <div class="form" id="pw">
 																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
 																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
                                     <div class="buttonWrapper">
@@ -140,8 +140,8 @@
                                 </ul>
                             </div>
                             <form method="post" action="/upload" enctype="multipart/form-data">
-                                <div class="form" id="add-bookmark-form1">
-                                     <input type="file" name="bookmark-import" placeholder="File Path">
+                                <div class="form" id="add-bookmark-form2">
+                                     <input type="file" name="bookmark-import" >
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Upload"></div>
@@ -158,7 +158,7 @@
                             <a href="#close" title="Close" class="close x-button">x</a>
                             <div class="tabs is-centered">
                                 <ul>
-                                    <li id="add-bookmark1" class="is-active"><a>Add Folder</a></li>
+                                    <li id="add-bookmark2" class="is-active"><a>Add Folder</a></li>
                                 </ul>
                             </div>
                             <form method='post' action='folders' id="addFolderForm">
@@ -179,7 +179,7 @@
 		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 	      <ul id="folderList">
 	      	    <li class="pinned"><a id="folder-starred" href="/list/starred" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
-	            <li class="pinned"><a id="folder-" href="/list" <%= (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
+	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
                 <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
                     <li>You have no folders.</li>
                     <li>Click add folder below to create a folder.</li>
@@ -229,7 +229,7 @@
 				<div class="content">
 					<div class="card card--small" id="bookmark-card-<%=bookmark.id%>">
 						<div style="background-color:#DE2924" class="card__image"></div>
-						<a class="bookmark-link" id="bookmark-<%= bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id%>" class="card__title"><%= bookmark.title %></h2></a>
+						<a class="bookmark-link" id="bookmark-url-<%=bookmark.id%>" href="<%= bookmark.url %>"><h2 id="title-bookmark-<%= bookmark.id %>" class="card__title"><%= bookmark.title %></h2></a>
 							<div class="card__action-bar">
 							<% if (bookmark.star == 0) { %>
   								<a class="card__button" href="/bookmarks/<%= bookmark.id%>/star" id="star-bookmark-<%=bookmark.id%>"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>
@@ -270,6 +270,7 @@
 									<td colspan="2">
 											<input class="edit-button" type='submit' value="Save">
 											&nbsp;
+
 											<!-- Could also pass to the server as a submit and determine redirect action there -->
 											<a href='#close' style="text-decoration: none;"><input class="edit-button" type="button" value='Cancel'></a>
 									</td>
