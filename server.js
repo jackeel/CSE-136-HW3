@@ -246,6 +246,7 @@ app.get('/bookmarks/download', bookmarks.listBookmarks, bookmarks.download);
 
 app.post('/folders', requireLogin, folders.insert);
 app.get('/folders/delete/:folder_id(\\d+)', requireLogin, folders.delete);
+app.post('/bookmarks/last_visit', requireLogin, bookmarks.lastVisit);
 
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and

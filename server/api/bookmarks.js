@@ -7,6 +7,7 @@ var fs = require('fs');
 var CONTENT_TYPE_KEY = 'Content-Type';
 var JSON_CONTENT_TYPE = 'application/json';
 var Constants = require('../config/Constants');
+var dateFormat = require('dateformat');
 
 /**
  * Renders the page with the list.ejs template, using req.bookmarks and req.olders.
@@ -443,3 +444,30 @@ module.exports.download = function(req, res){
         res.download(file); // Set disposition and send it.
     });
 }
+
+/**
+ * Update the last visit time
+ * When we click on a bookmark, will call this function
+ */
+module.exports.lastVisit = function(req, res) {
+  var id = req.body.bookmark_id || '';
+  var id = db.escape(id);
+  // Get current time in format 'yyyy-mm-dd hh:MM:ss'
+  var now = new Date();
+  var timestamp = db.escape(dateFormat(now, "yyyy-mm-dd hh:MM:ss"));
+  var queryString = 'UPDATE bookmarks SET last_visit_date = '+ timestamp + 'WHERE id = ' + id;
+  db.query(queryString, function(err){
+      if (err) throw err;
+      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+          res.status(200).json({
+              status: Constants.status.SUCCESS,
+              msg: Constants.successMessages.OK,
+              data: {
+                  "bookmark_id": req.body.bookmark_id
+              }
+          })
+      }else {
+          res.redirect('/list');
+      }
+  });
+};

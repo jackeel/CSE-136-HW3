@@ -44,7 +44,7 @@ window.onload = function() {
                     	'    <div class="content">\n' +
     					'        <div class="card card--small">\n' +
     					'	         <div style="background-color:#DE2924" class="card__image"></div>\n' +
-    					'	         <a href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
+    					'	         <a class="bookmark-link" id=bookmark-"' + data.bookmark_id + '" href="' + data.url + '"><h2 class="card__title">' + data.title + '</h2></a>\n' +
     					'		     <div class="card__action-bar">\n' +
       					'			     <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
     					'                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '-' + data.title + '-' + data.url + '-' + data.description + '-' + data.folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
@@ -261,7 +261,7 @@ window.onload = function() {
                         '    <div class="content">\n' +
                         '        <div class="card card--small">\n' +
                         '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+                        '            <a class="bookmark-link" id="bookmark-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
                         '            <div class="card__action-bar">\n';
                         if(bookmarks[i].star == 1) {
                             bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
@@ -328,6 +328,33 @@ window.onload = function() {
 			*/
 		});
 
+    // For last visit update.
+    // When click a bookmark, will send a request to update the last visit time.
+    $("#bookmarks").on("click", ".bookmark-link", function(event) {
+        event.preventDefault();
+        //alert("Hey");
+        toggleLoadGIF();
+
+        var url = "/bookmarks/last_visit";
+        var params = {"bookmark_id" : $(this).attr("id").split("-")[1]};
+        var bookmark_url = $(this).attr("href");
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                var data = result.data;
+                window.location.replace(bookmark_url);
+            },
+            error: function(xhr, status, error) {
+            }
+        });
+
+        toggleLoadGIF();
+    });
     /*******************************************************************/
 
 
