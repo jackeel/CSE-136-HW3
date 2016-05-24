@@ -79,7 +79,7 @@ module.exports.listBookmarks = function(req, res, next) {
     if(offset){
         queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
     }
-    console.log(queryString);
+    //console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) throw err;
         req.bookmarks = bookmarks;
@@ -248,7 +248,8 @@ module.exports.insert = function(req, res){
                         "title": req.body.title,
                         "url": req.body.url,
                         "folder_id": req.body.folder_id,
-                        "bookmark_id": result.insertId
+                        "bookmark_id": result.insertId,
+                        "description": req.body.description?req.body.description:""
                     }
                 })
             }else {
@@ -320,14 +321,20 @@ module.exports.update = function(req, res){
         var folder_id = db.escape(req.body.folder_id);
         var description = db.escape(req.body.description?req.body.description:"");
         var queryString = 'UPDATE bookmarks SET title = ' + title + ', url = ' + url + ', folder_id = ' + folder_id +
-                          ', description = '+description +' WHERE id = ' + db.escape(bookmark_id);
+                          ', description = ' + description + ' WHERE id = ' + db.escape(bookmark_id);
 
         db.query(queryString, function(err){
             if (err) throw err;
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.status(200).json({
                     status: Constants.status.SUCCESS,
-                    msg: Constants.successMessages.OK
+                    msg: Constants.successMessages.OK,
+                    data: {
+                        title: req.body.title,
+                        url: req.body.url,
+                        folder_id: req.body.folder_id,
+                        description: req.body.description?req.body.description:""
+                    }
                 })
             }else {
                 res.redirect('/list');

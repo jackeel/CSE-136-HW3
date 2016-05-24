@@ -1,3 +1,4 @@
 {"timestamp":"2016-05-24T00:05:47.697Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-24T00:14:19.878Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-24T00:15:52.790Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-05-24T00:20:43.898Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}

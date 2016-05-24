@@ -468,6 +468,10 @@ input {
     font-size: 15px;
 }
 
+input.edit-modal-input {
+    width: 100%;
+}
+
 input:focus {
   outline: none;
   border:2px solid #FF9EAE;

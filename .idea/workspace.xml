@@ -2,8 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98c505de-06e5-44bc-9b54-82d71ca42ff0" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/server/config/config.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/style.css" afterPath="$PROJECT_DIR$/public/css/style.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/index.js" afterPath="$PROJECT_DIR$/public/js/index.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/bookmarks.js" afterPath="$PROJECT_DIR$/server/api/bookmarks.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/folders.js" afterPath="$PROJECT_DIR$/server/api/folders.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/api/users.js" afterPath="$PROJECT_DIR$/server/api/users.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/logs/db.log" afterPath="$PROJECT_DIR$/server/logs/db.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/bookmarks/edit.ejs" afterPath="$PROJECT_DIR$/views/bookmarks/edit.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.ejs" afterPath="$PROJECT_DIR$/views/index.ejs" />
     </list>
     <ignored path="CSE-136-HW3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,13 +32,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="bookmarks.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bookmarks.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/api/bookmarks.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.007576">
-              <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
+            <state vertical-scroll-proportion="-10.777778">
+              <caret line="440" column="9" selection-start-line="440" selection-start-column="9" selection-end-line="440" selection-end-column="9" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/config/config.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.39007092">
+              <caret line="13" column="2" selection-start-line="13" selection-start-column="2" selection-end-line="13" selection-end-column="2" />
+              <folding>
+                <element signature="e#0#41#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -40,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/public/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-2.9411764">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -50,8 +70,13 @@
         <entry file="file://$PROJECT_DIR$/server/api/users.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-7.3333335">
-              <caret line="82" column="28" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="28" />
-              <folding />
+              <caret line="97" column="28" selection-start-line="97" selection-start-column="28" selection-end-line="97" selection-end-column="28" />
+              <folding>
+                <marker date="1464048984000" expanded="true" signature="2820:3356" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="2820:3372" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="2820:3528" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="2820:3536" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -60,8 +85,12 @@
         <entry file="file://$PROJECT_DIR$/public/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-              <folding />
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+              <folding>
+                <marker date="1464048984000" expanded="true" signature="245:314" placeholder="/**...*/" />
+                <marker date="1464048984000" expanded="true" signature="397:570" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="12907:13184" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -80,32 +109,12 @@
         <entry file="file://$PROJECT_DIR$/server/api/folders.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="47" selection-start-line="3" selection-start-column="47" selection-end-line="3" selection-end-column="47" />
+              <caret line="36" column="1" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
               <folding>
-                <marker date="1464034442000" expanded="true" signature="166:246" placeholder="/** Adds a new folder to the database ...*/" />
-                <marker date="1464034442000" expanded="true" signature="292:1313" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="357:546" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="375:539" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="399:528" placeholder="{&quot;errorMessage&quot;: 'Folder name must be 1-25 characters'...}" />
-                <marker date="1464034442000" expanded="true" signature="643:1060" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="704:843" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="739:831" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="848:986" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="1066:1313" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="2632:2646" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="2632:2657" placeholder="{...}" />
-                <marker date="1464034442000" expanded="true" signature="2632:2714" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="3898:3912" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="3898:3923" placeholder="{...}" />
+                <marker date="1464048984000" expanded="true" signature="3898:3980" placeholder="{...}" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/config/config.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -124,7 +133,7 @@
         <entry file="file://$PROJECT_DIR$/server/logs/db.log">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -165,11 +174,11 @@
         <option value="$PROJECT_DIR$/server/api/folders.js" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/server.js" />
-        <option value="$PROJECT_DIR$/server/config/config.js" />
         <option value="$PROJECT_DIR$/server/logs/db.log" />
         <option value="$PROJECT_DIR$/public/css/style.css" />
         <option value="$PROJECT_DIR$/server/api/users.js" />
         <option value="$PROJECT_DIR$/server/api/bookmarks.js" />
+        <option value="$PROJECT_DIR$/server/config/config.js" />
       </list>
     </option>
   </component>
@@ -423,7 +432,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-10" y="23" width="1280" height="729" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -434,7 +443,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26427406" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26427406" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -589,30 +598,12 @@
     <entry file="file://$PROJECT_DIR$/server/api/folders.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="47" selection-start-line="3" selection-start-column="47" selection-end-line="3" selection-end-column="47" />
+          <caret line="36" column="1" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
           <folding>
-            <marker date="1464034442000" expanded="true" signature="166:246" placeholder="/** Adds a new folder to the database ...*/" />
-            <marker date="1464034442000" expanded="true" signature="292:1313" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="357:546" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="375:539" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="399:528" placeholder="{&quot;errorMessage&quot;: 'Folder name must be 1-25 characters'...}" />
-            <marker date="1464034442000" expanded="true" signature="643:1060" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="704:843" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="739:831" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="848:986" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="1066:1313" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="2632:2646" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="2632:2657" placeholder="{...}" />
-            <marker date="1464034442000" expanded="true" signature="2632:2714" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="3898:3912" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="3898:3923" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="3898:3980" placeholder="{...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/config/config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -627,7 +618,7 @@
     <entry file="file://$PROJECT_DIR$/server/logs/db.log">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -635,8 +626,12 @@
     <entry file="file://$PROJECT_DIR$/public/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding />
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <folding>
+            <marker date="1464048984000" expanded="true" signature="245:314" placeholder="/**...*/" />
+            <marker date="1464048984000" expanded="true" signature="397:570" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="12907:13184" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -659,7 +654,7 @@
     <entry file="file://$PROJECT_DIR$/public/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-2.9411764">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -667,17 +662,32 @@
     <entry file="file://$PROJECT_DIR$/server/api/users.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-7.3333335">
-          <caret line="82" column="28" selection-start-line="82" selection-start-column="28" selection-end-line="82" selection-end-column="28" />
-          <folding />
+          <caret line="97" column="28" selection-start-line="97" selection-start-column="28" selection-end-line="97" selection-end-column="28" />
+          <folding>
+            <marker date="1464048984000" expanded="true" signature="2820:3356" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="2820:3372" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="2820:3528" placeholder="{...}" />
+            <marker date="1464048984000" expanded="true" signature="2820:3536" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/api/bookmarks.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.007576">
-          <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
+        <state vertical-scroll-proportion="-10.777778">
+          <caret line="440" column="9" selection-start-line="440" selection-start-column="9" selection-end-line="440" selection-end-column="9" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/config/config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39007092">
+          <caret line="13" column="2" selection-start-line="13" selection-start-column="2" selection-end-line="13" selection-end-column="2" />
+          <folding>
+            <element signature="e#0#41#0" expanded="false" />
           </folding>
         </state>
       </provider>
