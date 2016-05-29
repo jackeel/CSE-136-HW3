@@ -155,7 +155,8 @@
 	</nav>
 	<div id="openSidebar" class="showSidebar">
 		<div id="sidebar">
-		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
+		    <input type="" id="currentFolder" value="<%=current_folder_id%>"></input>
+			<input type="" id="currentStar" value="<%=star%>"></input>
 	      <ul id="folderList">
 	      	    <li class="pinned"><a id="folder-starred" href="/list?Star=1" <%- bookmarks.star == 1 ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
 	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>

@@ -294,16 +294,16 @@ window.onload = function() {
 
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
+        var star = 0;
+        if(curr_folder=='starred'){
+            star=1;
+        }
         var params = {
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": 1
+            "offset": 1,
+            "Star": star
         };
-
-        if(curr_folder=='starred'){
-            params.Star=1;
-        }
-
 
         $.ajax({
             type: 'GET',
@@ -316,9 +316,8 @@ window.onload = function() {
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    // TODO Add star to this link
                     paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder) +
-                        '?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                        '?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+ '&Star=' + star +'> '+ i+'  </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
@@ -556,7 +555,14 @@ window.onload = function() {
         toggleLoadGIF();
 
         var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+        if(curr_folder=='starred'){
+            var star = 1;
+            var url = "/list";
+        }
+        else {
+            var star = 0;
+            var url = "/list/" + curr_folder;
+        }
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
@@ -564,7 +570,9 @@ window.onload = function() {
             "folder_id": curr_folder,
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,

@@ -55,7 +55,6 @@ module.exports.list = function(req, res) {
             data: req.bookmarks
         })
     } else{
-        //console.log(Math.ceil(req.numBookmarks/MAX_BOOKMARKS));
         res.render('index', {
             bookmarks: req.bookmarks,
             folders: req.folders,
@@ -100,7 +99,6 @@ module.exports.getTotalBookmarks = function(req, res, next) {
     search = db.escape('%' + search + '%');
     var queryString = "";
     if (!folder_id) {
-        //search = db.escape(search);
         queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
             req.session.userId +
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
@@ -114,9 +112,10 @@ module.exports.getTotalBookmarks = function(req, res, next) {
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
             'WHERE (title like ' +search + ' or description like ' + search+')';
     }
-    if(star) {
+    if(star == 1) {
         queryString += ' and bookmarks.star=1';
     }
+    console.log("Get total bookmarks: " +queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) {
             handleError(err, 'Error getting total bookmarks', req, res);
@@ -172,10 +171,9 @@ module.exports.listBookmarks = function(req, res, next) {
                    ' and (title like ' +search + ' or description like ' + search +
                    ') ORDER BY ' + (desc == true ? order_by + " DESC" : order_by);
   }
-    if(offset){
-        queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
+    if(offset) {
+        queryString += " LIMIT 9 OFFSET " + ((offset - 1) * 9);
     }
-    console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err)
         {
