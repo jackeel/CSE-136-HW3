@@ -39,8 +39,8 @@ function handleError(err, action, req, res)
     }
     else
     {
-        //req.flash('error_messages', errors);
-        res.redirect('/list#warningModal');  // flash error to the add modal
+        req.flash('error_messages', action);
+        res.redirect('/list#warningModal');
     }
 }
 
@@ -118,9 +118,12 @@ module.exports.getTotalBookmarks = function(req, res, next) {
     if(star){
         queryString+=' and bookmarks.star=1';
     }
-    console.log(queryString);
+    //console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
-        if (err) throw err;
+        if (err) {
+            handleError(err, 'Error getting total bookmarks', req, res);
+            return;
+        };
         req.numBookmarks = bookmarks.length;
         return next();
     });
@@ -129,7 +132,6 @@ module.exports.getTotalBookmarks = function(req, res, next) {
 /**
  * Query all bookmarks and put in req, use next().
  */
-
 module.exports.listBookmarks = function(req, res, next) {
   var folder_id = req.params.folder_id;
   var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
@@ -174,7 +176,7 @@ module.exports.listBookmarks = function(req, res, next) {
     db.query(queryString, function(err, bookmarks) {
         if (err)
         {
-          handleError(err, 'list bookmarks', req, res);
+          handleError(err, 'Error listing bookmarks', req, res);
           return;
         }
         req.bookmarks = bookmarks;
@@ -186,15 +188,14 @@ module.exports.listBookmarks = function(req, res, next) {
  * Query all folders and put in req, use next().
  */
 module.exports.listFolders = function(req, res, next) {
-  db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
-    if (err)
-    {
-      handleError(err, 'query all folders', req, res);
-      return;
-    }
-    req.folders = folders;
-    return next();
-  });
+    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
+        if (err) {
+            handleError(err, 'Error listing folders', req, res);
+            return;
+        }
+        req.folders = folders;
+        return next();
+    });
 };
 
 module.exports.listStarred = function(req, res) {
@@ -216,17 +217,15 @@ module.exports.listStarred = function(req, res) {
                   'and (title like ' + search + ' or description like ' + search +
                   ') ORDER BY ' + order_by;
   db.query(queryString, function(err, bookmarks) {
-    if(err)
-    {
-      handleError(err, 'listStarred', req, res);
-      return;
+    if(err) {
+        handleError(err, 'Error listing starred bookmarks', req, res);
+        return;
     }
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
-      if(err)
-      {
-        handleError(err, 'listStarred select from folders', req, res);
-        return;
-      }
+        if(err) {
+            handleError(err, 'Error listing folders of starred bookmarks', req, res);
+            return;
+        }
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(200).json({
                 status: Constants.status.SUCCESS,
@@ -252,23 +251,21 @@ module.exports.listStarred = function(req, res) {
  * renders the edit confirmation page with the edit.ejs template
  */
 module.exports.edit = function(req, res) {
-   var id = db.escape(req.params.bookmark_id);
+     var id = db.escape(req.params.bookmark_id);
 
-  db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
-    if (err)
-    {
-      handleError(err, 'select bookmarks edit', req, res);
-      return;
-    }
-    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId +' ORDER BY id', function(err, folders) {
-      if (err)
-      {
-        handleError(err, 'select folder edit', req, res);
-        return;
-      }
-      res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
+    db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
+        if (err) {
+            handleError(err, 'Error selecting bookmark to edit', req, res);
+            return;
+        }
+        db.query('SELECT * from folders WHERE user_id = ' + req.session.userId +' ORDER BY id', function(err, folders) {
+            if (err) {
+                handleError(err, 'Error selecting folder of bookmark to edit', req, res);
+                return;
+            }
+            res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
+        });
     });
-  });
 };
 
 /**
@@ -276,26 +273,26 @@ module.exports.edit = function(req, res) {
  * Does a redirect to the current page
  */
 module.exports.delete = function(req, res) {
-  var id = db.escape(req.params.bookmark_id);
+    var id = db.escape(req.params.bookmark_id);
 
-  db.query('DELETE from bookmarks where id = ' + id, function(err){
-      if (err)
-      {
-        handleError(err, 'delete bookmark', req, res);
-        return;
-      }
-      if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-          res.status(200).json({
-              status: Constants.status.failed,
-              msg: Constants.successMessages.OK,
-              data: {
-                  "bookmark_id": req.params.bookmark_id
-              }
-          })
-      }else {
-          res.redirect('/list');
-      }
-  });
+    db.query('DELETE from bookmarks where id = ' + id, function(err){
+        if (err)
+        {
+            handleError(err, 'Error deleting bookmark', req, res);
+            return;
+        }
+        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+            res.status(200).json({
+                status: Constants.status.SUCCESS,
+                msg: Constants.successMessages.OK,
+                data: {
+                    "bookmark_id": req.params.bookmark_id
+                }
+            })
+        } else {
+            res.redirect('back');
+        }
+    });
 };
 
 /**
@@ -319,7 +316,7 @@ module.exports.insert = function(req, res){
                 errorMessage: 'Bookmark URL must be 1-2083 characters long'
             },
             isURL: {
-                errorMessage: 'Invalid URL'
+                errorMessage: 'Invalid URL specified'
             },
             matches: {
                 options: ['^https?://', 'i'],
@@ -342,15 +339,9 @@ module.exports.insert = function(req, res){
     req.checkBody(validate_insert);
     var errors = req.validationErrors();
     if (errors) {
-        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-            res.status(400).json({
-                status: Constants.status.failed,
-                msg: errors
-            })
-        }else {
-            req.flash('error_messages', errors);
-            res.redirect('/list#addModal');  // flash error to the add modal
-        }
+        // pass first validation error message
+        handleError('', errors[0].msg, req, res);
+        return;
     } else {
         var user_id = req.session.userId;
         var title = db.escape(req.body.title);
@@ -361,11 +352,10 @@ module.exports.insert = function(req, res){
         var queryString = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES (' + title + ', ' + url +
             ', ' + folder_id + ', '+description+')';
         db.query(queryString, function(err, result){
-      	if (err)
-        {
-          handleError(err, 'Bookmark name already exists in specified folder', req, res);
-          return;
-        }
+            if (err) {
+                handleError(err, 'A bookmark with the same title already exists in that folder.', req, res);
+                return;
+            }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.json({
                     status: Constants.status.SUCCESS,
@@ -374,12 +364,12 @@ module.exports.insert = function(req, res){
                         "title": req.body.title,
                         "url": req.body.url,
                         "folder_id": req.body.folder_id,
-                        "bookmark_id": result.insertId,
+                        "id": result.insertId,
                         "description": req.body.description?req.body.description:""
                     }
-                })
-            }else {
-                res.redirect('/list');
+                });
+            } else {
+                res.redirect('back');
             }
         });
     }
@@ -388,6 +378,9 @@ module.exports.insert = function(req, res){
 /**
  * Updates a bookmark in the database
  * Does a redirect to the list page
+ *
+ * TODO: For error handling, call handleError(...) instead of redirecting
+ * once edit page is not a separate page
  */
 module.exports.update = function(req, res){
     var bookmark_id = req.params.bookmark_id;
@@ -409,7 +402,7 @@ module.exports.update = function(req, res){
                 errorMessage: 'Bookmark URL must be 1-2083 characters'
             },
             isURL: {
-                errorMessage: 'Invalid URL'
+                errorMessage: 'Invalid URL specified'
             },
             matches: {
                 options: ['^https?://', 'i'],
@@ -436,11 +429,12 @@ module.exports.update = function(req, res){
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
                 status: Constants.status.failed,
-                msg: errors
+                data: errors[0].msg // pass first error message each request
             })
-        }else {
+        } else {
             req.flash('error_messages', errors);
-            res.redirect('/bookmarks/edit/' + id);  // flash error to edit page
+            res.redirect('/bookmarks/edit/' + bookmark_id);  // flash errors to edit page
+            return;
         }
     } else {
 
@@ -452,11 +446,16 @@ module.exports.update = function(req, res){
                           ', description = ' + description + ' WHERE id = ' + db.escape(bookmark_id);
 
         db.query(queryString, function(err){
-            if (err)
-            {
-              console.log(err);
-              handleError(err, 'update bookmark', req, res);
-              return;
+            if (err) {
+                if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                    handleError(err, 'A bookmark with the same title already exists in that folder.', req, res);
+                    return;
+                } else {
+                    errors = {msg: 'A bookmark with the same title already exists in that folder.'};
+                    req.flash('error_messages', errors);
+                    res.redirect('/bookmarks/edit/' + bookmark_id);  // flash errors to edit page
+                    return;
+                }
             }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.status(200).json({
@@ -485,10 +484,9 @@ module.exports.star = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
   var queryString = 'UPDATE bookmarks SET star = 1 WHERE id = ' + id;
   db.query(queryString, function(err){
-      if (err)
-      {
-        handleError(err, 'update bookmark star', req, res);
-        return;
+      if (err) {
+          handleError(err, 'Error updating bookmark star', req, res);
+          return;
       }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
@@ -497,9 +495,9 @@ module.exports.star = function(req, res) {
               data: {
                   "bookmark_id": req.params.bookmark_id
               }
-          })
-      }else {
-          res.redirect('/list');
+          });
+      } else {
+          res.redirect('back');
       }
   });
 };
@@ -512,10 +510,9 @@ module.exports.unstar = function(req, res) {
   var id = db.escape(req.params.bookmark_id);
   var queryString = 'UPDATE bookmarks SET star = 0 WHERE id = ' + id;
   db.query(queryString, function(err){
-      if (err)
-      {
-        handleError(err, 'update bookmark unstar', req, res);
-        return;
+      if (err) {
+          handleError(err, 'Error updating bookmark unstar', req, res);
+          return;
       }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
@@ -524,9 +521,9 @@ module.exports.unstar = function(req, res) {
               data: {
                   "bookmark_id": req.params.bookmark_id
               }
-          })
-      }else {
-          res.redirect('/list');
+          });
+      } else {
+          res.redirect('back');
       }
   });
 };
@@ -579,7 +576,7 @@ module.exports.download = function(req, res){
     //console.log(JSON.stringify(array_json_bookmark));
     fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
-            handleError(err, 'download export issue', req, res);
+            handleError(err, 'Error downloading export', req, res);
             return;
         }
         var file = __dirname + '/../tmp/bookmarks.json';
@@ -599,7 +596,10 @@ module.exports.lastVisit = function(req, res) {
   var timestamp = db.escape(dateFormat(now, "yyyy-mm-dd hh:MM:ss"));
   var queryString = 'UPDATE bookmarks SET last_visit_date = '+ timestamp + 'WHERE id = ' + id;
   db.query(queryString, function(err){
-      if (err) throw err;
+      if (err) {
+          handleError(err, 'Error updating bookmark last visit', req, res);
+          return;
+      }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
           res.status(200).json({
               status: Constants.status.SUCCESS,
@@ -607,8 +607,8 @@ module.exports.lastVisit = function(req, res) {
               data: {
                   "bookmark_id": req.body.bookmark_id
               }
-          })
-      }else {
+          });
+      } else {
           res.redirect('/list');
       }
   });

@@ -68,13 +68,13 @@
 						    <li id="add-bookmark" class="is-active"><a>Add Bookmark</a></li>
 						<!--    <li id="import-bookmark"><a>Import Bookmarks</a></li>-->
 						  </ul>
-						</div>
-							  <form method='post' action='/insert' id="addBookmarkForm">
+						    </div>
+							    <form method='post' action='/insert' id="addBookmarkForm">
 							        <div class="form" id="add-bookmark-form">
-									    <input type="text" name="title" value="" placeholder="Title" required>
+									    <input type="text" name="title" value="" placeholder="Title" maxlength="25" required>
 
 									    <div class="textFieldWrapper">
-									      <input type="url" name="url" value="" placeholder="http://www.example.com" required>
+									      <input type="url" name="url" value="" placeholder="http://www.example.com" maxlength="2083" required>
 									    </div>
 
 									    <input type="text" name="description" value="" placeholder="Description">
@@ -90,9 +90,10 @@
 										    <div class="buttonWrapper">
 										      	<div><input type='submit' value="Save"></div>
 										      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
-											 </div>
-								  </form>
-							 </div>
+											</div>
+									</div>
+								</form>
+						</div>
 						<div class="form" id="import-bookmark-form">
 							<form method="post" action="/upload" enctype="multipart/form-data">
 							<div class="textFieldWrapper">
@@ -106,28 +107,6 @@
 						</form>
 						</div>
 					</div>
-				</div>
-
-
-				<div id="changePassword" class="modalDialog">
-                        <div class="grid grid-pad">
-                            <a href="#close" title="Close" class="close x-button">x</a>
-                            <div class="tabs is-centered">
-                                <ul>
-                                    <li id="ac" class="is-active"><a>Change Password</a></li>
-                                </ul>
-                            </div>
-                            <form id="resetPassword" method="post" action="/passwordReset" >
-                                <div class="form" id="pw">
-																	<input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
-																	<input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
-                                    <div class="buttonWrapper">
-                                        <div><input type='submit' value="Change Password"></div>
-                                    </div>
-                            </form>
-                        </div>
-					            </div>
-										</div>
 
 
 
@@ -146,12 +125,10 @@
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Upload"></div>
                                     </div>
+                                </div>
                             </form>
                         </div>
-
                     </div>
-                </div>
-
 
                     <div id="addFolder" class="modalDialog">
                         <div class="grid grid-pad">
@@ -163,11 +140,13 @@
                             </div>
                             <form method='post' action='folders' id="addFolderForm">
                                 <div class="form" id="add-bookmark-form1">
-                                    <input type="text" id="addFolderName" name="name" placeholder="Name" required>
+                                    <input type="text" id="addFolderName" name="name" placeholder="Name" maxlength="25" required>
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Save"></div>
+                                        <div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
                                     </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -207,17 +186,6 @@
     </div>
     <div id="right">
       <div id="right-content" class="main grid grid-pad">
-          <!-- Display server-side error messages -->
-          <% if(typeof errors !== 'undefined' && errors.length > 0) { %>
-            <div class="insertupdate-errors">
-                <ul>
-                    <% for(var i=0; i < errors.length; i++) { %>
-                          <li><%= errors[i].msg %></li>
-                    <% } %>
-                </ul>
-            </div>
-          <% } %>
-          <!-- -->
       		<div id="title" class="col-1-1">
       			<div class="content">
       				<h1>BookMarx</h1>
@@ -263,7 +231,7 @@
 			<form action="/bookmarks/update/" id="editBookmarkForm" method="post">
 					<table class="edit-table">
 							<tr><td>Title: </td><td><input class="edit-modal-input" type="text" name="title"  value="" maxlength="25" autofocus required></td></tr>
-							<tr><td>URL: </td><td><input class="edit-modal-input" type="url" name="url" value="" placeholder="http://www.example.com" maxlength="64" required></td></tr>
+							<tr><td>URL: </td><td><input class="edit-modal-input" type="url" name="url" value="" placeholder="http://www.example.com" maxlength="2083" required></td></tr>
 							<tr><td>Description:</td><td><input class="edit-modal-input" type="text" name="description" value=""></td></td></tr>
 							<tr><td>Folder: </td><td>
 									<select class="edit-select-content" name="folder_id">
@@ -291,9 +259,10 @@
 		<div class="grid grid-pad">
 			<a href="#close" title="Close" class="close x-button">x</a>
 			<div class="tabs is-centered">
-			<ul class="remove-default-padding">
-				<li id="confirmdelete-bookmark" class="is-active"><a>Confirm Delete</a></li>
-			</ul>
+			    <ul class="remove-default-padding">
+				    <li id="confirmdelete-bookmark" class="is-active"><a>Confirm Delete</a></li>
+			    </ul>
+			</div>
 			<p class="pink-error-text">
             	Are you sure you wish to delete?
             </p>
@@ -301,7 +270,7 @@
 			<form class ="pink-error-text" id="confirmDeleteForm">
 					<input id="confirmDeleteTitle" name="title" type="submit" value="Confirm Delete">
 					<br>
-					<a href='/list' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value="Cancel" ></a>
+					<a href='#close' style="text-decoration: none;"><input class="confirmdelete-button" type="button" value="Cancel" ></a>
 			</form>
 		</div>
 
@@ -318,7 +287,11 @@
                         </ul>
                     </div>
                     <p id="warningMessage" class="pink-error-text">
-                    	An error has occurred.
+                        <% if(typeof errors !== 'undefined') { %>
+				            <%= errors %>
+				        <% } else { %>
+				            An error has occurred.
+				        <% } %>
                     </p>
                 </div>
             </div>
