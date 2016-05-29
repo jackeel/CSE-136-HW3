@@ -422,7 +422,7 @@ window.onload = function() {
         };
 
         if(curr_folder=='starred'){
-            params.star=1;
+            params.Star=1;
         }
 
         console.log(params);
@@ -438,7 +438,9 @@ window.onload = function() {
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                    // TODO Add star to this link
+                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder) +
+                        '?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
@@ -749,6 +751,7 @@ window.onload = function() {
     });
 
     // For pagination
+    // TODO Pagination not working on star page
     $("#pagination").on("click", "a", function(event) {
         event.preventDefault();
         toggleLoadGIF();

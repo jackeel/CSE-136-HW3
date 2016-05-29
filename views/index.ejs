@@ -178,7 +178,7 @@
 		<div id="sidebar">
 		  <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 	      <ul id="folderList">
-	      	    <li class="pinned"><a id="folder-starred" href="/list/starred?star=1" <%- current_folder_id == "starred" ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
+	      	    <li class="pinned"><a id="folder-starred" href="/list?Star=1" <%- bookmarks.star == 1 ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
 	            <li class="pinned"><a id="folder-" href="/list" <%- (!current_folder_id) ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-th fa-lg"></i> All</a></li>
                 <div id="folder-placeholder" <%= (folders.length != 0) ? "style=display:none;" : "" %>>
                     <li>You have no folders.</li>
@@ -247,7 +247,8 @@
 
 		<div id="pagination">
 			<% for(i=1; i <= num_pagination ; i++) { %>
-			    <a href=<%="/list/"+(current_folder_id == undefined ? "": current_folder_id)+"?Search="+search+"&SortBy="+order_by+"&offset="+i + (star == 1 ? "&star=1" : "")%>><%=i%></a>
+			    <a href=<%="/list/"+(current_folder_id == undefined ? "": current_folder_id) +
+                "?Search="+search+"&SortBy="+order_by+"&offset="+i + (star == 1 ? "&Star=1" : "")%>><%=i%></a>
 			<% }%>
 	  	</div>
 

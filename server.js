@@ -238,8 +238,6 @@ app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);
 //app.get('/books/confirmdelete/:book_id(\\d+)', books.confirmdelete);
 app.post('/bookmarks/update/:bookmark_id(\\d+)', requireLogin,bookmarks.update);
 app.post('/insert',requireLogin ,bookmarks.insert);
-//
-app.get('/list/starred', requireLogin ,bookmarks.getTotalBookmarks, bookmarks.listStarred);
 app.get('/bookmarks/:bookmark_id(\\d+)/star', requireLogin,bookmarks.star);
 app.get('/bookmarks/:bookmark_id(\\d+)/unstar', requireLogin,bookmarks.unstar);
 app.get('/bookmarks/download', bookmarks.listBookmarks, bookmarks.download);
