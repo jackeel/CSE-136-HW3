@@ -230,8 +230,9 @@ function requireLogout(req, res, next) {
     }
 };
 
-
-app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders, bookmarks.getTotalBookmarks, bookmarks.list);
+// TODO getTotalBookmarks could be removed, but need to fix the non-js situation.
+app.get('/list/:folder_id(\\d+)?',requireLogin ,bookmarks.listBookmarks, bookmarks.listFolders,
+    bookmarks.getTotalBookmarks, bookmarks.list);
 app.get('/bookmarks/getCount/:folder_id(\\d+)?',requireLogin, bookmarks.getTotalBookmarks, bookmarks.getCount);
 app.get('/bookmarks/edit/:bookmark_id(\\d+)', requireLogin, bookmarks.edit);
 app.get('/bookmarks/delete/:bookmark_id(\\d+)', requireLogin,bookmarks.delete);

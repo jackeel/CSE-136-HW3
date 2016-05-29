@@ -17,7 +17,6 @@ window.onload = function() {
     // Grab bookmarks from the first load using AJAX request
     (function() {
         toggleLoadGIF();
-
         $.ajax({
             cache: false,
             type: 'GET',
@@ -288,6 +287,7 @@ window.onload = function() {
         event.preventDefault();
 
         toggleLoadGIF();
+
         var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
 
         var url = "/bookmarks/getCount"+(!isNaN(curr_folder) ? "/"+curr_folder:"");
@@ -299,9 +299,9 @@ window.onload = function() {
             star=1;
         }
         var params = {
-            "Search": search_text,
-            "SortBy": sort_option,
-            "offset": 1,
+            //"Search": search_text,
+            //"SortBy": sort_option,
+            //"offset": 1,
             "Star": star
         };
 
