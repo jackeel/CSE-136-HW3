@@ -372,15 +372,26 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-        var url = "/bookmarks/getCount"+(curr_folder? "/"+curr_folder:"")   ;
+        //var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
+        var curr_folder = $('#currentFolder').val();
+        if (curr_folder == "starred") {
+            var url = "/bookmarks/getCount";
+            var star = 1;
+        }
+        else {
+            var url = "/bookmarks/getCount" + "/" + curr_folder;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
         var params = {
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,
@@ -392,20 +403,31 @@ window.onload = function() {
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                    paginations_html+= '<a href="/list/"' + (star == 1 ? "" : curr_folder) + '?Search=' + search_text +
+                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '> ' + i+ ' </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
         });
 
         var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+        if (curr_folder == "starred") {
+            var url = "/list";
+            var star = 1;
+        }
+        else {
+            var url = "/list/" + curr_folder;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var params = {
             "folder_id": curr_folder,
             "Search": search_text,
-            "SortBy": sort_option };
+            "SortBy": sort_option,
+            "Star":   star
+        };
 
         $.ajax({
             type: 'GET',
