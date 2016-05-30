@@ -31,6 +31,7 @@ window.onload = function() {
             success: function(result) {
                 // Update local bookmarks
                 CURRENT_BOOKMARKS = result.data.bookmarks;
+                CURRENT_FOLDER = '';
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -377,7 +378,7 @@ window.onload = function() {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href= "/list' +(star == 1 ? "": '/' + curr_folder) +
+                    paginations_html+= '<a href= "/list' +(star == 1 ? "": '/' + CURRENT_FOLDER) +
                         '?&offset=' + i + '&Star=' + star + '">' + i + '</a>';
                 }
                 $('#pagination').html(paginations_html);
@@ -427,7 +428,7 @@ window.onload = function() {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : curr_folder) + '?Search=' + search_text +
+                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : CURRENT_FOLDER) + '?Search=' + search_text +
                         '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
                 }
                 $('#pagination').html(paginations_html);
@@ -616,6 +617,7 @@ window.onload = function() {
             var star = 0;
             var url = "/list/" + CURRENT_FOLDER;
         }
+        console.log(url);
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
