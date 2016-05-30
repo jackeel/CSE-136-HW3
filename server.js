@@ -143,7 +143,7 @@ app.post('/upload',function(request, response) {
       if (err) {
         return console.log(err);
       }
-
+     try {
       var folders = JSON.parse(data);
       var session_id = request.session.userId;
 
@@ -170,6 +170,10 @@ app.post('/upload',function(request, response) {
             }
           });
       });
+    }
+    catch (e) {
+      console.error('There was an error reading the file!');
+    }
     });
   response.redirect('/list');
   })
