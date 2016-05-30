@@ -288,18 +288,22 @@ window.onload = function() {
 
         toggleLoadGIF();
 
-        //TODO change this to /list and add star as params?
-        var url = $(this).attr("href");
-        console.log(url);
         var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
         var prev_folder = $("#currentFolder").val();
 
-        var params = {"folder_id": curr_folder};
-
-        var star = 0;
         if(curr_folder=='starred'){
-            star=1;
+            var url = "/list";
+            var star=1;
         }
+        else {
+            var url = "/list/" + curr_folder;
+            var star = 0;
+        }
+
+        var params = {
+            "folder_id": curr_folder,
+            "Star":      star
+        };
 
         $.ajax({
             type: 'GET',
@@ -550,7 +554,6 @@ window.onload = function() {
     });
 
     // For pagination
-    // TODO Pagination not working on star page
     $("#pagination").on("click", "a", function(event) {
         event.preventDefault();
         toggleLoadGIF();
