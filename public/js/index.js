@@ -17,7 +17,6 @@ window.onload = function() {
     // Grab bookmarks from the first load using AJAX request
     (function() {
         toggleLoadGIF();
-
         $.ajax({
             cache: false,
             type: 'GET',
@@ -288,22 +287,23 @@ window.onload = function() {
         event.preventDefault();
 
         toggleLoadGIF();
+
         var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
 
         var url = "/bookmarks/getCount"+(!isNaN(curr_folder) ? "/"+curr_folder:"");
 
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var params = {
-            "Search": search_text,
-            "SortBy": sort_option,
-            "offset": 1
-        };
-
+        var star = 0;
         if(curr_folder=='starred'){
-            params.star=1;
+            star=1;
         }
-
+        var params = {
+            //"Search": search_text,
+            //"SortBy": sort_option,
+            //"offset": 1,
+            "Star": star
+        };
 
         $.ajax({
             type: 'GET',
@@ -316,7 +316,8 @@ window.onload = function() {
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder) +
+                        '?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+ '&Star=' + star +'> '+ i+'  </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
@@ -371,15 +372,26 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-        var url = "/bookmarks/getCount"+(curr_folder? "/"+curr_folder:"")   ;
+        //var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
+        var curr_folder = $('#currentFolder').val();
+        if (curr_folder == "starred") {
+            var url = "/bookmarks/getCount";
+            var star = 1;
+        }
+        else {
+            var url = "/bookmarks/getCount" + "/" + curr_folder;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
         var params = {
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,
@@ -391,20 +403,31 @@ window.onload = function() {
                 var paginations_html="";
                 console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                    paginations_html+= '<a href="/list/"' + (star == 1 ? "" : curr_folder) + '?Search=' + search_text +
+                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '> ' + i+ ' </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
         });
 
         var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+        if (curr_folder == "starred") {
+            var url = "/list";
+            var star = 1;
+        }
+        else {
+            var url = "/list/" + curr_folder;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var params = {
             "folder_id": curr_folder,
             "Search": search_text,
-            "SortBy": sort_option };
+            "SortBy": sort_option,
+            "Star":   star
+        };
 
         $.ajax({
             type: 'GET',
@@ -548,12 +571,20 @@ window.onload = function() {
     });
 
     // For pagination
+    // TODO Pagination not working on star page
     $("#pagination").on("click", "a", function(event) {
         event.preventDefault();
         toggleLoadGIF();
 
         var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+        if(curr_folder=='starred'){
+            var star = 1;
+            var url = "/list";
+        }
+        else {
+            var star = 0;
+            var url = "/list/" + curr_folder;
+        }
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
@@ -561,7 +592,9 @@ window.onload = function() {
             "folder_id": curr_folder,
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,

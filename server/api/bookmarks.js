@@ -49,14 +49,12 @@ function handleError(err, action, req, res)
  */
 //
 module.exports.list = function(req, res) {
-    console.log("number bookmarks: "+Math.ceil(req.numBookmarks/MAX_BOOKMARKS));
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
             status: Constants.status.SUCCESS,
             data: req.bookmarks
         })
     } else{
-        console.log(Math.ceil(req.numBookmarks/MAX_BOOKMARKS));
         res.render('index', {
             bookmarks: req.bookmarks,
             folders: req.folders,
@@ -65,7 +63,7 @@ module.exports.list = function(req, res) {
             search: req.search,
             errors: res.locals.error_messages,
             num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
-            star: 0
+            star: req.star
         });
     }
 }
@@ -93,14 +91,14 @@ module.exports.getTotalBookmarks = function(req, res, next) {
     var folder_id = req.params.folder_id;
     var search = req.query['Search'] ? req.query['Search'] : '';
     var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
-    var star = req.query['star']
+    var star = req.query['Star'] || 0;
     req.search = search;
     req.current_folder_id = folder_id;
     req.order_by = order_by;
+    req.star = star;
     search = db.escape('%' + search + '%');
     var queryString = "";
     if (!folder_id) {
-        //search = db.escape(search);
         queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
             req.session.userId +
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
@@ -114,17 +112,17 @@ module.exports.getTotalBookmarks = function(req, res, next) {
             ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
             'WHERE (title like ' +search + ' or description like ' + search+')';
     }
-    console.log("star: "+star);
-    if(star){
-        queryString+=' and bookmarks.star=1';
+    if(star == 1) {
+        queryString += ' and bookmarks.star=1';
     }
-    //console.log(queryString);
+    console.log("Get total bookmarks: " +queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) {
             handleError(err, 'Error getting total bookmarks', req, res);
             return;
         };
         req.numBookmarks = bookmarks.length;
+        console.log("Total number: " + req.numBookmarks);
         return next();
     });
 }
@@ -134,12 +132,14 @@ module.exports.getTotalBookmarks = function(req, res, next) {
  */
 module.exports.listBookmarks = function(req, res, next) {
   var folder_id = req.params.folder_id;
-  var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
+  var order_by = req.query['SortBy'] || 'bookmarks.id';
   var offset = req.query['offset'] || 1;
-  var search = req.query['Search'] ? req.query['Search'] : '';
+  var search = req.query['Search'] || '';
+  var star = req.query['Star'] || 0;
   req.search = search;
   req.current_folder_id = folder_id;
   req.order_by = order_by;
+  req.star = star;
   search = db.escape('%' + search + '%');
   var queryString = "";
   if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&
@@ -157,8 +157,9 @@ module.exports.listBookmarks = function(req, res, next) {
     queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
                   req.session.userId +
                   ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id '  +
-                  'WHERE title like ' + search + ' or description like ' + search +
-                  ' ORDER BY ' + (desc == true ? order_by + " DESC" : order_by);
+                  'WHERE bookmarks.star >=  ' + star +
+                  ' and (title like ' + search + ' or description like ' + search +
+                  ') ORDER BY ' + (desc == true ? order_by + " DESC" : order_by);
   }
   else {
     folder_id = db.escape(folder_id);
@@ -166,13 +167,13 @@ module.exports.listBookmarks = function(req, res, next) {
                    req.session.userId +
                    ' and id = ' + folder_id +
                    ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
-                   'WHERE title like ' +search + ' or description like ' + search +
-                   ' ORDER BY ' + (order_by == "bookmarks.star" ? order_by + " DESC" : order_by);
+                   'WHERE bookmarks.star >= ' + star +
+                   ' and (title like ' +search + ' or description like ' + search +
+                   ') ORDER BY ' + (desc == true ? order_by + " DESC" : order_by);
   }
-    if(offset){
-        queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
+    if(offset) {
+        queryString += " LIMIT 9 OFFSET " + ((offset - 1) * 9);
     }
-    //console.log(queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err)
         {
@@ -196,54 +197,6 @@ module.exports.listFolders = function(req, res, next) {
         req.folders = folders;
         return next();
     });
-};
-
-module.exports.listStarred = function(req, res) {
-  var order_by = req.query['SortBy'] ? req.query['SortBy'] : 'bookmarks.id';
-  var search = req.query['Search'] ? req.query['Search'] : '';
-  req.order_by = order_by;
-  req.search = search;
-  search = db.escape('%' + search + '%');
-
-  if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&
-      (order_by != "bookmarks.title") && (order_by != "bookmarks.star") &&
-      (order_by != "bookmarks.create_date") && (order_by != "bookmarks.last_visit_date")) {
-    order_by = "bookmarks.id";
-  }
-  queryString = 'SELECT * FROM (SELECT * FROM folders WHERE user_id = ' +
-                  req.session.userId +
-                  ') AS user_folder JOIN bookmarks ON bookmarks.folder_id = user_folder.id ' +
-                  'WHERE bookmarks.star = 1 ' +
-                  'and (title like ' + search + ' or description like ' + search +
-                  ') ORDER BY ' + order_by;
-  db.query(queryString, function(err, bookmarks) {
-    if(err) {
-        handleError(err, 'Error listing starred bookmarks', req, res);
-        return;
-    }
-    db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
-        if(err) {
-            handleError(err, 'Error listing folders of starred bookmarks', req, res);
-            return;
-        }
-        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-            res.status(200).json({
-                status: Constants.status.SUCCESS,
-                data: bookmarks
-            })
-        }else {
-            res.render('index', {
-                bookmarks: bookmarks,
-                folders: folders,
-                current_folder_id: "starred",
-                order_by: req.order_by,
-                search: req.search,
-                num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
-                star: 1
-            });
-        }
-    });
-  });
 };
 
 /**
@@ -529,8 +482,6 @@ module.exports.unstar = function(req, res) {
 };
 //
 module.exports.download = function(req, res){
-    //console.log(req.bookmarks);
-    //var listFolder = [];
     var folderMap = {}
     req.bookmarks.forEach(function(bookmark) {
       var bookmark_id = bookmark["id"];
@@ -567,13 +518,11 @@ module.exports.download = function(req, res){
       bookmark_item['star'] = star;
       folderItem['bookmarks'].push(bookmark_item);
     });
-    //console.log(folderMap);
     array_json_bookmark = [];
 
     for (var key in folderMap) {
       array_json_bookmark.push(folderMap[key]);
     }
-    //console.log(JSON.stringify(array_json_bookmark));
     fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
             handleError(err, 'Error downloading export', req, res);
