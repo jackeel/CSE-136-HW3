@@ -10,7 +10,6 @@ var validator = require('express-validator');
 var session = require('express-session');
 var flash = require('connect-flash');
 var winston = require('winston');
-var multer = require('multer');
 var compression = require('compression');
 var cors = require('cors');
 
@@ -118,88 +117,7 @@ app.use(function(req, res, next) {
   }
 });
 
-// disk setting for file upload.
-var storage = multer.diskStorage({
-  destination: function (request, file, callback) {
-    callback(null, './uploadDir');
-  },
-  filename: function (request, file, callback) {
-    //var file_name = file.fieldname + '-' + Date.now() + '.json';
-    var file_name = "upload.json";
-    callback(null, file_name);
-  }
-});
-var upload = multer({ storage : storage}).single('bookmark-import');
 
-app.post('/upload',function(request, response) {
-  upload(request, response, function(err) {
-  if(err) {
-    console.log('Error Occured');
-    return;
-  }
-  fs = require('fs');
-  file_name = "upload.json";
-  fs.readFile('./uploadDir/' + file_name, 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
-      }
-     try {
-      var folders = JSON.parse(data);
-      var session_id = request.session.userId;
-
-      folders.forEach(function(folder) {
-        //same user
-          var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
-          db.query(checkFolder, function(err, fol){
-
-            if (err) throw err;
-
-            //if folder is not present, insert folder. else just insert bookmarks
-            if (fol.length == 0) {
-              var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
-
-              db.query(insertFolderQuery, function(err, row){
-                if (err) throw err;
-               // console.log(folder.bookmarks);
-                insertBookmarks(folder.bookmarks, row.insertId);
-              });
-            }
-            else
-            {
-              insertBookmarks(folder.bookmarks, fol[0].id);
-            }
-          });
-      });
-    }
-    catch (e) {
-      console.error('There was an error reading the file!');
-    }
-    });
-  response.redirect('/list');
-  })
-});
-
-function insertBookmarks(bookmarks, folderId)
-{
-
-  bookmarks.forEach(function(bookmark) {
-
-
-    var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;
-
-    db.query(bookmarkInTable, function(err, row){
-      if(row.length == 0)
-      {
-        var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' +
-            bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
-
-        db.query(insertBookmark, function(err){
-          if (err) throw err;
-        });
-      }
-    });
-  });
-}
 
 /* Routes - consider putting in routes.js */
 app.get('/', requireLogout, users.loginForm);
@@ -251,6 +169,7 @@ app.post('/folders', requireLogin, folders.insert);
 app.get('/folders/delete/:folder_id(\\d+)', requireLogin, folders.delete);
 app.post('/bookmarks/last_visit', requireLogin, bookmarks.lastVisit);
 
+app.post('/upload', bookmarks.upload);
 
 // http://www.mcanerin.com/EN/search-engine/robots-txt.asp use to generate and
 // set trap if a disallowed endpoint is hit and log them.

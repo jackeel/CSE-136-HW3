@@ -10,6 +10,7 @@ var Constants = require('../config/Constants');
 var dateFormat = require('dateformat');
 var MAX_BOOKMARKS = 9;
 var winston = require('winston');
+var multer = require('multer');
 
 
 var logger = new winston.Logger({
@@ -564,4 +565,99 @@ module.exports.lastVisit = function(req, res) {
           res.redirect('/list');
       }
   });
+};
+
+
+
+// disk setting for file upload.
+var storage = multer.diskStorage({
+  destination: function (request, file, callback) {
+    callback(null, './uploadDir');
+  },
+  filename: function (request, file, callback) {
+    //var file_name = file.fieldname + '-' + Date.now() + '.json';
+    var file_name = "upload.json";
+    callback(null, file_name);
+  }
+});
+
+var upload = multer({ storage : storage}).single('bookmark-import');
+
+/**
+ * Import bookmarks
+ */
+module.exports.upload = function(req, res) {
+    upload(req, res, function(err) {
+        if(err) {
+            handleError(err, 'Error occurred with uploading file', req, res);
+            return;
+        }
+        var file_name = "upload.json";
+        fs.readFile('./uploadDir/' + file_name, 'utf8', function(err,data) {
+            if (err) {
+                handleError(err, 'Error occurred with reading uploaded file', req, res);
+                return;
+            }
+
+            // set req body to uploaded data for validation using express-validator
+            req.params.fileData = data;
+            req.check('fileData', 'Imported file must be in proper JSON format.').isJSON();
+            var errors = req.validationErrors();
+            if (errors) {
+                // pass first validation error message
+                handleError('', errors[0].msg, req, res);
+                return;
+            } else {
+                var folders = JSON.parse(data);
+                var session_id = req.session.userId;
+
+                folders.forEach(function(folder) {
+                    //same user
+                    var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
+                    db.query(checkFolder, function(err, fol) {
+                        if (err) throw err;
+
+                        //if folder is not present, insert folder. else just insert bookmarks
+                        if (fol.length == 0) {
+                            var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
+                            db.query(insertFolderQuery, function(err, row){
+                                if (err) {
+                                    handleError(err, 'Error inserting uploaded folders', req, res);
+                                    return;
+                                }
+                                // console.log(folder.bookmarks);
+                                insertBookmarks(folder.bookmarks, row.insertId);
+                            });
+                        } else {
+                            insertBookmarks(folder.bookmarks, fol[0].id);
+                        }
+                    });
+                });
+                // TODO: success message
+                res.redirect('/list');
+            }
+        });
+    });
+};
+
+
+// Helper function for inserting bookmarks via import
+function insertBookmarks(bookmarks, folderId) {
+    bookmarks.forEach(function(bookmark) {
+        var bookmarkInTable = 'Select * FROM bookmarks WHERE title = "' + bookmark.title+ '" AND folder_id = '+ folderId;
+        db.query(bookmarkInTable, function(err, row){
+            if(row.length == 0)
+            {
+                var insertBookmark = 'INSERT INTO bookmarks (title, url, folder_id, description) VALUES ( "' +
+                    bookmark.title + '", "' + bookmark.url + '", ' + folderId + ', "' + bookmark.description + '")';
+
+                db.query(insertBookmark, function(err){
+                    if (err) {
+                        handleError(err, 'Error inserting uploaded bookmarks', req, res);
+                        return;
+                    }
+                });
+            }
+        });
+    });
 };
