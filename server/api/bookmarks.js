@@ -52,7 +52,10 @@ module.exports.list = function(req, res) {
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
         res.status(200).json({
             status: Constants.status.SUCCESS,
-            data: req.bookmarks
+            data: {
+                bookmarks: req.bookmarks,
+                count:     req.numBookmarks
+            }
         })
     } else{
         res.render('index', {

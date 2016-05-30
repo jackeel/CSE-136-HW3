@@ -26,7 +26,7 @@ window.onload = function() {
             data: '',
             success: function(result) {
                 // Update local bookmarks
-                current_bookmarks = result.data;
+                current_bookmarks = result.data.bookmarks;
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -288,47 +288,18 @@ window.onload = function() {
 
         toggleLoadGIF();
 
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-
-        var url = "/bookmarks/getCount"+(!isNaN(curr_folder) ? "/"+curr_folder:"");
-
-        var search_text = $('#searchForm input[name="Search"]').val();
-        var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var star = 0;
-        if(curr_folder=='starred'){
-            star=1;
-        }
-        var params = {
-            //"Search": search_text,
-            //"SortBy": sort_option,
-            //"offset": 1,
-            "Star": star
-        };
-
-        $.ajax({
-            type: 'GET',
-            url: url,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: params,
-            success: function (result) {
-                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
-                var paginations_html="";
-                console.log("num pagination: "+num_pagination);
-                for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder) +
-                        '?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+ '&Star=' + star +'> '+ i+'  </a>';
-                }
-                $('#pagination').html(paginations_html);
-            }
-        });
-
-
+        //TODO change this to /list and add star as params?
         var url = $(this).attr("href");
+        console.log(url);
         var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
         var prev_folder = $("#currentFolder").val();
 
         var params = {"folder_id": curr_folder};
+
+        var star = 0;
+        if(curr_folder=='starred'){
+            star=1;
+        }
 
         $.ajax({
             type: 'GET',
@@ -349,7 +320,7 @@ window.onload = function() {
                 $('#orderByForm select[name="SortBy"]').val('Sort');
 
                 // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                var bookmarks = result.data.bookmarks;
 
                 // Store current bookmarks locally
                 current_bookmarks = bookmarks;
@@ -357,6 +328,15 @@ window.onload = function() {
                 // Update client-side list
                 var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
+
+                // Update pagination
+                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
+                var paginations_html="";
+                for(var i = 1; i <= num_pagination; i++) {
+                    paginations_html+= '<a href="/list"'+(star == 1 ? "": '/' + curr_folder) +
+                        '?&offset='+i+ '&Star=' + star +'> '+ i+'  </a>';
+                }
+                $('#pagination').html(paginations_html);
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -401,7 +381,6 @@ window.onload = function() {
             success: function (result) {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
-                console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
                     paginations_html+= '<a href="/list/"' + (star == 1 ? "" : curr_folder) + '?Search=' + search_text +
                         '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '> ' + i+ ' </a>';
@@ -438,7 +417,7 @@ window.onload = function() {
             success: function(result) {
 
                 // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                var bookmarks = result.data.bookmarks;
 
                 // Store current bookmarks
                 current_bookmarks = bookmarks;
@@ -603,7 +582,7 @@ window.onload = function() {
             data: params,
             success: function(result) {
                 // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                var bookmarks = result.data.bookmarks;
 
                 // Store current bookmarks
                 current_bookmarks = bookmarks;
