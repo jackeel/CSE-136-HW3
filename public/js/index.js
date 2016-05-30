@@ -101,6 +101,7 @@ window.onload = function() {
 
         var url = $(this).attr("href");
         var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
+        var curr_folder = $('#currentFolder').val();
 
         $.ajax({
             type: 'GET',
@@ -121,6 +122,11 @@ window.onload = function() {
                     star.attr("href", "/bookmarks/" + data.bookmark_id + "/star");
                 } else {
                     star.attr("href", "/bookmarks/" + data.bookmark_id + "/unstar");
+                }
+
+                // Remove from the starred list immediately
+                if (curr_folder == "starred") {
+                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
                 }
             },
             error: function(xhr, status, error) {
