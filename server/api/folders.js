@@ -54,7 +54,6 @@ module.exports.insert = function(req, res){
 
     req.checkBody(validate_insert);
     var errors = req.validationErrors();
-
     if (errors) {
         // pass first validation error message
         handleError('', errors[0].msg, req, res);
