@@ -377,8 +377,8 @@ window.onload = function() {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list"'+(star == 1 ? "": '/' + CURRENT_FOLDER) +
-                        '?&offset='+i+ '&Star=' + star +'> '+ i+'  </a>';
+                    paginations_html+= '<a href= "/list' +(star == 1 ? "": '/' + curr_folder) +
+                        '?&offset=' + i + '&Star=' + star + '">' + i + '</a>';
                 }
                 $('#pagination').html(paginations_html);
 
@@ -427,8 +427,8 @@ window.onload = function() {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"' + (star == 1 ? "" : CURRENT_FOLDER) + '?Search=' + search_text +
-                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '> ' + i+ ' </a>';
+                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : curr_folder) + '?Search=' + search_text +
+                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
