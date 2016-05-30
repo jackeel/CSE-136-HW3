@@ -14,7 +14,6 @@
 
     <script type="text/javascript" src="/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
-	<script type="text/javascript" src="/js/passwordReset.js"></script>
 
 </head>
 <body>
@@ -175,7 +174,6 @@
 	</nav>
 	<div id="openSidebar" class="showSidebar">
 		<div id="sidebar">
-		    <input type="hidden" id="currentFolder" value="<%=current_folder_id%>"></input>
 			<input type="hidden" id="currentStar" value="<%=star%>"></input>
 	      <ul id="folderList">
 	      	    <li class="pinned"><a id="folder-starred" href="/list?Star=1" <%- bookmarks.star == 1 ? "class='active-folder'" : "class='inactive-folder'" %>><i class="fa fa-star fa-lg"></i> Starred</a></li>
