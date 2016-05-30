@@ -14,6 +14,7 @@
 
     <script type="text/javascript" src="/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
+	<script type="text/javascript" src="/js/passwordReset.js"></script>
 
 </head>
 <body>
@@ -57,7 +58,7 @@
 	  			<li class="navbar-right">
 	  				<a href="#addBookmark" class="button"><i class="fa fa-plus fa-lg"></i></a>
 	  				<a href="#importBookmark" class="button">import&nbsp;&nbsp;&nbsp;<i class="fa fa-download fa-lg"></i></a>
-						<a href="#changePassword" class="button"><i class="fa fa-cog fa-lg"></i></a>
+					<a href="#changePassword" class="button"><i class="fa fa-cog fa-lg"></i></a>
 
 	  				<div id="addBookmark" class="modalDialog">
 
@@ -101,14 +102,32 @@
 						    </div>
 						    <div class="buttonWrapper">
 						    		<div><input type='submit' value="Upload"></div>
-							      	<!--div><i class="fa fa-folder-open fa-lg" type="submit"></i> Submit</div-->
 							      	<div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
 							</div>
-						</form>
+						    </form>
 						</div>
 					</div>
 
-
+				<div id="changePassword" class="modalDialog">
+                    <div class="grid grid-pad">
+                        <a href="#close" title="Close" class="close x-button">x</a>
+                        <div class="tabs is-centered">
+                            <ul>
+                                <li id="ac" class="is-active"><a>Change Password</a></li>
+                            </ul>
+                        </div>
+                        <form id="resetPassword" method="post" action="/passwordReset" >
+                            <div class="form" id="pw">
+							    <input type="password" name="password" id="password" value="" placeholder="Password" spellcheck="false" maxlength="64" required>
+							    <input type="password" name="confirm_password" id="confirm_password" value="" placeholder="Confirm Password" spellcheck="false" maxlength="64" required>
+							</div>
+                            <div class="buttonWrapper">
+                                <input type='submit' value="Change Password">
+                                <a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+			    </div>
 
 				<div id="importBookmark" class="modalDialog">
                         <div class="grid grid-pad">
@@ -124,6 +143,7 @@
 
                                     <div class="buttonWrapper">
                                         <div><input type='submit' value="Upload"></div>
+                                        <div><a href="#close" title="Close" class="close"><i class="fa fa-times-circle fa-lg"></i> Cancel</a></div>
                                     </div>
                                 </div>
                             </form>

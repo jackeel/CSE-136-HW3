@@ -109,16 +109,22 @@ module.exports.passwordReset = function(req, res) {
     req.checkBody(validate_passwordReset);
     var errors = req.validationErrors();
     if (errors) {
+      // AJAX (javascript on)
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
             status: Constants.status.failed,
-            failedMessages: Constants.failedMessages.FAIL
+            failedMessages: Constants.failedMessages.FAIL,
+            data: errors[0].msg
         })
       }
+      // Non-AJAX (javascript off)
         else {
-          if (req.session.userId)
-            res.redirect('/list');
-          else {
+          if (req.session.userId) {
+              // reset password from bookmark page (logged in)
+              req.flash('error_messages', errors[0].msg);  // show first validation failure
+              res.redirect('/list#warningModal');
+          } else {
+            // reset password from password reset form (logged out)
             res.render('passwordReset', {errors: errors});
             return;
           }
@@ -143,7 +149,7 @@ module.exports.passwordReset = function(req, res) {
         db.query(queryString, function(err, rows) {
             if(err)
             {
-              handleError(err, 'select username', req, res);
+              handleError(err, 'Error selecting username for password reset', req, res);
               return;
             }
 
@@ -159,15 +165,13 @@ module.exports.passwordReset = function(req, res) {
                 else
                    updateQueryString = 'UPDATE users SET password = "' + hash + '", salt = "' + salt + '" WHERE id = ' + usersession;
 
-                console.log(updateQueryString);
                 db.query(updateQueryString, function(err) {
                     if (err)
                     {
-                      handleError(err, 'update user password', req, res);
+                      handleError(err, 'Error updating user password', req, res);
                       return;
                     }
                     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-                      console.log("inside the success");
                           res.status(200).json({
                           status: Constants.status.SUCCESS,
                           successMessages: Constants.successMessages.OK
@@ -187,10 +191,12 @@ module.exports.passwordReset = function(req, res) {
                       else {
                         var successes = [{msg: 'Confirmation email sent'}];
                         //res.redirect('/list');
-                        if (req.session.userId)
+                        if (req.session.userId) {
                           res.redirect('/list');
-                        else
+                          // TODO: show success message
+                        } else {
                            res.render('passwordReset', {successes: successes});
+                        }
                       }
 
                 });

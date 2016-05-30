@@ -589,6 +589,41 @@ window.onload = function() {
         });
     });
 
+
+    //Change Password
+    $("#resetPassword").on("submit", function (event) {
+        event.preventDefault();
+
+        toggleLoadGIF();
+
+        window.location.hash = "close";  // close the modal
+        var url = '/passwordReset';
+        var params = {
+            "password" : document.getElementById("password").value,
+            "confirm_password" : document.getElementById("confirm_password").value
+        };
+
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                // show success msg
+                showErrorModal("Success", "Password reset successfully!");
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                showErrorModal("Error", err.data);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
+        });
+    });
+
     /*******************************************************************/
 
 
