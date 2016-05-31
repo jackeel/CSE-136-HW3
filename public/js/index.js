@@ -1,5 +1,11 @@
-var MAX_BOOKMARKS = 9;
+var CURRENT_FOLDER;          // keeps track of currently selected folder ('', 'starred', or some integer)
+var CURRENT_BOOKMARKS = [];  // array that tracks all currently visible bookmark objects
+var MAX_BOOKMARKS = 9;       // max visible bookmarks on a single page
 
+
+/**
+ * Function to toggle loading gif on/off.
+ */
 function toggleLoadGIF() {
     var load_gif = $("#load-gif");
     if(load_gif.css('display') == 'none') {
@@ -9,15 +15,12 @@ function toggleLoadGIF() {
     }
 };
 
-// Local bookmarks
-var current_bookmarks = {};
 
 window.onload = function() {
     /*************************** AJAX **********************************/
     // Grab bookmarks from the first load using AJAX request
     (function() {
         toggleLoadGIF();
-
         $.ajax({
             cache: false,
             type: 'GET',
@@ -27,26 +30,30 @@ window.onload = function() {
             data: '',
             success: function(result) {
                 // Update local bookmarks
-                current_bookmarks = result.data;
+                CURRENT_BOOKMARKS = result.data.bookmarks;
+                CURRENT_FOLDER = '';
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
             }
         });
     })();
+
+    // Set default folder in add bookmark modal to current folder
+    $('.navbar-right a:nth-of-type(1)').on('click', function() {
+        if(CURRENT_FOLDER != '' && CURRENT_FOLDER != 'starred') {
+            $('#addBookmarkForm select[name="folder_id"]').val(CURRENT_FOLDER);
+        } else {
+            // If in all or starred, default is first folder in the dropdown
+            $("#addBookmarkForm option:selected").prop("selected", false);
+            $("#addBookmarkForm option:first").prop("selected", "selected");
+        }
+    });
+
 
     // Create new bookmark
     $("#addBookmarkForm").on("submit", function(event) {
@@ -70,43 +77,28 @@ window.onload = function() {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function(result) {
-                // Close addBookmark modal
-                window.location.hash = "#close";
+                // Reset and close addBookmark modal
+                $("#addBookmarkForm")[0].reset();
+                window.location.hash = "close";
 
-                var data = result.data;
-                var current_folder = $("#currentFolder").val();
+                var bookmark = result.data;
 
-                // Add bookmark to list if it belongs to currently selected folder or all-list
-                if(current_folder == data.folder_id || current_folder == '') {
-                    $('#bookmarks').append(
-                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
-                        '    <div class="content">\n' +
-                        '        <div class="card card--small" id="bookmark-card-' + data.bookmark_id + '">\n' +
-                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a class="bookmark-link" id="bookmark-url-' + data.bookmark_id +'" href="' + data.url + '"><h2 id="title-bookmark-' + data.bookmark_id + '" class="card__title">' + data.title + '</h2></a>\n' +
-                        '            <div class="card__action-bar">\n' +
-                        '                <a class="card__button" href="/bookmarks/' + data.bookmark_id + '/star" id="star-bookmark-' + data.bookmark_id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n' +
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + data.bookmark_id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + data.bookmark_id + '" id="delete-bookmark-' + data.bookmark_id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
-                        '            </div>\n' +
-                        '         </div>\n' +
-                        '     </div>\n' +
-                        '</div>\n'
-                    );
+
+                // Add bookmark to list if not full page & if it belongs to currently selected folder/list
+                if((CURRENT_BOOKMARKS.length < MAX_BOOKMARKS) && (CURRENT_FOLDER == bookmark.folder_id || CURRENT_FOLDER == '')) {
+                    var bookmark_html = addBookmarkHTML([bookmark]);  // pass bookmark as array to function
+                    $('#bookmarks').append(bookmark_html);
+
+                    // Update visible bookmarks
+                    params.id = bookmark.id;
+                    CURRENT_BOOKMARKS.push(params);
                 }
+
+                // TODO: add to next page if current page is full
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -125,6 +117,7 @@ window.onload = function() {
         var url = $(this).attr("href");
         var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
 
+
         $.ajax({
             type: 'GET',
             url: url,
@@ -133,6 +126,14 @@ window.onload = function() {
             data: params,
             success: function(result) {
                 var data = result.data;
+
+                // Remove immediately if in starred list
+                if (CURRENT_FOLDER == "starred") {
+                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+
+                    // TODO: update visible bookmarks and see if need to do anything with pagination
+                    return;
+                }
 
                 // Style the star
                 var star = $("#star-bookmark-" + data.bookmark_id);
@@ -148,16 +149,7 @@ window.onload = function() {
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -165,13 +157,14 @@ window.onload = function() {
         });
     });
 
-    //modal warning delete
+    // Delete bookmark + modal warning
     $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
         event.preventDefault();
-        //makes error modal show
-        window.location.hash = 'confirmDelete';
+
+        window.location.hash = 'confirmDelete';  // show error modal
         var bookmark_id = $(this).attr("id").split("-")[2];
 
+        // Handler for confirm delete on modal
         $("#confirmDeleteForm").on("submit", function(event) {
            event.preventDefault();
            toggleLoadGIF();
@@ -182,68 +175,38 @@ window.onload = function() {
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(result) {
-                   // Remove bookmark from list
-                     var data = result.data;
-                     window.location.hash = "#close";
-                   $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+                    window.location.hash = "close";
+
+                    // Remove bookmark from list
+                    var data = result.data;
+                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+
+                    // Unbind form in this context to prevent propagation later on
+                    $("#confirmDeleteForm").off('submit');
+
+                    // Update visible bookmarks
+                    for(var i = 0; i < CURRENT_BOOKMARKS.length; i++) {
+                        if(CURRENT_BOOKMARKS[i].id == data.bookmark_id) {
+                            CURRENT_BOOKMARKS.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    // TODO: see if need to do anything with pagination
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
-                    var err_msg = '';
-                    if(err.msg == null) {
-                        showErrorModal("Error", err.data);
-                    } else {
-                        for(var i = 0; i < err.msg.length; i++) {
-                            // Combine all error messages to display in one modal
-                            err_msg += err.msg[i].msg += '\n';
-                        }
-                        showErrorModal("Error", err_msg);
-                    }
+                    showErrorModal("Error", err.data);
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
                 }
             });
+            return false;
         });
+        return false;
     });
 
-
-
-    // // Delete bookmark
-    // $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(3)", function(event) {
-    //     event.preventDefault();
-
-    //     toggleLoadGIF();
-
-    //     var url = $(this).attr("href");
-    //     var params = {"bookmark_id" : $(this).attr("id").split("-")[2]};
-
-    //     $.ajax({
-    //      type: 'GET',
-    //      url: url,
-    //         contentType: 'application/json',
-    //         dataType: 'json',
-    //         data: params,
-    //         success: function(result) {
-    //             var data = result.data;
-
-    //          // Remove bookmark from list
-    //          $("#star-bookmark-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-    //      },
-    //      error: function(xhr, status, error) {
-    //          var err = JSON.parse(xhr.responseText);
-    //          var err_msg = '';
-    //          for(var i = 0; i < err.msg.length; i++) {
-    //              // Combine all error messages to display in one modal
-    //              err_msg += err.msg[i].msg += '\n';
-    //          }
-    //          showErrorModal("Error", err_msg);
-    //      },
-    //      complete: function(xhr, status) {
-    //          toggleLoadGIF();
-    //      }
-    //  });
-    // });
 
     // Create new folder
     $("#addFolderForm").on("submit", function(event) {
@@ -264,8 +227,9 @@ window.onload = function() {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function(result) {
-                // Close addFolder modal
-                window.location.hash = "#close";
+                // Reset and close addFolder modal
+                $("#addFolderForm")[0].reset();
+                window.location.hash = "close";
 
                 var data = result.data;
 
@@ -289,16 +253,7 @@ window.onload = function() {
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -307,37 +262,9 @@ window.onload = function() {
 
         return false;
     });
-    /*
-    $("#sidebar").on("click", ".pad-trash-icon", function(event) {
-        event.preventDefault();
-        //makes error modal show
-        window.location.hash = 'confirmDelete';
-        var folder_id = $(this).attr("id").split("-")[2];
-        console.log(folder_id);
-        $("#confirmDeleteForm").on("submit", function(event) {
-           event.preventDefault();
-           toggleLoadGIF();
 
-           $.ajax({
-            type: 'GET',
-            url: "/folders/delete/" + folder_id,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function(result) {
-               // Remove bookmark from list
-                 var data = result.data;
-                 window.location.hash = "#close";
-               $("#folder-" + data.folder_id).remove();
-               toggleLoadGIF();
-            },
-            error: function(xhr, status, error) {
-                toggleLoadGIF();
-            }
-           });
-       });
-    });*/
 
-    // Delete folder
+    // Delete folder + modal warning
     $("#folderList").on("click", ".pad-trash-icon", function(event) {
         event.preventDefault();
         window.location.hash = 'confirmDelete';
@@ -345,60 +272,55 @@ window.onload = function() {
         var url = $(this).attr("href");
         var params = {"folder_id" : $(this).attr("id").split("-")[2]};
 
+        // Handler for folder delete modal form
         $("#confirmDeleteForm").on("submit", function(event) {
             event.preventDefault();
 
-            // Close folder modal
-            window.location.hash="#close";
+            // Close the modal
+            window.location.hash="close";
             toggleLoadGIF();
 
-        $.ajax({
-            type: 'GET',
-            url: url,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: params,
-            success: function(result) {
-                var data = result.data;
-                var current_folder = $("#currentFolder").val();
+            $.ajax({
+                type: 'GET',
+                url: url,
+                contentType: 'application/json',
+                dataType: 'json',
+                data: params,
+                success: function(result) {
+                    var data = result.data;
 
-                // Remove folder from side list
-                $("#delete-folder-" + data.folder_id).closest("li").remove();
 
-                // Display folder placeholder if no more folders besides default (starred, all)
-                if($("#folderList > li").length == 2) {
-                    $("#folder-placeholder").css('display', 'block');
-                }
+                    // Remove folder from side list
+                    $("#delete-folder-" + data.folder_id).closest("li").remove();
 
-                if(current_folder == '' || current_folder == 'starred') {
-                    // If current folder is 'all' or 'starred', fetch bookmark list by triggering folder click
-                    $("#folder-" + current_folder).click();
-                } else if(current_folder == data.folder_id) {
-                    // If current folder is the deleted folder, clear bookmark list
-                    $("#bookmarks").html('');
-                }
+                    // Unbind form in this context to prevent propagation later on
+                    $("#confirmDeleteForm").off('submit');
 
-                // Remove folder from the addBookmark and editBookmark modals
-                $('#addBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
-                $('#editBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
+                    // Display folder placeholder if no more folders besides default (starred, all)
+                    if($("#folderList > li").length == 2) {
+                        $("#folder-placeholder").css('display', 'block');
                     }
-                    showErrorModal("Error", err_msg);
+
+                    if(CURRENT_FOLDER == '' || CURRENT_FOLDER == 'starred') {
+                        // If current folder is 'all' or 'starred', update bookmark list by triggering folder click
+                        $("#folder-" + CURRENT_FOLDER).click();
+                    } else if(CURRENT_FOLDER == data.folder_id) {
+                        // If current folder is the deleted folder, go to all-bookmarks list
+                        $("#folder-").click();
+                    }
+
+                    // Remove folder from the addBookmark and editBookmark modals
+                    $('#addBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
+                    $('#editBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
+                },
+                error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                },
+                complete: function(xhr, status) {
+                    toggleLoadGIF();
                 }
-            },
-            complete: function(xhr, status) {
-                toggleLoadGIF();
-            }
-        });
+            });
 
         return false;
         });
@@ -409,47 +331,22 @@ window.onload = function() {
         event.preventDefault();
 
         toggleLoadGIF();
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-        console.log("folder_id: "+curr_folder);
-        var url = "/bookmarks/getCount"+(!isNaN(curr_folder) ? "/"+curr_folder:"");
-        console.log(url);
-        var search_text = $('#searchForm input[name="Search"]').val();
-        var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var params = {
-            "Search": search_text,
-            "SortBy": sort_option,
-            "offset": 1
-        };
 
-        if(curr_folder=='starred'){
-            params.star=1;
+        CURRENT_FOLDER = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
+
+        if(CURRENT_FOLDER=='starred'){
+            var url = "/list";
+            var star=1;
+        }
+        else {
+            var url = "/list/" + CURRENT_FOLDER;
+            var star = 0;
         }
 
-        console.log(params);
-        $.ajax({
-            type: 'GET',
-            url: url,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: params,
-            success: function (result) {
-                console.log(result.data.count);
-                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
-                var paginations_html="";
-                console.log("num pagination: "+num_pagination);
-                for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
-                }
-                $('#pagination').html(paginations_html);
-            }
-        });
-
-
-        var url = $(this).attr("href");
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-        var prev_folder = $("#currentFolder").val();
-
-        var params = {"folder_id": curr_folder};
+        var params = {
+            "folder_id": CURRENT_FOLDER,
+            "Star":      star
+        };
 
         $.ajax({
             type: 'GET',
@@ -458,59 +355,38 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function(result) {
-                // Un-highlight prev folder, highlight curr folder
-                $('#folder-' + prev_folder).addClass('inactive-folder').removeClass('active-folder');
-                $('#folder-' + curr_folder).addClass('active-folder').removeClass('inactive-folder');
-
-                // Update current folder hidden input field
-                $('#currentFolder').val(curr_folder);
+                // Un-highlight other folders, highlight curr folder
+                $('#folderList li a').addClass('inactive-folder').removeClass('active-folder');
+                $('#folder-' + CURRENT_FOLDER).addClass('active-folder').removeClass('inactive-folder');
 
                 // Clear search and sort options
                 $('#searchForm input[name="Search"]').val('');
                 $('#orderByForm select[name="SortBy"]').val('Sort');
 
+
                 // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                var bookmarks = result.data.bookmarks;
 
-                // Store current bookmarks
-                current_bookmarks = bookmarks;
+                // Store current bookmarks locally
+                CURRENT_BOOKMARKS = bookmarks;
 
-                var bookmark_list = '';
-                for(var i = 0; i < bookmarks.length; i++) {
-                    bookmark_list +=
-                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
-                        '    <div class="content">\n' +
-                        '        <div class="card card--small" id="bookmark-card-' + bookmarks[i].id + '">\n' +
-                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a class="bookmark-link" id="bookmark-url-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 id="title-bookmark-' + bookmarks[i].id + '" class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
-                        '            <div class="card__action-bar">\n';
-                        if(bookmarks[i].star == 1) {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
-                        } else {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
-                        }
-                        bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
-                        '            </div>\n' +
-                        '         </div>\n' +
-                        '     </div>\n' +
-                        '</div>\n';
-                }
+                // Update client-side list
+                var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
+
+                // Update pagination
+                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
+                var paginations_html="";
+                for(var i = 1; i <= num_pagination; i++) {
+                    paginations_html+= '<a href= "/list' +(star == 1 ? "": '/' + CURRENT_FOLDER) +
+                        '?&offset=' + i + '&Star=' + star + '">' + i + '</a>';
+                }
+                $('#pagination').html(paginations_html);
+
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -522,17 +398,26 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        var curr_folder = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
-        console.log("folder_id: "+curr_folder);
-        var url = "/bookmarks/getCount"+(curr_folder? "/"+curr_folder:"")   ;
+        //var CURRENT_FOLDER = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
+        
+        if (CURRENT_FOLDER == "starred") {
+            var url = "/bookmarks/getCount";
+            var star = 1;
+        }
+        else {
+            var url = "/bookmarks/getCount" + "/" + CURRENT_FOLDER;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
         var params = {
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
-        console.log(params);
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,
@@ -542,22 +427,32 @@ window.onload = function() {
             success: function (result) {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
-                console.log("num pagination: "+num_pagination);
                 for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/"'+(curr_folder == undefined ? "": curr_folder)+'?Search='+search_text+'&SortBy='+sort_option+'&offset='+i+'>  '+ i+'  </a>';
+                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : CURRENT_FOLDER) + '?Search=' + search_text +
+                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
                 }
                 $('#pagination').html(paginations_html);
             }
         });
 
-        var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+
+        if (CURRENT_FOLDER == "starred") {
+            var url = "/list";
+            var star = 1;
+        }
+        else {
+            var url = "/list/" + CURRENT_FOLDER;
+            var star = 0;
+        }
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var params = {
-            "folder_id": curr_folder,
+            "folder_id": CURRENT_FOLDER,
             "Search": search_text,
-            "SortBy": sort_option };
+            "SortBy": sort_option,
+            "Star":   star
+        };
 
         $.ajax({
             type: 'GET',
@@ -568,48 +463,18 @@ window.onload = function() {
             success: function(result) {
 
                 // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                var bookmarks = result.data.bookmarks;
 
                 // Store current bookmarks
-                current_bookmarks = bookmarks;
+                CURRENT_BOOKMARKS = bookmarks;
 
                 // Update
-                var bookmark_list = '';
-                for(var i = 0; i < bookmarks.length; i++) {
-                    bookmark_list +=
-                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
-                        '    <div class="content">\n' +
-                        '        <div class="card card--small" id="bookmark-card-' + bookmarks[i].id + '">\n' +
-                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a class="bookmark-link" id="bookmark-url-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 id="title-bookmark-' + bookmarks[i].id + '" class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
-                        '            <div class="card__action-bar">\n';
-                        if(bookmarks[i].star == 1) {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
-                        } else {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
-                        }
-                        bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
-                        '            </div>\n' +
-                        '         </div>\n' +
-                        '     </div>\n' +
-                        '</div>\n';
-                }
+                var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -626,17 +491,17 @@ window.onload = function() {
 
     // Dynamically populate editBookmark modal when clicked
     $("#bookmarks").on("click", ".card__action-bar a:nth-of-type(2)", function(event) {
-        for(var i = 0; i < current_bookmarks.length; i++) {
+        for(var i = 0; i < CURRENT_BOOKMARKS.length; i++) {
             event.preventDefault();
 
             var bookmark_id = $(this).attr('id').split('-')[2];
-            if(bookmark_id == current_bookmarks[i].id) {
-                $('#editBookmarkForm').attr('action', '/bookmarks/update/' + current_bookmarks[i].id);
-                $('#editBookmarkForm input[name="title"]').val(current_bookmarks[i].title);
-                $('#editBookmarkForm input[name="url"]').val(current_bookmarks[i].url);
-                $('#editBookmarkForm input[name="description"]').val(current_bookmarks[i].description);
-                $('#editBookmarkForm select[name="folder_id"]').val(current_bookmarks[i].folder_id);
-                window.location.hash = "#editBookmark";
+            if(bookmark_id == CURRENT_BOOKMARKS[i].id) {
+                $('#editBookmarkForm').attr('action', '/bookmarks/update/' + CURRENT_BOOKMARKS[i].id);
+                $('#editBookmarkForm input[name="title"]').val(CURRENT_BOOKMARKS[i].title);
+                $('#editBookmarkForm input[name="url"]').val(CURRENT_BOOKMARKS[i].url);
+                $('#editBookmarkForm input[name="description"]').val(CURRENT_BOOKMARKS[i].description);
+                $('#editBookmarkForm select[name="folder_id"]').val(CURRENT_BOOKMARKS[i].folder_id);
+                window.location.hash = "editBookmark";
                 return;
             }
 
@@ -669,37 +534,36 @@ window.onload = function() {
                 contentType: 'application/json',
                 success: function(result) {
                     // Close edit bookmark modal
-                    window.location.hash = "#close";
+                    window.location.hash = "close";
 
-                    // Update local bookmark
                     var data = result.data;
-
-                    for(var i = 0; i < current_bookmarks.length; i++) {
-                        if(data.bookmark_id == current_bookmarks[i].id) {
-                            current_bookmarks[i].title = data.title;
-                            current_bookmarks[i].url = data.url;
-                            current_bookmarks[i].description = data.description;
-                            current_bookmarks[i].folder_id = data.folder_id;
-                            break;
+                    for(var i = 0; i < CURRENT_BOOKMARKS.length; i++) {
+                        if(data.bookmark_id == CURRENT_BOOKMARKS[i].id) {
+                            if(data.folder_id == CURRENT_FOLDER || CURRENT_FOLDER == '' || CURRENT_FOLDER == 'starred') {
+                                // Update the local bookmark if same or all/starred folder
+                                CURRENT_BOOKMARKS[i].title = data.title;
+                                CURRENT_BOOKMARKS[i].url = data.url;
+                                CURRENT_BOOKMARKS[i].description = data.description;
+                                CURRENT_BOOKMARKS[i].folder_id = data.folder_id;
+                                break;
+                            } else {
+                                // Otherwise remove bookmark from list if editted to a different folder
+                                $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+                                CURRENT_BOOKMARKS.splice(i, 1);
+                                return;
+                            }
                         }
                     }
 
                     // Update bookmark dynamically
                     $('#title-bookmark-' + data.bookmark_id).text(data.title);
                     $('#bookmark-url-' + data.bookmark_id).attr('href', data.url);
+
+                    // TODO: deal with pagination if last bookmark on page is edited out
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
-                    var err_msg = '';
-                    if(err.msg == null) {
-                        showErrorModal("Error", err.data);
-                    } else {
-                        for(var i = 0; i < err.msg.length; i++) {
-                            // Combine all error messages to display in one modal
-                            err_msg += err.msg[i].msg += '\n';
-                        }
-                        showErrorModal("Error", err_msg);
-                    }
+                    showErrorModal("Error", err.data);
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -731,16 +595,7 @@ window.onload = function() {
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
-                var err_msg = '';
-                if(err.msg == null) {
-                    showErrorModal("Error", err.data);
-                } else {
-                    for(var i = 0; i < err.msg.length; i++) {
-                        // Combine all error messages to display in one modal
-                        err_msg += err.msg[i].msg += '\n';
-                    }
-                    showErrorModal("Error", err_msg);
-                }
+                showErrorModal("Error", err.data);
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -753,17 +608,26 @@ window.onload = function() {
         event.preventDefault();
         toggleLoadGIF();
 
-        var curr_folder = $("#currentFolder").val();
-        var url = "/list/" + curr_folder;
+
+        if(CURRENT_FOLDER=='starred'){
+            var star = 1;
+            var url = "/list";
+        }
+        else {
+            var star = 0;
+            var url = "/list/" + CURRENT_FOLDER;
+        }
+        console.log(url);
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
         var params = {
-            "folder_id": curr_folder,
+            "folder_id": CURRENT_FOLDER,
             "Search": search_text,
             "SortBy": sort_option,
-            "offset": offset_index };
-        console.log(params);
+            "offset": offset_index,
+            "Star":   star
+        };
         $.ajax({
             type: 'GET',
             url: url,
@@ -771,42 +635,60 @@ window.onload = function() {
             dataType: 'json',
             data: params,
             success: function(result) {
-                                // Show bookmarks of the selected folder
-                var bookmarks = result.data;
+                // Show bookmarks of the selected folder
+                var bookmarks = result.data.bookmarks;
 
                 // Store current bookmarks
-                current_bookmarks = bookmarks;
+                CURRENT_BOOKMARKS = bookmarks;
 
                 // Update 
-                var bookmark_list = '';
-                for(var i = 0; i < bookmarks.length; i++) {
-                    bookmark_list +=
-                        '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
-                        '    <div class="content">\n' +
-                        '        <div class="card card--small">\n' +
-                        '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
-                        '            <a href="' + bookmarks[i].url + '"><h2 class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
-                        '            <div class="card__action-bar">\n';
-                        if(bookmarks[i].star == 1) {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
-                        } else {
-                            bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
-                        }
-                        bookmark_list +=
-                        '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '-' + bookmarks[i].title + '-' + bookmarks[i].url + '-' + bookmarks[i].description + '-' + bookmarks[i].folder_id +'"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
-                        '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id +'"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
-                        '            </div>\n' +
-                        '         </div>\n' +
-                        '     </div>\n' +
-                        '</div>\n';
-                }
+                var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                showErrorModal("Error", err.data);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
             }
         });
+    });
+
+
+    //Change Password
+    $("#resetPassword").on("submit", function (event) {
+        event.preventDefault();
 
         toggleLoadGIF();
+        // Reset and close reset password modal
+        $("#resetPassword")[0].reset();
+        window.location.hash = "close";
+        var url = '/passwordReset';
+        var params = {
+            "password" : document.getElementById("password").value,
+            "confirm_password" : document.getElementById("confirm_password").value
+        };
+
+        $.ajax({
+            cache: false,
+            type: 'POST',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(params),
+            success: function(result) {
+                // show success msg
+                showErrorModal("Success", "Password reset successfully!");
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                showErrorModal("Error", err.data);
+            },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
+        });
     });
 
     /*******************************************************************/
@@ -878,26 +760,32 @@ window.onload = function() {
     addBookmark.className = "is-active";
   }
 
-
-
-/*
-    $('#confirmButton').click(function() {
-         var id = $(this).attr('id');
-         alert(id);
-     });
-
-
-    function deleteBookmark(id) {
-            $.ajax({
-                    url: '/folders/delete/' + id,
-                    type: 'GET',
-                    success: function(res) {
-                            loadList();
-                    }
-            });
-    }
-    */
     /**************************************************************************/
+    function addBookmarkHTML(bookmarks) {
+        var bookmark_list = '';
+        for(var i = 0; i < bookmarks.length; i++) {
+            bookmark_list += 
+            '<div class="col-1-3 mobile-col-1-3 card-min-width">\n' +
+            '    <div class="content">\n' +
+            '        <div class="card card--small" id="bookmark-card-' + bookmarks[i].id + '">\n' +
+            '            <div style="background-color:#DE2924" class="card__image"></div>\n' +
+            '            <a class="bookmark-link" id="bookmark-url-' + bookmarks[i].id +'" href="' + bookmarks[i].url + '"><h2 id="title-bookmark-' + bookmarks[i].id + '" class="card__title">' + bookmarks[i].title + '</h2></a>\n' +
+            '            <div class="card__action-bar">\n';
+            if(typeof bookmarks[i].star !== 'undefined' && bookmarks[i].star == 1) {
+                bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/unstar" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg"></i></a>\n';
+            } else {
+                bookmark_list += '                <a class="card__button" href="/bookmarks/' + bookmarks[i].id + '/star" id="star-bookmark-' + bookmarks[i].id +'"><i class="fa fa-star fa-lg fa-star-inactive"></i></a>\n';
+            }
+            bookmark_list +=
+            '                <a class="card__button" href="#editBookmark" id="edit-bookmark-' + bookmarks[i].id + '"><i class="fa fa-info-circle fa-lg"></i></a>\n' +
+            '                <a class="card__button" href="/bookmarks/delete/' + bookmarks[i].id + '" id="delete-bookmark-' + bookmarks[i].id + '"><i class="fa fa-trash-o fa-lg"></i></a>\n' +
+            '            </div>\n' +
+            '         </div>\n' +
+            '     </div>\n' +
+            '</div>\n';
+        }
+        return bookmark_list;
+    }
 
     // error modal
     function showErrorModal(header,message)

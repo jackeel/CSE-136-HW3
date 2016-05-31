@@ -1,4 +1,4 @@
-#CSE-136-HW3#
+#CSE-136-HW5#
 
 ## LOG IN !IMPORTANT##
 to log into a account with prefilled data, use this accound: 
@@ -10,7 +10,16 @@ Dummy data was preset in the database for testing.
 Please note that the data is reset every time the application is reset (dropped if exist in schemas).
 
 ##Technologies implemented##
-
+* This web application works fully with and without javasccript! Just refresh page to show isomorphic abilities. 
+* loading bars to show progress in ajax requests. 
+* paginiation with javascript on and off
+* used jquery in order to minimize code written, be more efficient with time, and so we can learn it as a team since we lacked experience in it. 
+* error handling in ajax request to keep user informed of any issues.
+* handled corner cases suggested by the ta to implement in HW3: 
+ * when no folders, show a placeholder
+ * pagination
+ * export/import issues was checked.
+ * reset password issue fixed
 * compression and caching static files
 * logging 
  * errors

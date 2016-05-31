@@ -31,8 +31,8 @@ function handleError(err, action, req, res)
     }
     else
     {
-        //req.flash('error_messages', errors);
-        res.redirect('/list#warningModal');  // flash error to the add modal
+        req.flash('error_messages', action);
+        res.redirect('/list#warningModal');
     }
 }
  
@@ -54,18 +54,10 @@ module.exports.insert = function(req, res){
 
     req.checkBody(validate_insert);
     var errors = req.validationErrors();
-
     if (errors) {
-        if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-            res.status(400).json({
-                status: Constants.status.failed,
-                msg: errors
-            });
-        }else {
-            req.flash('error_messages', errors);
-            res.redirect('/list#addFolder');  // flash error to the add modal
-        }
-        // TODO: send request to right error page for adding folder
+        // pass first validation error message
+        handleError('', errors[0].msg, req, res);
+        return;
     } else {
         var name = db.escape(req.body.name);
         var user_id = db.escape(req.session.userId);
@@ -73,15 +65,13 @@ module.exports.insert = function(req, res){
         var queryString = 'INSERT INTO folders (name, user_id) VALUES (' + name + ', ' + user_id + ')';
 
         db.query(queryString, function(err, result){
-            if (err)
-            {
-                handleError(err, 'Duplicate folder name exists', req, res);
+            if (err) {
+                handleError(err, 'A folder with that name exists already.', req, res);
                 return; 
             } 
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
-                if (err)
-                {
-                    handleError(err, 'show folders', req, res);
+                if (err) {
+                    handleError(err, 'Error selecting folders', req, res);
                     return;
                 }
                 if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -92,8 +82,8 @@ module.exports.insert = function(req, res){
                             "folder_name": req.body.name,
                             "folder_id": result.insertId
                         }
-                    })
-                }else {
+                    });
+                } else {
                     res.redirect('/list');
                 }
             });
@@ -110,7 +100,7 @@ module.exports.delete = function(req, res) {
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err)
         {
-            handleError(err, 'delete folder', req, res);
+            handleError(err, 'Error deleting folder', req, res);
             return;
         }
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -121,8 +111,8 @@ module.exports.delete = function(req, res) {
                     "folder_id": req.params.folder_id
                 }
             })
-        }else {
-            res.redirect('/list');
+        } else {
+            res.redirect('back');
         }
     });
 };
