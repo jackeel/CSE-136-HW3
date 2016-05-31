@@ -95,8 +95,8 @@ window.onload = function() {
                     params.id = bookmark.id;
                     CURRENT_BOOKMARKS.push(params);
                 }
-
-                // TODO: add to next page if current page is full
+                
+                getTotalCount();
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -803,6 +803,43 @@ window.onload = function() {
         $('#folderList').css('height', '100%');
         var height = $('#folderList').height() - $('#sidebar div:first').height();
         $('#folderList').css('max-height', height+'px');
+    }
+
+    function getTotalCount() {
+        if (CURRENT_FOLDER == "starred") {
+            var url = "/bookmarks/getCount";
+            var star = 1;
+        }
+        else {
+            var url = "/bookmarks/getCount" + "/" + CURRENT_FOLDER;
+            var star = 0;
+        }
+
+        var search_text = $('#searchForm input[name="Search"]').val();
+        var sort_option = $('#orderByForm select[name="SortBy"]').val();
+        var offset_index = $(this).text();
+        var params_ = {
+            "Search": search_text,
+            "SortBy": sort_option,
+            "Star":   star
+        };
+        $.ajax({
+            type: 'GET',
+            async: false,
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: params_,
+            success: function (result) {
+                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
+                var paginations_html="";
+                for(var i = 1; i <= num_pagination; i++) {
+                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : CURRENT_FOLDER) + '?Search=' + search_text +
+                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
+                }
+                $('#pagination').html(paginations_html);
+            }
+        });
     }
 
     // $( window ).resize(function() {
