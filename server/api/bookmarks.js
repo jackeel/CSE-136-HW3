@@ -168,7 +168,7 @@ module.exports.listBookmarks = function(req, res, next) {
     if(offset){
         queryString += " LIMIT 9 OFFSET "+((offset-1)*9);
     }
-    //console.log(queryString);
+
     db.query(queryString, function(err, bookmarks) {
         if (err)
         {
