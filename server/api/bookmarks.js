@@ -30,13 +30,13 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
-function handleError(err, action, req, res)
+function handleError(status_code, err, action, req, res)
 {
     logger.log('debug', "bookmark-actions: "+ action,
               {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-        res.status(500).json({ status: Constants.status.error, data: action });
+        res.status(status_code).json({ status: Constants.status.error, data: action });
     }
     else
     {
@@ -67,7 +67,8 @@ module.exports.list = function(req, res) {
             search: req.search,
             errors: res.locals.error_messages,
             num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
-            star: req.star
+            star: req.star,
+            offset: req.offset
         });
     }
 }
@@ -122,7 +123,7 @@ module.exports.getTotalBookmarks = function(req, res, next) {
     console.log("Get total bookmarks: " +queryString);
     db.query(queryString, function(err, bookmarks) {
         if (err) {
-            handleError(err, 'Error getting total bookmarks', req, res);
+            handleError(500, err, 'Error getting total bookmarks', req, res);
             return;
         };
         req.numBookmarks = bookmarks.length;
@@ -144,6 +145,7 @@ module.exports.listBookmarks = function(req, res, next) {
   req.current_folder_id = folder_id;
   req.order_by = order_by;
   req.star = star;
+  req.offset = offset;
   search = db.escape('%' + search + '%');
   var queryString = "";
   if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&
@@ -181,7 +183,7 @@ module.exports.listBookmarks = function(req, res, next) {
     db.query(queryString, function(err, bookmarks) {
         if (err)
         {
-          handleError(err, 'Error listing bookmarks', req, res);
+          handleError(500, err, 'Error listing bookmarks', req, res);
           return;
         }
         req.bookmarks = bookmarks;
@@ -195,7 +197,7 @@ module.exports.listBookmarks = function(req, res, next) {
 module.exports.listFolders = function(req, res, next) {
     db.query('SELECT * from folders WHERE user_id = ' + req.session.userId + ' ORDER BY id', function(err, folders) {
         if (err) {
-            handleError(err, 'Error listing folders', req, res);
+            handleError(500, err, 'Error listing folders', req, res);
             return;
         }
         req.folders = folders;
@@ -212,12 +214,12 @@ module.exports.edit = function(req, res) {
 
     db.query('SELECT * from bookmarks WHERE id = ' + id, function(err, bookmark) {
         if (err) {
-            handleError(err, 'Error selecting bookmark to edit', req, res);
+            handleError(500, err, 'Error selecting bookmark to edit', req, res);
             return;
         }
         db.query('SELECT * from folders WHERE user_id = ' + req.session.userId +' ORDER BY id', function(err, folders) {
             if (err) {
-                handleError(err, 'Error selecting folder of bookmark to edit', req, res);
+                handleError(500, err, 'Error selecting folder of bookmark to edit', req, res);
                 return;
             }
             res.render('bookmarks/edit', {bookmark: bookmark[0], folders: folders, errors: res.locals.error_messages});
@@ -235,7 +237,7 @@ module.exports.delete = function(req, res) {
     db.query('DELETE from bookmarks where id = ' + id, function(err){
         if (err)
         {
-            handleError(err, 'Error deleting bookmark', req, res);
+            handleError(500, err, 'Error deleting bookmark', req, res);
             return;
         }
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -297,7 +299,7 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
     if (errors) {
         // pass first validation error message
-        handleError('', errors[0].msg, req, res);
+        handleError(400, '', errors[0].msg, req, res);
         return;
     } else {
         var user_id = req.session.userId;
@@ -310,7 +312,7 @@ module.exports.insert = function(req, res){
             ', ' + folder_id + ', '+description+')';
         db.query(queryString, function(err, result){
             if (err) {
-                handleError(err, 'A bookmark with the same title already exists in that folder.', req, res);
+                handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
                 return;
             }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -405,7 +407,7 @@ module.exports.update = function(req, res){
         db.query(queryString, function(err){
             if (err) {
                 if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-                    handleError(err, 'A bookmark with the same title already exists in that folder.', req, res);
+                    handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
                     return;
                 } else {
                     errors = {msg: 'A bookmark with the same title already exists in that folder.'};
@@ -442,7 +444,7 @@ module.exports.star = function(req, res) {
   var queryString = 'UPDATE bookmarks SET star = 1 WHERE id = ' + id;
   db.query(queryString, function(err){
       if (err) {
-          handleError(err, 'Error updating bookmark star', req, res);
+          handleError(500, err, 'Error updating bookmark star', req, res);
           return;
       }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -468,7 +470,7 @@ module.exports.unstar = function(req, res) {
   var queryString = 'UPDATE bookmarks SET star = 0 WHERE id = ' + id;
   db.query(queryString, function(err){
       if (err) {
-          handleError(err, 'Error updating bookmark unstar', req, res);
+          handleError(500, err, 'Error updating bookmark unstar', req, res);
           return;
       }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -529,7 +531,7 @@ module.exports.download = function(req, res){
     }
     fs.writeFile("server/tmp/bookmarks.json", JSON.stringify(array_json_bookmark), function(err) {
         if(err) {
-            handleError(err, 'Error downloading export', req, res);
+            handleError(500, err, 'Error downloading export', req, res);
             return;
         }
         var file = __dirname + '/../tmp/bookmarks.json';
@@ -550,7 +552,7 @@ module.exports.lastVisit = function(req, res) {
   var queryString = 'UPDATE bookmarks SET last_visit_date = '+ timestamp + 'WHERE id = ' + id;
   db.query(queryString, function(err){
       if (err) {
-          handleError(err, 'Error updating bookmark last visit', req, res);
+          handleError(500, err, 'Error updating bookmark last visit', req, res);
           return;
       }
       if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -589,13 +591,13 @@ var upload = multer({ storage : storage}).single('bookmark-import');
 module.exports.upload = function(req, res) {
     upload(req, res, function(err) {
         if(err) {
-            handleError(err, 'Error occurred with uploading file', req, res);
+            handleError(500, err, 'Error occurred with uploading file', req, res);
             return;
         }
         var file_name = "upload.json";
         fs.readFile('./uploadDir/' + file_name, 'utf8', function(err,data) {
             if (err) {
-                handleError(err, 'Error occurred with reading uploaded file', req, res);
+                handleError(500, err, 'Error occurred with reading uploaded file', req, res);
                 return;
             }
 
@@ -605,7 +607,7 @@ module.exports.upload = function(req, res) {
             var errors = req.validationErrors();
             if (errors) {
                 // pass first validation error message
-                handleError('', errors[0].msg, req, res);
+                handleError(400, '', errors[0].msg, req, res);
                 return;
             } else {
                 var folders = JSON.parse(data);
@@ -622,7 +624,7 @@ module.exports.upload = function(req, res) {
                             var insertFolderQuery = 'INSERT INTO folders (name, user_id) VALUES ( "'+ folder.name + '", ' + session_id + ')';
                             db.query(insertFolderQuery, function(err, row){
                                 if (err) {
-                                    handleError(err, 'Error inserting uploaded folders', req, res);
+                                    handleError(500, err, 'Error inserting uploaded folders', req, res);
                                     return;
                                 }
                                 // console.log(folder.bookmarks);
@@ -652,7 +654,7 @@ function insertBookmarks(bookmarks, folderId) {
 
                 db.query(insertBookmark, function(err){
                     if (err) {
-                        handleError(err, 'Error inserting uploaded bookmarks', req, res);
+                        handleError(500, err, 'Error inserting uploaded bookmarks', req, res);
                         return;
                     }
                 });

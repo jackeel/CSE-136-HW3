@@ -21,13 +21,13 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
-function handleError(err, action, req, res)
+function handleError(status_code, err, action, req, res)
 {
     logger.log('debug', "folder-actions: "+ action,
               {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-        res.status(500).json({ status: Constants.status.error, data: action });
+        res.status(status_code).json({ status: Constants.status.error, data: action });
     }
     else
     {
@@ -56,7 +56,7 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
     if (errors) {
         // pass first validation error message
-        handleError('', errors[0].msg, req, res);
+        handleError(400, '', errors[0].msg, req, res);
         return;
     } else {
         var name = db.escape(req.body.name);
@@ -66,12 +66,12 @@ module.exports.insert = function(req, res){
 
         db.query(queryString, function(err, result){
             if (err) {
-                handleError(err, 'A folder with that name exists already.', req, res);
+                handleError(409, err, 'A folder with that name exists already.', req, res);
                 return; 
             } 
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
                 if (err) {
-                    handleError(err, 'Error selecting folders', req, res);
+                    handleError(500, err, 'Error selecting folders', req, res);
                     return;
                 }
                 if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -100,7 +100,7 @@ module.exports.delete = function(req, res) {
     db.query('DELETE from folders where id = ' + id, function(err){
         if (err)
         {
-            handleError(err, 'Error deleting folder', req, res);
+            handleError(500, err, 'Error deleting folder', req, res);
             return;
         }
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
