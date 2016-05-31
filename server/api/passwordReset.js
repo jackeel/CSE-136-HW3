@@ -26,13 +26,13 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
-function handleError(err, action, req, res)
+function handleError(status_code, err, action, req, res)
 {
     logger.log('debug', "password-reset: "+ action,
               {timestamp: Date.now(), userId:req.session.userId , ip: req.ip, erro: err.code}
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-        res.status(500).json({ status: Constants.status.error, data: action });
+        res.status(status_code).json({ status: Constants.status.error, data: action });
     }
 }
 
@@ -149,7 +149,7 @@ module.exports.passwordReset = function(req, res) {
         db.query(queryString, function(err, rows) {
             if(err)
             {
-              handleError(err, 'Error selecting username for password reset', req, res);
+              handleError(500, err, 'Error selecting username for password reset', req, res);
               return;
             }
 
@@ -168,7 +168,7 @@ module.exports.passwordReset = function(req, res) {
                 db.query(updateQueryString, function(err) {
                     if (err)
                     {
-                      handleError(err, 'Error updating user password', req, res);
+                      handleError(500, err, 'Error updating user password', req, res);
                       return;
                     }
                     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
