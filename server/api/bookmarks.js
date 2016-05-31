@@ -67,7 +67,8 @@ module.exports.list = function(req, res) {
             search: req.search,
             errors: res.locals.error_messages,
             num_pagination: Math.ceil(req.numBookmarks/MAX_BOOKMARKS),
-            star: req.star
+            star: req.star,
+            offset: req.offset
         });
     }
 }
@@ -144,6 +145,7 @@ module.exports.listBookmarks = function(req, res, next) {
   req.current_folder_id = folder_id;
   req.order_by = order_by;
   req.star = star;
+  req.offset = offset;
   search = db.escape('%' + search + '%');
   var queryString = "";
   if ((order_by != "bookmarks.id") && (order_by != "bookmarks.url") &&

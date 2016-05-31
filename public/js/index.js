@@ -1,6 +1,7 @@
 var CURRENT_FOLDER;          // keeps track of currently selected folder ('', 'starred', or some integer)
 var CURRENT_BOOKMARKS = [];  // array that tracks all currently visible bookmark objects
 var MAX_BOOKMARKS = 9;       // max visible bookmarks on a single page
+var CURRENT_OFFSET;          // keeps track of current pagination offset
 
 
 /**
@@ -32,6 +33,7 @@ window.onload = function() {
                 // Update local bookmarks
                 CURRENT_BOOKMARKS = result.data.bookmarks;
                 CURRENT_FOLDER = '';
+                CURRENT_OFFSET = 1;
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -608,6 +610,7 @@ window.onload = function() {
         event.preventDefault();
         toggleLoadGIF();
 
+        CURRENT_OFFSET = $(this).text();
 
         if(CURRENT_FOLDER=='starred'){
             var star = 1;
@@ -617,7 +620,7 @@ window.onload = function() {
             var star = 0;
             var url = "/list/" + CURRENT_FOLDER;
         }
-        console.log(url);
+
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         var offset_index = $(this).text();
