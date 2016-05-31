@@ -81,7 +81,7 @@ module.exports.getCount = function(req, res) {
             }
         })
     }else{
-        res.status(422).json({
+        res.status(400).json({
             status: Constants.status.failed,
             msg: Constants.failedMessages.MISSING_PARAMETERS
         })
@@ -297,7 +297,7 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
     if (errors) {
         // pass first validation error message
-        handleError(422, '', errors[0].msg, req, res);
+        handleError(400, '', errors[0].msg, req, res);
         return;
     } else {
         var user_id = req.session.userId;
@@ -384,7 +384,7 @@ module.exports.update = function(req, res){
 
     if (errors) {
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-            res.status(422).json({
+            res.status(400).json({
                 status: Constants.status.failed,
                 data: errors[0].msg // pass first error message each request
             })
@@ -605,7 +605,7 @@ module.exports.upload = function(req, res) {
             var errors = req.validationErrors();
             if (errors) {
                 // pass first validation error message
-                handleError(422, '', errors[0].msg, req, res);
+                handleError(400, '', errors[0].msg, req, res);
                 return;
             } else {
                 var folders = JSON.parse(data);

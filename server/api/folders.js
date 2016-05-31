@@ -56,7 +56,7 @@ module.exports.insert = function(req, res){
     var errors = req.validationErrors();
     if (errors) {
         // pass first validation error message
-        handleError(422, '', errors[0].msg, req, res);
+        handleError(400, '', errors[0].msg, req, res);
         return;
     } else {
         var name = db.escape(req.body.name);
