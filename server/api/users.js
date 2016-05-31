@@ -23,16 +23,15 @@ var logger = new winston.Logger({
     exitOnError: false
 });
 
-function handleError(err, action, req, res)
+function handleError(status_code, err, action, req, res)
 {
     logger.log('debug', "user-actions: "+ action,
               {timestamp: Date.now(), ip: req.ip, erro: err.code}
             );
     if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-        res.status(500).json({ status: Constants.status.error, data: action });
+        res.status(status_code).json({ status: Constants.status.error, data: action });
         return false;
     }
-    //non ajax requests
     return true;
 }
 
@@ -83,9 +82,9 @@ module.exports.login = function(req, res) {
         db.query(queryString, function(err, rows) {
             if (err)
             {
-                if(handleError(err, 'select salt', req, res))
+                if(handleError(500, err, 'Error selecting username', req, res))
                 {
-                    errors = [{msg: 'Salt doesn\'t exist for user'}];
+                    errors = [{msg: 'An unexpected error occurred.'}];
                     res.render('login', {errors: errors});
                 }
                 return;
@@ -102,9 +101,9 @@ module.exports.login = function(req, res) {
                 db.query(queryString, function(err, rows) {
                     if (err)
                     {
-                        if(handleError(err, 'select salt', req, res))
+                        if(handleError(500, err, 'Error selecting username', req, res))
                         {
-                            errors = [{msg: 'id doesn\'t exist for user/salt'}];
+                            errors = [{msg: 'An unexpected error occurred.'}];
                             res.render('login', {errors: errors});
                         }
                         return;
@@ -194,7 +193,7 @@ module.exports.signup = function(req, res) {
         db.query(queryString, function(err, rows) {
             if (err) {
               if (req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-                res.status(400).json({
+                res.status(200).json({
                 status: Constants.status.SUCCESS,
                 successMessages: Constants.successMessages.OK
               });
