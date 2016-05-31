@@ -95,8 +95,8 @@ window.onload = function() {
                     params.id = bookmark.id;
                     CURRENT_BOOKMARKS.push(params);
                 }
-                
-                getTotalCount();
+
+                updatePagination();
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -400,43 +400,8 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        //var CURRENT_FOLDER = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
         
-        if (CURRENT_FOLDER == "starred") {
-            var url = "/bookmarks/getCount";
-            var star = 1;
-        }
-        else {
-            var url = "/bookmarks/getCount" + "/" + CURRENT_FOLDER;
-            var star = 0;
-        }
-
-        var search_text = $('#searchForm input[name="Search"]').val();
-        var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var offset_index = $(this).text();
-        var params = {
-            "Search": search_text,
-            "SortBy": sort_option,
-            "offset": offset_index,
-            "Star":   star
-        };
-        $.ajax({
-            type: 'GET',
-            url: url,
-            contentType: 'application/json',
-            dataType: 'json',
-            data: params,
-            success: function (result) {
-                var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
-                var paginations_html="";
-                for(var i = 1; i <= num_pagination; i++) {
-                    paginations_html+= '<a href="/list/' + (star == 1 ? "" : CURRENT_FOLDER) + '?Search=' + search_text +
-                        '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
-                }
-                $('#pagination').html(paginations_html);
-            }
-        });
-
+        updatePagination();
 
         if (CURRENT_FOLDER == "starred") {
             var url = "/list";
@@ -805,7 +770,7 @@ window.onload = function() {
         $('#folderList').css('max-height', height+'px');
     }
 
-    function getTotalCount() {
+    function updatePagination() {
         if (CURRENT_FOLDER == "starred") {
             var url = "/bookmarks/getCount";
             var star = 1;
