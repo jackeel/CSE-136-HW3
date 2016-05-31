@@ -641,8 +641,7 @@ module.exports.upload = function(req, res) {
         });
     });
 };
-
-
+//
 // Helper function for inserting bookmarks via import
 function insertBookmarks(bookmarks, folderId) {
     bookmarks.forEach(function(bookmark) {

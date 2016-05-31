@@ -187,7 +187,6 @@
 	            	<li><a id="folder-<%=folder.id%>" href="/list/<%= folder.id%>" <%- current_folder_id == folder.id ? "class='active-folder'" : "class='inactive-folder'" %>><%= folder.name%></a>
 	                    <a class="pad-trash-icon" href="/folders/delete/<%= folder.id%>" id="delete-folder-<%=folder.id%>"><i class="fa fa-trash-o fa-lg"></i></a>
 	                </li>
-
 	            <% }); %>
 	      </ul>
 	      <div class="buttonWrapper">
