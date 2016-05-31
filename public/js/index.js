@@ -179,22 +179,50 @@ window.onload = function() {
                 success: function(result) {
                     window.location.hash = "close";
 
-                    // Remove bookmark from list
-                    var data = result.data;
-                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-
-                    // Unbind form in this context to prevent propagation later on
-                    $("#confirmDeleteForm").off('submit');
-
-                    // Update visible bookmarks
-                    for(var i = 0; i < CURRENT_BOOKMARKS.length; i++) {
-                        if(CURRENT_BOOKMARKS[i].id == data.bookmark_id) {
-                            CURRENT_BOOKMARKS.splice(i, 1);
-                            break;
-                        }
+                    if (CURRENT_FOLDER == "starred") {
+                        var url = "/list";
+                        var star = 1;
+                    }
+                    else {
+                        var url = "/list/" + CURRENT_FOLDER;
+                        var star = 0;
                     }
 
-                    // TODO: see if need to do anything with pagination
+                    var search_text = $('#searchForm input[name="Search"]').val();
+                    var sort_option = $('#orderByForm select[name="SortBy"]').val();
+                    var params = {
+                        "folder_id": CURRENT_FOLDER,
+                        "Search": search_text,
+                        "SortBy": sort_option,
+                        "Star":   star,
+                        "offset": CURRENT_OFFSET
+                    };
+
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: params,
+                        success: function(result) {
+
+                            // Show bookmarks of the selected folder
+                            var bookmarks = result.data.bookmarks;
+
+                            // Store current bookmarks
+                            CURRENT_BOOKMARKS = bookmarks;
+
+                            // Update
+                            var bookmark_list = addBookmarkHTML(bookmarks);
+                            $('#bookmarks').html(bookmark_list);
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            showErrorModal("Error", err.data);
+                        },
+                    });
+
+                    updatePagination();
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
