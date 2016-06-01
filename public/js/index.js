@@ -131,9 +131,9 @@ window.onload = function() {
 
                 // Remove immediately if in starred list
                 if (CURRENT_FOLDER == "starred") {
-                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-
-                    // TODO: update visible bookmarks and see if need to do anything with pagination
+                    // Update all bookmarks in current pagination, and update the pagination itself
+                    updateBookmarks();
+                    updatePagination();
                     return;
                 }
 
@@ -179,22 +179,9 @@ window.onload = function() {
                 success: function(result) {
                     window.location.hash = "close";
 
-                    // Remove bookmark from list
-                    var data = result.data;
-                    $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
+                    updateBookmarks();
 
-                    // Unbind form in this context to prevent propagation later on
-                    $("#confirmDeleteForm").off('submit');
-
-                    // Update visible bookmarks
-                    for(var i = 0; i < CURRENT_BOOKMARKS.length; i++) {
-                        if(CURRENT_BOOKMARKS[i].id == data.bookmark_id) {
-                            CURRENT_BOOKMARKS.splice(i, 1);
-                            break;
-                        }
-                    }
-
-                    // TODO: see if need to do anything with pagination
+                    updatePagination();
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
@@ -771,6 +758,8 @@ window.onload = function() {
         $('#folderList').css('max-height', height+'px');
     }
 
+    // TODO Without async set as false, this function call sometimes fails, idk why.
+    // Update the pagination bar based on current settings(current folder, starred, search text, sort option).
     function updatePagination() {
         if (CURRENT_FOLDER == "starred") {
             var url = "/bookmarks/getCount";
@@ -783,7 +772,7 @@ window.onload = function() {
 
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
-        var offset_index = $(this).text();
+        //var offset_index = $(this).text();
         var params_ = {
             "Search": search_text,
             "SortBy": sort_option,
@@ -805,6 +794,53 @@ window.onload = function() {
                 }
                 $('#pagination').html(paginations_html);
             }
+        });
+    }
+
+    // Update the bookmarks of current pagination and based on current settings (folder, starred, search text, sort by).
+    // TODO See if we can replace some repeated code with this function
+    function updateBookmarks() {
+        if (CURRENT_FOLDER == "starred") {
+            var url = "/list";
+            var star = 1;
+        }
+        else {
+            var url = "/list/" + CURRENT_FOLDER;
+            var star = 0;
+        }
+
+        var search_text = $('#searchForm input[name="Search"]').val();
+        var sort_option = $('#orderByForm select[name="SortBy"]').val();
+        var params = {
+            "folder_id": CURRENT_FOLDER,
+            "Search": search_text,
+            "SortBy": sort_option,
+            "Star":   star,
+            "offset": CURRENT_OFFSET
+        };
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            contentType: 'application/json',
+            dataType: 'json',
+            data: params,
+            success: function(result) {
+
+                // Show bookmarks of the selected folder
+                var bookmarks = result.data.bookmarks;
+
+                // Store current bookmarks
+                CURRENT_BOOKMARKS = bookmarks;
+
+                // Update
+                var bookmark_list = addBookmarkHTML(bookmarks);
+                $('#bookmarks').html(bookmark_list);
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                showErrorModal("Error", err.data);
+            },
         });
     }
 
