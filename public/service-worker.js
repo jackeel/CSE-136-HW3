@@ -1,35 +1,25 @@
-// this.addEventListener('install', function(event) {
-//   console.log('inside the install event listern install'); 
-//   event.waitUntil(
-//     caches.open('v2').then(function(cache) {
-//       //should use regex 
-//       return cache.addAll([
-//         '/js/signup.js',
-//         '/js/jquery.min.js',
-//         '/js/login.js',
-//         '/js/signup.js',
-//         '/css/signup.css',
-//         '/css/style.css',
-//         '/font-awesome/css/font-awesome.min.css',
-//         '/html/offline.html',
-//         '/img/ajax-loader.gif'
-//       ]);
-//     })
-//   );
-// });
+var version = 'v2'; 
 
 this.addEventListener('install', function(event) {
   console.log('inside the install event listern install'); 
   event.waitUntil(
-    caches.open('v1').then(function(cache) {
+    caches.open(version).then(function(cache) {
+      //should use regex 
       return cache.addAll([
+        '/js/signup.js',
         '/js/jquery.min.js',
+        '/js/login.js',
+        '/js/signup.js',
         '/css/signup.css',
+        '/css/style.css',
+        '/font-awesome/css/font-awesome.min.css',
         '/html/offline.html',
+        '/img/ajax-loader.gif'
       ]);
     })
   );
 });
+
 
 // this.addEventListener('fetch', function(event) {
 //   console.log('inside the install event listern install'); 
@@ -48,7 +38,6 @@ this.addEventListener('install', function(event) {
 //   }));
 // });
 
-var version = 'v1'; 
 self.addEventListener("fetch", function(event) {
   console.log('WORKER: fetch event in progress.');
 
