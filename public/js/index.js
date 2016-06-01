@@ -629,9 +629,6 @@ window.onload = function() {
         event.preventDefault();
 
         toggleLoadGIF();
-        // Reset and close reset password modal
-        $("#resetPassword")[0].reset();
-        window.location.hash = "close";
         var url = '/passwordReset';
         var params = {
             "password" : document.getElementById("password").value,
@@ -646,6 +643,10 @@ window.onload = function() {
             dataType: 'json',
             data: JSON.stringify(params),
             success: function(result) {
+                // Reset and close reset password modal
+                $("#resetPassword")[0].reset();
+                window.location.hash = "close";
+                
                 // show success msg
                 showErrorModal("Success", "Password reset successfully!");
             },
