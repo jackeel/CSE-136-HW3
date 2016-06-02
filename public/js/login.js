@@ -28,9 +28,8 @@ window.addEventListener('load', function() {
 });
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/js/service-worker.js', {
-        scope: '/js/'
-    }).then(function(reg) {
+    navigator.serviceWorker.register('/service-worker.js'
+    ).then(function(reg) {
         console.log('Yey!', reg);
     }).catch(function(err) {
         console.log('Boo!', err);
