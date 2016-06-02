@@ -88,3 +88,7 @@
 {"timestamp":"2016-05-31T17:24:05.498Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-31T17:26:03.679Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
 {"timestamp":"2016-05-31T17:57:05.162Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-06-02T17:18:11.621Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-06-02T17:25:42.568Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-06-02T17:27:09.873Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}
+{"timestamp":"2016-06-02T17:28:31.279Z","user":"'user1'","ip":"127.0.0.1","level":"debug","message":"user-actions: login"}

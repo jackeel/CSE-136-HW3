@@ -42,18 +42,7 @@ function handleError(status_code, err, action, req, res)
  */
 //
 module.exports.insert = function(req, res){
-    req.sanitizeBody('name').trim();
-    var validate_insert = {
-        'name': {
-            isLength: {
-                options: [{min: 1, max: 25}],
-                errorMessage: 'Folder name must be 1-25 characters'
-            },
-        },
-    };
-
-    req.checkBody(validate_insert);
-    var errors = req.validationErrors();
+    var errors = validateFolder(req);
     if (errors) {
         // pass first validation error message
         handleError(400, '', errors[0].msg, req, res);
@@ -66,8 +55,12 @@ module.exports.insert = function(req, res){
 
         db.query(queryString, function(err, result){
             if (err) {
-                handleError(409, err, 'A folder with that name exists already.', req, res);
-                return; 
+                if(err.code == 'ER_DUP_ENTRY') {
+                    handleError(409, err, 'A folder with that name exists already.', req, res);
+                } else {
+                    handleError(404, err, 'An error occurred creating the folder.', req, res);
+                }
+                return;
             } 
             db.query('SELECT * from folders WHERE user_id = ' + user_id + ' ORDER BY id', function(err, folders) {
                 if (err) {
@@ -115,4 +108,21 @@ module.exports.delete = function(req, res) {
             res.redirect('back');
         }
     });
+};
+
+
+function validateFolder(req) {
+    req.sanitizeBody('name').trim();
+
+    var params = {
+        'name': {
+            isLength: {
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Folder name must be 1-25 characters'
+            },
+        },
+    };
+
+    req.checkBody(params);
+    return req.validationErrors();
 };
