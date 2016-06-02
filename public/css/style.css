@@ -1456,7 +1456,7 @@ div#pagination a {
 }
 
 div#pagination a.active {
-    border-radius: 10px;
+    background-color: #CACACA;
 }
 
 div#pagination a:hover:not(.active) {

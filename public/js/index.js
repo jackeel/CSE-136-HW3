@@ -370,6 +370,7 @@ window.onload = function() {
                         '?&offset=' + i + '&Star=' + star + '">' + i + '</a>';
                 }
                 $('#pagination').html(paginations_html);
+                setPaginationCSS();
 
             },
             error: function(xhr, status, error) {
@@ -386,8 +387,7 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        
-        updatePagination();
+
         // Set current offset to 1 when sort or search.
         CURRENT_OFFSET = 1;
 
@@ -426,6 +426,7 @@ window.onload = function() {
                 // Update
                 var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
+                updatePagination(setPaginationCSS);
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -503,7 +504,6 @@ window.onload = function() {
                                 break;
                             } else {
                                 // Otherwise remove bookmark from list if editted to a different folder
-                                console.log(CURRENT_OFFSET);
                                 updatePagination(updateBookmarks);
                                 return;
                             }
@@ -562,6 +562,7 @@ window.onload = function() {
         toggleLoadGIF();
 
         CURRENT_OFFSET = $(this).text();
+        setPaginationCSS();
 
         if(CURRENT_FOLDER=='starred'){
             var star = 1;
@@ -845,6 +846,11 @@ window.onload = function() {
         });
     }
 
+    // When change the page, need to change the pagination css to highlight the current page.
+    function setPaginationCSS() {
+        $("#pagination").children('a').removeClass();
+        $("#pagination").children('a').eq(CURRENT_OFFSET-1).addClass("active");
+    }
     // $( window ).resize(function() {
     //   setMaxHeightFolders();
     // });
