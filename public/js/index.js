@@ -178,10 +178,9 @@ window.onload = function() {
                 contentType: 'application/json',
                 success: function(result) {
                     window.location.hash = "close";
-
                     updateBookmarks();
-
                     updatePagination();
+                    return;
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
@@ -778,7 +777,7 @@ window.onload = function() {
         };
         $.ajax({
             type: 'GET',
-            async: false,
+            //async: false,
             url: url,
             contentType: 'application/json',
             dataType: 'json',
