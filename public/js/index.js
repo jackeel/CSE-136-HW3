@@ -770,7 +770,7 @@ window.onload = function() {
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         //var offset_index = $(this).text();
-        var params_ = {
+        var params = {
             "Search": search_text,
             "SortBy": sort_option,
             "Star":   star
@@ -781,7 +781,7 @@ window.onload = function() {
             url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: params_,
+            data: params,
             success: function (result) {
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
