@@ -48,12 +48,6 @@ gulp.task('uncss-minify', function () {
         .pipe(gulp.dest(build.public+'/font-awesome/css'));
 });
 
-gulp.task('css-minify', function () {
-    gulp.src('./public/css/*.css')
-        .pipe(minifycss({keepBreaks: false}))
-        .pipe(gulp.dest(build.public+'/css'));
-});
-
 gulp.task('js-minify', function () {
     gulp.src('./public/js/*.js')
         .pipe(uglify())
