@@ -1440,10 +1440,25 @@ input.edit-button, a.edit-button {
                 no-repeat;
 }
 
-#pagination
+div#pagination
 {
   clear: both;
   font-size: 18px;
   letter-spacing: 8px;
+}
 
+div#pagination a {
+    color: #474448;
+    border-radius: 10px;
+    text-decoration: none;
+    padding: 8px 8px;
+    transition: background-color .3s;
+}
+
+div#pagination a.active {
+    border-radius: 10px;
+}
+
+div#pagination a:hover:not(.active) {
+    background-color: #CACACA;
 }
