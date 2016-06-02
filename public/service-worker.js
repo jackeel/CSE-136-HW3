@@ -14,37 +14,31 @@ this.addEventListener('install', function(event) {
         '/css/style.css',
         '/font-awesome/css/font-awesome.min.css',
         '/html/offline.html',
-        '/img/ajax-loader.gif'
+        '/img/ajax-loader.gif',
       ]);
     })
   );
 });
 
-
-// this.addEventListener('fetch', function(event) {
-//   console.log('inside the install event listern install'); 
-//   console.log(event.request); 
-//   var response;
-//   event.respondWith(caches.match(event.request).catch(function() {
-//     return fetch(event.request);
-//   }).then(function(r) {
-//     response = r;
-//     caches.open('v1').then(function(cache) {
-//       cache.put(event.request, response);
-//     });
-//     return response.clone();
-//   }).catch(function() {
-//     return caches.match('/html/offline.html');
-//   }));
-// });
+function loginOrSignUpRequest(eventURL, eventMethod)
+{
+  if (eventURL.indexOf('login') > -1  || eventURL.indexOf('signup') > -1 ) {
+    return true; 
+  }
+  else {
+    return false; 
+  }
+}
 
 self.addEventListener("fetch", function(event) {
-  console.log('WORKER: fetch event in progress.');
-
   /* We should only cache GET requests, and deal with the rest of method in the
      client-side, by handling failed POST,PUT,PATCH,etc. requests.
   */
-  if (event.request.method !== 'GET') {
+
+  var eventURL = event.request.url; 
+  var eventMethod = event.request.method;
+
+  if (eventMethod !== 'GET' && !loginOrSignUpRequest(eventURL,eventMethod)) {
     /* If we don't block the event as shown below, then the request will go to
        the network as usual.
     */
@@ -74,7 +68,7 @@ self.addEventListener("fetch", function(event) {
           // We handle the network request with success and failure scenarios.
           .then(fetchedFromNetwork, unableToResolve)
           // We should catch errors on the fetchedFromNetwork handler as well.
-          .catch(unableToResolve);
+          .catch(unableToResolve(event));
 
         /* We return the cached response immediately if there is one, and fall
            back to waiting on the network as usual.
@@ -94,11 +88,13 @@ self.addEventListener("fetch", function(event) {
             // We open a cache to store the response for this request.
             .open(version)
             .then(function add(cache) {
-              /* We store the response for this request. It'll later become
-                 available to caches.match(event.request) calls, when looking
-                 for cached responses.
-              */
-            // cache.put(event.request, cacheCopy);
+             
+              //dont want to cache anything else beside bookmarks and folders. when logged in. 
+              if(event.request.url.indexOf('list') > -1)
+              {
+                cache.put(event.request, cacheCopy);
+              }
+            
             })
             .then(function() {
               console.log('WORKER: fetch response stored in cache.', event.request.url);
@@ -121,28 +117,31 @@ self.addEventListener("fetch", function(event) {
         //If they are trying to traverse a differnent page, such as a folder, list all, list all star, then give them the cache version and a error modal
         
         function unableToResolve () {
-          /* There's a couple of things we can do here.
-             - Test the Accept header and then return one of the `offlineFundamentals`
-               e.g: `return caches.match('/some/cached/image.png')`
-             - You should also consider the origin. It's easier to decide what
-               "unavailable" means for requests against your origins than for requests
-               against a third party, such as an ad provider
-             - Generate a Response programmaticaly, as shown below, and return that
-          */
 
-          console.log('WORKER: fetch request failed in both cache and network.');
+          //check this route first. /login POST.
+          //if login, then take to offline version of page. 
+          // /POST http://localhost:3000/login
+          //WORKER: fetch event ignored. POST http://localhost:3000/login
+          //console.log('WORKER: fetch event ignored.', event.request.method, event.request.url);
 
-          /* Here we're creating a response programmatically. The first parameter is the
-             response body, and the second one defines the options for the response.
-          */
-          /*return new Response('<h1>Service Unavailable</h1>', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: new Headers({
-              'Content-Type': 'text/html'
-            })
-          });*/
-          return caches.match('/html/offline.html');
+          //handles cases where user isn't logged in yet. 
+          if(loginOrSignUpRequest(eventURL,eventMethod))
+          {
+            return caches.match('/html/offline.html');
+          }
+          else
+          {
+            //use for all other requests that use ajax...  send error message json. for error modal to get hit. in the spcified format being used
+            //in order for it not to get stuck in laoding phase. 
+            //say something line 'currnetly offline. loading old version of bookmarks. you cannot perform actions while offline'
+            return new Response('<h1>Service Unavailable</h1>', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/html'
+              })
+            });
+          }
         }
       })
   );
