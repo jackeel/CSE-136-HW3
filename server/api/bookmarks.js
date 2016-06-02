@@ -259,44 +259,7 @@ module.exports.delete = function(req, res) {
  * Does a redirect to the list page
  */
 module.exports.insert = function(req, res){
-    req.sanitizeBody('title').trim();
-    req.sanitizeBody('url').trim();
-    req.sanitizeBody('description').trim();
-    var validate_insert = {
-        'title': {
-            isLength: {
-                options: [{min: 1, max: 25}],
-                errorMessage: 'Bookmark title must be 1-25 characters long'
-            },
-        },
-        'url': {
-            isLength: {
-                options: [{min: 1, max: 2083}],
-                errorMessage: 'Bookmark URL must be 1-2083 characters long'
-            },
-            isURL: {
-                errorMessage: 'Invalid URL specified'
-            },
-            matches: {
-                options: ['^https?://', 'i'],
-                errorMessage: 'URL must start with http:// or https://'
-            }
-        },
-        'folder_id': {
-            isInt: {
-                errorMessage: 'Folder id must be an integer'
-            },
-            isLength: {
-                options: [{min: 1, max:11}],
-                errorMessage: 'Invalid folder id'
-            }
-        }
-    };
-
-    //req.sanitizeBody('title').escape();
-    //req.sanitizeBody('url').escape();
-    req.checkBody(validate_insert);
-    var errors = req.validationErrors();
+    var errors = validateBookmark(req);
     if (errors) {
         // pass first validation error message
         handleError(400, '', errors[0].msg, req, res);
@@ -312,7 +275,11 @@ module.exports.insert = function(req, res){
             ', ' + folder_id + ', '+description+')';
         db.query(queryString, function(err, result){
             if (err) {
-                handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
+                if (err.code == 'ER_DUP_ENTRY') {
+                    handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
+                } else {
+                    handleError(404, err, 'An error occurred creating the bookmark.', req, res);
+                }
                 return;
             }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
@@ -344,46 +311,7 @@ module.exports.insert = function(req, res){
 module.exports.update = function(req, res){
     var bookmark_id = req.params.bookmark_id;
 
-    req.sanitizeBody('title').trim();
-    req.sanitizeBody('url').trim();
-    req.sanitizeBody('description').trim();
-
-    var validate_update = {
-        'title': {
-            isLength: {
-                options: [{min: 1, max: 25}],
-                errorMessage: 'Bookmark title must be 1-25 characters'
-            },
-        },
-        'url': {
-            isLength: {
-                options: [{min: 1, max: 2083}],
-                errorMessage: 'Bookmark URL must be 1-2083 characters'
-            },
-            isURL: {
-                errorMessage: 'Invalid URL specified'
-            },
-            matches: {
-                options: ['^https?://', 'i'],
-                errorMessage: 'URL must start with http:// or https://'
-            }
-        },
-        'folder_id': {
-            isInt: {
-                errorMessage: 'Folder id must be an integer'
-            },
-            isLength: {
-                options: [{min: 1, max:11}],
-                errorMessage: 'Invalid folder id'
-            }
-        },
-    };
-
-    req.checkBody(validate_update);
-    //req.sanitizeBody('title').escape();
-    //req.sanitizeBody('url').escape();
-    var errors = req.validationErrors();
-
+    var errors = validateBookmark(req);
     if (errors) {
         if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
             res.status(400).json({
@@ -406,15 +334,24 @@ module.exports.update = function(req, res){
 
         db.query(queryString, function(err){
             if (err) {
-                if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
-                    handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
-                    return;
+                if(err.code == 'ER_DUP_ENTRY') {
+                    if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                        handleError(409, err, 'A bookmark with the same title already exists in that folder.', req, res);
+                    } else {
+                        errors = {msg: 'A bookmark with the same title already exists in that folder.'};
+                        req.flash('error_messages', errors);
+                        res.redirect('/bookmarks/edit/' + bookmark_id);  // flash errors to edit page
+                    }
                 } else {
-                    errors = {msg: 'A bookmark with the same title already exists in that folder.'};
-                    req.flash('error_messages', errors);
-                    res.redirect('/bookmarks/edit/' + bookmark_id);  // flash errors to edit page
-                    return;
+                    if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
+                        handleError(404, err, 'An error occurred updating the bookmark.', req, res);
+                    } else {
+                        errors = {msg: 'An error occurred updating the bookmark.'};
+                        req.flash('error_messages', errors);
+                        res.redirect('/bookmarks/edit/' + bookmark_id);  // flash errors to edit page
+                    }
                 }
+                return;
             }
             if(req.get(CONTENT_TYPE_KEY) == JSON_CONTENT_TYPE) {
                 res.status(200).json({
@@ -428,13 +365,13 @@ module.exports.update = function(req, res){
                         folder_id: req.body.folder_id
                     }
                 })
-            }else {
+            } else {
                 res.redirect('/list');
             }
         });
     }
 };
-//
+
 /**
  * Star a bookmark
  * Redirect to the current page
@@ -545,7 +482,7 @@ module.exports.download = function(req, res){
  */
 module.exports.lastVisit = function(req, res) {
   var id = req.body.bookmark_id || '';
-  var id = db.escape(id);
+  id = db.escape(id);
   // Get current time in format 'yyyy-mm-dd hh:MM:ss'
   var now = new Date();
   var timestamp = db.escape(dateFormat(now, "yyyy-mm-dd hh:MM:ss"));
@@ -617,7 +554,10 @@ module.exports.upload = function(req, res) {
                     //same user
                     var checkFolder = 'SELECT * FROM folders WHERE name = "' + folder.name + '" AND user_id =' + session_id;
                     db.query(checkFolder, function(err, fol) {
-                        if (err) throw err;
+                        if (err) {
+                            handleError(500, err, 'Error selecting uploaded folders', req, res);
+                            return;
+                        }
 
                         //if folder is not present, insert folder. else just insert bookmarks
                         if (fol.length == 0) {
@@ -661,4 +601,43 @@ function insertBookmarks(bookmarks, folderId) {
             }
         });
     });
+};
+
+function validateBookmark(req) {
+    req.sanitizeBody('title').trim();
+    req.sanitizeBody('url').trim();
+    req.sanitizeBody('description').trim();
+
+    var params = {
+        'title': {
+            isLength: {
+                options: [{min: 1, max: 25}],
+                errorMessage: 'Bookmark title must be 1-25 characters'
+            },
+        },
+        'url': {
+            isLength: {
+                options: [{min: 1, max: 2083}],
+                errorMessage: 'Bookmark URL must be 1-2083 characters'
+            },
+            isURL: {
+                errorMessage: 'Invalid URL specified'
+            },
+            matches: {
+                options: ['^https?://', 'i'],
+                errorMessage: 'URL must start with http:// or https://'
+            }
+        },
+        'folder_id': {
+            isInt: {
+                errorMessage: 'Folder id must be an integer'
+            },
+            isLength: {
+                options: [{min: 1, max:11}],
+                errorMessage: 'Invalid folder id'
+            }
+        }
+    };
+    req.checkBody(params);
+    return req.validationErrors();
 };
