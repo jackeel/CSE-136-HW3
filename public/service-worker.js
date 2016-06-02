@@ -22,7 +22,9 @@ this.addEventListener('install', function(event) {
 
 function loginOrSignUpRequest(eventURL, eventMethod)
 {
-  if (eventURL.indexOf('login') > -1  || eventURL.indexOf('signup') > -1 ) {
+  ///passwordReset
+  if (eventURL.indexOf('login') > -1  || eventURL.indexOf('signup') > -1 
+      || eventURL.indexOf('passwordReset') > -1 || eventURL === "http://localhost:3000/") {
     return true; 
   }
   else {
@@ -90,8 +92,8 @@ self.addEventListener("fetch", function(event) {
             .then(function add(cache) {
              
               //dont want to cache anything else beside bookmarks and folders. when logged in. 
-              if(event.request.url.indexOf('list') > -1)
-              {
+              if(event.request.url.indexOf('list') > -1 || loginOrSignUpRequest(eventURL,eventMethod) && eventMethod === 'GET')
+              { 
                 cache.put(event.request, cacheCopy);
               }
             
