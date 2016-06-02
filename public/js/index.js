@@ -502,8 +502,8 @@ window.onload = function() {
                                 break;
                             } else {
                                 // Otherwise remove bookmark from list if editted to a different folder
-                                $("#bookmark-card-" + data.bookmark_id).closest("div.col-1-3.mobile-col-1-3.card-min-width").remove();
-                                CURRENT_BOOKMARKS.splice(i, 1);
+                                updatePagination();
+                                updateBookmarks();
                                 return;
                             }
                         }
@@ -512,8 +512,6 @@ window.onload = function() {
                     // Update bookmark dynamically
                     $('#title-bookmark-' + data.bookmark_id).text(data.title);
                     $('#bookmark-url-' + data.bookmark_id).attr('href', data.url);
-
-                    // TODO: deal with pagination if last bookmark on page is edited out
                 },
                 error: function(xhr, status, error) {
                     var err = JSON.parse(xhr.responseText);
