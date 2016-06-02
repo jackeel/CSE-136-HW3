@@ -848,7 +848,7 @@ window.onload = function() {
 
     // When change the page, need to change the pagination css to highlight the current page.
     function setPaginationCSS() {
-        $("#pagination").children('a').removeClass();
+        $("#pagination").children('a').removeAttr('class');
         $("#pagination").children('a').eq(CURRENT_OFFSET-1).addClass("active");
     }
     // $( window ).resize(function() {
