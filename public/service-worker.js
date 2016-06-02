@@ -1,35 +1,25 @@
-// this.addEventListener('install', function(event) {
-//   console.log('inside the install event listern install'); 
-//   event.waitUntil(
-//     caches.open('v2').then(function(cache) {
-//       //should use regex 
-//       return cache.addAll([
-//         '/js/signup.js',
-//         '/js/jquery.min.js',
-//         '/js/login.js',
-//         '/js/signup.js',
-//         '/css/signup.css',
-//         '/css/style.css',
-//         '/font-awesome/css/font-awesome.min.css',
-//         '/html/offline.html',
-//         '/img/ajax-loader.gif'
-//       ]);
-//     })
-//   );
-// });
+var version = 'v2'; 
 
 this.addEventListener('install', function(event) {
   console.log('inside the install event listern install'); 
   event.waitUntil(
-    caches.open('v1').then(function(cache) {
+    caches.open(version).then(function(cache) {
+      //should use regex 
       return cache.addAll([
+        '/js/signup.js',
         '/js/jquery.min.js',
+        '/js/login.js',
+        '/js/signup.js',
         '/css/signup.css',
+        '/css/style.css',
+        '/font-awesome/css/font-awesome.min.css',
         '/html/offline.html',
+        '/img/ajax-loader.gif'
       ]);
     })
   );
 });
+
 
 // this.addEventListener('fetch', function(event) {
 //   console.log('inside the install event listern install'); 
@@ -48,7 +38,6 @@ this.addEventListener('install', function(event) {
 //   }));
 // });
 
-var version = 'v1'; 
 self.addEventListener("fetch", function(event) {
   console.log('WORKER: fetch event in progress.');
 
@@ -125,6 +114,12 @@ self.addEventListener("fetch", function(event) {
            you probably want to display a "Service Unavailable" view or a generic
            error response.
         */
+        //TODO: check request here and use a rregex for appropiate responce. 
+        //So decide whether we are rutrning a html page, or a json responce or the 
+        //the cached version of a page. For example, if someone tries to deltete a folder or bookmark and the app is down, 
+        //respond with a error status and json body similar to that which we used in the backend so that the error modal handles it. 
+        //If they are trying to traverse a differnent page, such as a folder, list all, list all star, then give them the cache version and a error modal
+        
         function unableToResolve () {
           /* There's a couple of things we can do here.
              - Test the Accept header and then return one of the `offlineFundamentals`
