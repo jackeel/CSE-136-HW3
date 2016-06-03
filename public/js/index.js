@@ -36,8 +36,12 @@ window.onload = function() {
                 CURRENT_OFFSET = 1;
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -99,8 +103,13 @@ window.onload = function() {
                 updatePagination();
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -150,8 +159,13 @@ window.onload = function() {
                 }
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -184,8 +198,13 @@ window.onload = function() {
                     updatePagination();
                 },
                 error: function(xhr, status, error) {
-                    var err = JSON.parse(xhr.responseText);
-                    showErrorModal("Error", err.data);
+                    try {
+                        console.log(xhr.responseText);
+                        var err = JSON.parse(xhr.responseText);
+                        showErrorModal("Error", err.data);
+                    }catch(e){
+                        showErrorModal("Error", "Service Unavaiable");
+                    }
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -241,8 +260,13 @@ window.onload = function() {
                 );
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -303,8 +327,13 @@ window.onload = function() {
                     $('#editBookmarkForm select[name="folder_id"] option[value=' + data.folder_id + ']').remove();
                 },
                 error: function(xhr, status, error) {
-                    var err = JSON.parse(xhr.responseText);
-                    showErrorModal("Error", err.data);
+                    try {
+                        console.log(xhr.responseText);
+                        var err = JSON.parse(xhr.responseText);
+                        showErrorModal("Error", err.data);
+                    }catch(e){
+                        showErrorModal("Error", "Service Unavaiable");
+                    }
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -320,7 +349,7 @@ window.onload = function() {
         event.preventDefault();
 
         toggleLoadGIF();
-
+        console.log("NEW FOLDER");
         CURRENT_FOLDER = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
 
         if(CURRENT_FOLDER=='starred'){
@@ -374,8 +403,13 @@ window.onload = function() {
 
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -427,8 +461,13 @@ window.onload = function() {
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -514,8 +553,13 @@ window.onload = function() {
                     $('#bookmark-url-' + data.bookmark_id).attr('href', data.url);
                 },
                 error: function(xhr, status, error) {
-                    var err = JSON.parse(xhr.responseText);
-                    showErrorModal("Error", err.data);
+                    try {
+                        console.log(xhr.responseText);
+                        var err = JSON.parse(xhr.responseText);
+                        showErrorModal("Error", err.data);
+                    }catch(e){
+                        showErrorModal("Error", "Service Unavaiable");
+                    }
                 },
                 complete: function(xhr, status) {
                     toggleLoadGIF();
@@ -529,7 +573,6 @@ window.onload = function() {
     // When click a bookmark, will send a request to update the last visit time.
     $("#bookmarks").on("click", ".bookmark-link", function(event) {
         event.preventDefault();
-        toggleLoadGIF();
 
         var url = "/bookmarks/last_visit";
         var params = {"bookmark_id" : $(this).attr("id").split("-")[1]};
@@ -546,11 +589,15 @@ window.onload = function() {
                 window.location.href = bookmark_url;
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
-                toggleLoadGIF();
             }
         });
     });
@@ -599,8 +646,13 @@ window.onload = function() {
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -636,8 +688,13 @@ window.onload = function() {
                 showErrorModal("Success", "Password reset successfully!");
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
             },
             complete: function(xhr, status) {
                 toggleLoadGIF();
@@ -747,7 +804,6 @@ window.onload = function() {
         window.location.hash = 'warningModal';
         $("#warningTitle:first").text(header);
         $("#warningMessage").text(message);
-        toggleLoadGIF();
     }
 
     function setMaxHeightFolders()
@@ -837,9 +893,18 @@ window.onload = function() {
                 $('#bookmarks').html(bookmark_list);
             },
             error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                showErrorModal("Error", err.data);
+                try {
+                    console.log(xhr.responseText);
+                    var err = JSON.parse(xhr.responseText);
+                    showErrorModal("Error", err.data);
+                }catch(e){
+                    showErrorModal("Error", "Service Unavaiable");
+                }
+
             },
+            complete: function(xhr, status) {
+                toggleLoadGIF();
+            }
         });
     }
 

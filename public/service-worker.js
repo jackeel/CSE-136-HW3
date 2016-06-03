@@ -6,15 +6,25 @@ this.addEventListener('install', function(event) {
     caches.open(version).then(function(cache) {
       //should use regex 
       return cache.addAll([
-        '/js/signup.js',
-        '/js/jquery.min.js',
-        '/js/login.js',
-        '/js/signup.js',
-        '/css/signup.css',
-        '/css/style.css',
-        '/font-awesome/css/font-awesome.min.css',
-        '/html/offline.html',
-        '/img/ajax-loader.gif',
+          '/js/signup.js',
+          '/js/jquery.min.js',
+          '/js/login.js',
+          '/js/index.js',
+          '/js/signup.js',
+          '/css/signup.css',
+          '/css/style.css',
+          '/font-awesome/css/font-awesome.min.css',
+          '/html/offline.html',
+          '/img/ajax-loader.gif',
+          'font-awesome/fonts/FontAwesome.otf',
+          'font-awesome/fonts/fontawesome-webfont.eot',
+          'font-awesome/fonts/fontawesome-webfont.svg',
+          'font-awesome/fonts/fontawesome-webfont.ttf',
+          'font-awesome/fonts/fontawesome-webfont.woff',
+          'font-awesome/fonts/fontawesome-webfont.woff2',
+          'font-awesome/fonts/fontawesome-webfont.ttf?v=4.6.1',
+          'http://localhost:3000/font-awesome/fonts/fontawesome-webfont.woff2?v=4.6.1',
+          'http://localhost:3000/font-awesome/fonts/fontawesome-webfont.woff?v=4.6.1'
       ]);
     })
   );
@@ -40,13 +50,6 @@ self.addEventListener("fetch", function(event) {
   var eventURL = event.request.url; 
   var eventMethod = event.request.method;
 
-  if (eventMethod !== 'GET' && !loginOrSignUpRequest(eventURL,eventMethod)) {
-    /* If we don't block the event as shown below, then the request will go to
-       the network as usual.
-    */
-    console.log('WORKER: fetch event ignored.', event.request.method, event.request.url);
-    return;
-  }
   /* Similar to event.waitUntil in that it blocks the fetch event on a promise.
      Fulfillment result will be used as the response, and rejection will end in a
      HTTP response indicating failure.
@@ -90,8 +93,7 @@ self.addEventListener("fetch", function(event) {
             // We open a cache to store the response for this request.
             .open(version)
             .then(function add(cache) {
-             
-              //dont want to cache anything else beside bookmarks and folders. when logged in. 
+              //dont want to cache anything else beside bookmarks and folders. when logged in.
               if(event.request.url.indexOf('list') > -1 || loginOrSignUpRequest(eventURL,eventMethod) && eventMethod === 'GET')
               { 
                 cache.put(event.request, cacheCopy);
@@ -137,11 +139,11 @@ self.addEventListener("fetch", function(event) {
             //in order for it not to get stuck in laoding phase. 
             //say something line 'currnetly offline. loading old version of bookmarks. you cannot perform actions while offline'
             return new Response('<h1>Service Unavailable</h1>', {
-              status: 503,
-              statusText: 'Service Unavailable',
-              headers: new Headers({
-                'Content-Type': 'text/html'
-              })
+               status: 503,
+               statusText: 'Service Unavailable',
+               headers: new Headers({
+                 'Content-Type': 'text/html'
+               })
             });
           }
         }
