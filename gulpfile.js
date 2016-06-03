@@ -23,7 +23,7 @@ gulp.task('uncss-minify', function () {
     gulp.src('./public/css/style.css')
         .pipe(uncss({
             html: ['./views/index.ejs', './views/bookmarks/edit.ejs'],
-            ignore: ['#sidebar li a.inactive-folder', '#sidebar li a.active-folder']
+            ignore: ['#sidebar li a.inactive-folder', '#sidebar li a.active-folder', 'div#pagination a.active', 'div#pagination a:hover:not(.active)']
         }))
         .pipe(minifycss({keepBreaks: false}))
         .pipe(rename('style.css'))
