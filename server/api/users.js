@@ -215,10 +215,23 @@ module.exports.signup = function(req, res) {
             }
             var successes = [{msg: 'You have signed up'}];
             req.flash("success_messages", successes);
-            res.redirect('/login');
-            logger.log('debug', "user-actions: new user",
-              {timestamp: Date.now(), user:username, ip: req.ip}
+            var queryString = 'SELECT id FROM users WHERE username = ' + username + ' AND password = "' + hash + '"';
+            db.query(queryString, function(err, rows) {
+                if (err)
+                {
+                    if(handleError(500, err, 'Error selecting username', req, res))
+                    {
+                        errors = [{msg: 'An unexpected error occurred.'}];
+                        res.render('signup', {errors: errors});
+                    }
+                    return;
+                }
+            req.session.userId = rows[0].id;
+            res.redirect('/list?offset=1');
+            logger.log('debug', "user-actions: login",
+                {timestamp: Date.now(), user:username, ip: req.ip}
             );
+            });
         });
     }
 };

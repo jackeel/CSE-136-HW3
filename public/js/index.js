@@ -141,8 +141,7 @@ window.onload = function() {
                 // Remove immediately if in starred list
                 if (CURRENT_FOLDER == "starred") {
                     // Update all bookmarks in current pagination, and update the pagination itself
-                    updateBookmarks();
-                    updatePagination();
+                    updatePagination(updateBookmarks);
                     return;
                 }
 
@@ -192,10 +191,8 @@ window.onload = function() {
                 contentType: 'application/json',
                 success: function(result) {
                     window.location.hash = "close";
-
-                    updateBookmarks();
-
-                    updatePagination();
+                    updatePagination(updateBookmarks);
+                    return;
                 },
                 error: function(xhr, status, error) {
                     try {
@@ -351,6 +348,8 @@ window.onload = function() {
         toggleLoadGIF();
         console.log("NEW FOLDER");
         CURRENT_FOLDER = $(this).attr("id") ? $(this).attr("id").split("-")[1] : '';
+        // Set current offset to 1 when change folder.
+        CURRENT_OFFSET = 1;
 
         if(CURRENT_FOLDER=='starred'){
             var url = "/list";
@@ -400,6 +399,7 @@ window.onload = function() {
                         '?&offset=' + i + '&Star=' + star + '">' + i + '</a>';
                 }
                 $('#pagination').html(paginations_html);
+                setPaginationCSS();
 
             },
             error: function(xhr, status, error) {
@@ -421,8 +421,9 @@ window.onload = function() {
     var sortOrSearchFunction = function(event) {
         event.preventDefault();
         toggleLoadGIF();
-        
-        updatePagination();
+
+        // Set current offset to 1 when sort or search.
+        CURRENT_OFFSET = 1;
 
         if (CURRENT_FOLDER == "starred") {
             var url = "/list";
@@ -459,6 +460,7 @@ window.onload = function() {
                 // Update
                 var bookmark_list = addBookmarkHTML(bookmarks);
                 $('#bookmarks').html(bookmark_list);
+                updatePagination(setPaginationCSS);
             },
             error: function(xhr, status, error) {
                 try {
@@ -541,8 +543,7 @@ window.onload = function() {
                                 break;
                             } else {
                                 // Otherwise remove bookmark from list if editted to a different folder
-                                updatePagination();
-                                updateBookmarks();
+                                updatePagination(updateBookmarks);
                                 return;
                             }
                         }
@@ -608,6 +609,7 @@ window.onload = function() {
         toggleLoadGIF();
 
         CURRENT_OFFSET = $(this).text();
+        setPaginationCSS();
 
         if(CURRENT_FOLDER=='starred'){
             var star = 1;
@@ -812,10 +814,9 @@ window.onload = function() {
         var height = $('#folderList').height() - $('#sidebar div:first').height();
         $('#folderList').css('max-height', height+'px');
     }
-
-    // TODO Without async set as false, this function call sometimes fails, idk why.
+    
     // Update the pagination bar based on current settings(current folder, starred, search text, sort option).
-    function updatePagination() {
+    function updatePagination(callback) {
         if (CURRENT_FOLDER == "starred") {
             var url = "/bookmarks/getCount";
             var star = 1;
@@ -828,19 +829,19 @@ window.onload = function() {
         var search_text = $('#searchForm input[name="Search"]').val();
         var sort_option = $('#orderByForm select[name="SortBy"]').val();
         //var offset_index = $(this).text();
-        var params_ = {
+        var params = {
             "Search": search_text,
             "SortBy": sort_option,
             "Star":   star
         };
         $.ajax({
             type: 'GET',
-            async: false,
             url: url,
             contentType: 'application/json',
             dataType: 'json',
-            data: params_,
+            data: params,
             success: function (result) {
+
                 var num_pagination = Math.ceil(result.data.count/MAX_BOOKMARKS);
                 var paginations_html="";
                 for(var i = 1; i <= num_pagination; i++) {
@@ -848,6 +849,9 @@ window.onload = function() {
                         '&SortBy=' + sort_option + '&offset=' + i + '&Star=' + star + '"> ' + i + ' </a>';
                 }
                 $('#pagination').html(paginations_html);
+                if(callback) {
+                    callback();
+                }
             }
         });
     }
@@ -908,6 +912,11 @@ window.onload = function() {
         });
     }
 
+    // When change the page, need to change the pagination css to highlight the current page.
+    function setPaginationCSS() {
+        $("#pagination").children('a').removeAttr('class');
+        $("#pagination").children('a').eq(CURRENT_OFFSET-1).addClass("active");
+    }
     // $( window ).resize(function() {
     //   setMaxHeightFolders();
     // });

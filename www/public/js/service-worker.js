@@ -1,0 +1,1 @@
+importScripts("serviceworker-cache-polyfill.js"),self.addEventListener("install",function(e){e.waitUntil(caches.open("demo-cache").then(function(e){return e.put("/",new Response("From the cache!"))}))}),self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(e){return e||new Response("Nothing in the cache for this request")}))});
