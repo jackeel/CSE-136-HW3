@@ -73,7 +73,7 @@ self.addEventListener("fetch", function(event) {
           // We handle the network request with success and failure scenarios.
           .then(fetchedFromNetwork, unableToResolve)
           // We should catch errors on the fetchedFromNetwork handler as well.
-          .catch(unableToResolve(event));
+          .catch(unableToResolve);
 
         /* We return the cached response immediately if there is one, and fall
            back to waiting on the network as usual.
