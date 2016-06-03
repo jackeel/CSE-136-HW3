@@ -15,7 +15,10 @@ Passsword: a
  * Bundle js files. We didn't bundle it this time for debugging purposes. 
 
 #Changes from HW4 to HW5
- * added service worker
+ * added service worker for offline use only if you run it in local host since we couldnt afford the costs of purchasing ssl certificate. 
+  * Here is the video showing us using it in action with online and offline use
+   * https://youtu.be/6LsFyqpC3fE
+ * added traps in html code to log suspicious activity if commented route hit. 
  * stripped unused css (in production code)
  * added Google Analytics and Hotjar to track user activities. Through heat maps, mouse travel, etc. 
  * specific http status codes returned for errors (400 for validation errors, 409 for duplicate database entry errors)
