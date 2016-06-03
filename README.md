@@ -53,3 +53,8 @@ Passsword: a
  * stripped unused css (in production code) to reduce file size
 * production and development environment created and managed to decide when to use the production build(www) or development build
 * Config file on github and that on server are different for security reasons.
+* 
+*Things each member worked on:
+Sohan Thapa - automatic login after the signup, works for both js turned off and turned on
+              made sure the sign up and login pages works when both turned off and turned on.
+              Fixed the password reset functionality.
