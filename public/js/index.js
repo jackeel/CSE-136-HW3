@@ -108,7 +108,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -163,7 +163,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -200,7 +200,7 @@ window.onload = function() {
                         var err = JSON.parse(xhr.responseText);
                         showErrorModal("Error", err.data);
                     }catch(e){
-                        showErrorModal("Error", "Service Unavaiable");
+                        showErrorModal("Error", "Service Unavailable");
                     }
                 },
                 complete: function(xhr, status) {
@@ -262,7 +262,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -329,7 +329,7 @@ window.onload = function() {
                         var err = JSON.parse(xhr.responseText);
                         showErrorModal("Error", err.data);
                     }catch(e){
-                        showErrorModal("Error", "Service Unavaiable");
+                        showErrorModal("Error", "Service Unavailable");
                     }
                 },
                 complete: function(xhr, status) {
@@ -408,7 +408,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -468,7 +468,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -559,7 +559,7 @@ window.onload = function() {
                         var err = JSON.parse(xhr.responseText);
                         showErrorModal("Error", err.data);
                     }catch(e){
-                        showErrorModal("Error", "Service Unavaiable");
+                        showErrorModal("Error", "Service Unavailable");
                     }
                 },
                 complete: function(xhr, status) {
@@ -595,7 +595,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -653,7 +653,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -695,7 +695,7 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
             },
             complete: function(xhr, status) {
@@ -902,12 +902,9 @@ window.onload = function() {
                     var err = JSON.parse(xhr.responseText);
                     showErrorModal("Error", err.data);
                 }catch(e){
-                    showErrorModal("Error", "Service Unavaiable");
+                    showErrorModal("Error", "Service Unavailable");
                 }
 
-            },
-            complete: function(xhr, status) {
-                toggleLoadGIF();
             }
         });
     }
