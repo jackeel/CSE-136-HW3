@@ -5,11 +5,19 @@ To log into an account with prefilled data, use this account:
 Username: user1
 Passsword: a
 
+#TODO for future iterations
+ * have different folders for caching. Example: 
+  * have one folder cache for an hours, another for a week, another for a month, etc. 
+ * Remove useless data from headers to save bytes of data.
+ * We only had one image, so we didn't create one file that contained a spread sheet of images. 
+  * If we add more images, we will implement this
+ * For extra security, we might consider in the future to create randomized endpoints for each user. 
+ * Bundle js files. We didn't bundle it this time for debugging purposes. 
 
 #Changes from HW4 to HW5
  * added service worker
  * stripped unused css (in production code)
- * added Google Analytics and Hotjar
+ * added Google Analytics and Hotjar to track user activities. Through heat maps, mouse travel, etc. 
  * specific http status codes returned for errors (400 for validation errors, 409 for duplicate database entry errors)
  * fixed and enhanced AJAX functions to be more dynamic/responsive
  * full pagination support
@@ -26,6 +34,7 @@ Passsword: a
 
 
 ##Technologies implemented##
+* code offuscation 
 * This web application works fully with and without javascript! Just refresh page to show isomorphic abilities.
 * Service worker
 * Google Analytics and Hotjar
